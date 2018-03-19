@@ -10,6 +10,7 @@
         </filter>
     </appender>
 
+
     <appender name="mmall" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<File>d:/mmalllog/mmall.log</File>-->
         <File>E:/tools/apache-tomcat-7.0.47/logs/mmall.log</File>
