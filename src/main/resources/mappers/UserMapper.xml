@@ -188,4 +188,16 @@
     and question=#{question}
     and answer=#{answer}
   </select>
+  <select id="selectOldPassword" resultType="int" parameterType="map">
+    SELECT count(1)
+    FROM mmall_user
+    WHERE id=#{userId}
+    and password=#{passwordOld}
+  </select>
+  <select id="checkEmailByUserId" resultType="int" parameterType="map">
+    SELECT count(1)
+    FROM mmall_user
+    WHERE email=#{email}
+    and id!=#{userId}
+  </select>
 </mapper>

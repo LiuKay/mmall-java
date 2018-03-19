@@ -165,4 +165,71 @@ public class IUserServiceImpl implements IUserService {
         }
         return ServerResponse.createByErorrMessage("修改密码失败");
     }
+
+    /**
+     * 登录用户重置密码
+     * @param passwordOld
+     * @param passwordNew
+     * @param user
+     * @return
+     */
+    @Override
+    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
+        //1.首先校验用户旧密码
+        int resultCount = userMapper.selectOldPassword(user.getId(), passwordOld);
+        if (resultCount==0) {
+            return ServerResponse.createByErorrMessage("旧密码错误");
+        }
+        //2.设置新密码
+        user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
+        int updateCount = userMapper.updateByPrimaryKeySelective(user);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccessMessage("密码重置成功");
+        }
+        return ServerResponse.createByErorrMessage("密码重置失败");
+    }
+
+    /**
+     *  更新用户信息
+     * @param user
+     * @return
+     */
+    @Override
+    public ServerResponse updateUserInfo(User user) {
+        //1.检验Email的合法性，不能是别人已经注册的email
+        int resultCount = userMapper.checkEmailByUserId(user.getId(), user.getEmail());
+        if (resultCount > 0) {
+            return ServerResponse.createByErorrMessage("email已经存在，请更换");
+        }
+        //2.更新用户信息----注意，用户名不能被更新
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setAnswer(user.getAnswer());
+        //fixme 有个字段upadateTime 默认设置为mysql的now() 函数，但是是mybatis的动态sql判断upadateTime不为空时更新，应该改为只要更新了信息就更新该字段
+        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
+        if (updateCount>0) {
+            return ServerResponse.createBySuccessMessage("用户信息更新成功");
+        }
+        return ServerResponse.createByErorrMessage("用户信息更新失败");
+    }
+
+    /**
+     * 获取用户信息---注意用户密码不能返回
+     * @param userId
+     * @return
+     */
+    @Override
+    public ServerResponse<User> getUserInfo(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user == null) {
+            return ServerResponse.createByErorrMessage("未找到用户");
+        }
+        //注意：用户密码不能返回
+        user.setPassword(StringUtils.EMPTY);
+        return ServerResponse.createBySuccess(user);
+    }
+
 }

@@ -81,7 +81,7 @@ public class ServerResponse<T> {
     }
 
     //返回其他自定义失败码和提示消息
-    public static <T> ServerResponse<T> createByErorrMessage(int status,String errorMessage){
+    public static <T> ServerResponse<T> createByErorrCodeMessage(int status,String errorMessage){
         return new ServerResponse<T>(status,errorMessage);
     }
 }
