@@ -24,6 +24,7 @@
     from mmall_user
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_user
     where id = #{id,jdbcType=INTEGER}
@@ -151,4 +152,40 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updatePasswordByUsername" parameterType="map">
+    UPDATE mmall_user
+    SET password=#{passwordNew}
+    where username=#{username}
+  </update>
+
+
+  <select id="checkUserName" parameterType="string" resultType="int">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE username=#{username}
+  </select>
+  <select id="selecLogin" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_user
+    WHERE username=#{username}
+    and password=#{password}
+  </select>
+  <select id="checkEmail" resultType="int">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE email=#{email}
+  </select>
+  <select id="selectForgetQuestion" resultType="string">
+    SELECT question
+    FROM mmall_user
+    WHERE username=#{username}
+  </select>
+  <select id="selectQuestionAnswer" resultType="int" parameterType="map">
+    SELECT count(1)
+    FROM mmall_user
+    WHERE username=#{username}
+    and question=#{question}
+    and answer=#{answer}
+  </select>
 </mapper>
