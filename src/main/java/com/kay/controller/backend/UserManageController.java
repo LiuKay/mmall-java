@@ -17,8 +17,8 @@ import javax.servlet.http.HttpSession;
  * 后台用户管理
  */
 @Controller
-@RequestMapping("/manager/user")
-public class UserManagerController {
+@RequestMapping("/manage/user")
+public class UserManageController {
 
     @Autowired
     private IUserService iUserService;
@@ -37,7 +37,7 @@ public class UserManagerController {
         if (response.isSuccess()) {
             User user = response.getData();
             //管理员才能登录后台
-            if (user.getRole().equals(Const.ROLE.MANAGER_USER)) {
+            if (user.getRole().equals(Const.ROLE.MANAGE_USER)) {
                 session.setAttribute(Const.CURRENT_USER,user);
             }else {
                 //不是管理员用户，无法登录

@@ -10,6 +10,6 @@ public class Const {
 
     public interface ROLE {
         int NORMAL_USER = 0;
-        int MANAGER_USER = 1;
+        int MANAGE_USER = 1;
     }
 }
