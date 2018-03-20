@@ -41,6 +41,10 @@ public class ServerResponse<T> {
         return this.status == ResponseCode.SUCCESS.getCode();
     }
 
+    public int getStatus(){
+        return this.status;
+    }
+
     public T getData() {
         return this.data;
     }
@@ -71,17 +75,17 @@ public class ServerResponse<T> {
     }
 
     //返回失败码
-    public static <T> ServerResponse<T> createByErorr(){
+    public static <T> ServerResponse<T> createByError(){
         return new ServerResponse<T>(ResponseCode.ERROR.getCode(),ResponseCode.ERROR.getDescription());
     }
 
     //返回失败码和自定义提示消息
-    public static <T> ServerResponse<T> createByErorrMessage(String errorMessage){
+    public static <T> ServerResponse<T> createByErrorMessage(String errorMessage){
         return new ServerResponse<T>(ResponseCode.ERROR.getCode(),errorMessage);
     }
 
     //返回其他自定义失败码和提示消息
-    public static <T> ServerResponse<T> createByErorrCodeMessage(int status,String errorMessage){
+    public static <T> ServerResponse<T> createByErrorCodeMessage(int status, String errorMessage){
         return new ServerResponse<T>(status,errorMessage);
     }
 }

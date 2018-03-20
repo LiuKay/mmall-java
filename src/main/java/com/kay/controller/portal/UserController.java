@@ -91,7 +91,7 @@ public class UserController {
      * @param answer
      * @return
      */
-    @RequestMapping(value = "forget_check_question.do",method = RequestMethod.POST)
+    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
         return iUserService.checkQuestionAnswer(username, question, answer);
@@ -122,7 +122,7 @@ public class UserController {
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.createByErorrMessage("用户未登录");
+            return ServerResponse.createByErrorMessage("用户未登录");
         }
         return iUserService.resetPassword(passwordOld, passwordNew, user);
     }
@@ -138,7 +138,7 @@ public class UserController {
     public ServerResponse updateInformation(HttpSession session, User user) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
-            return ServerResponse.createByErorrMessage("用户未登录");
+            return ServerResponse.createByErrorMessage("用户未登录");
         }
         //此处用户id前端可能回传过来，也有可能不传，所以设置一下保险
         //同时此处也为了防止横向越权的问题，即传过来的id并不是当前登录的用户id
@@ -157,12 +157,27 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
+    @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session) {
-        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
-        if (currentUser==null) {
-            return ServerResponse.createByErorrCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录，需要强制登录");
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user != null){
+            return ServerResponse.createBySuccess(user);
+        }
+        return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+    }
+
+    /**
+     * 获取当前用户详细信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<User> get_information(HttpSession session){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(currentUser == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录,需要强制登录status=10");
         }
         return iUserService.getUserInfo(currentUser.getId());
     }
