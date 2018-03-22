@@ -2,10 +2,15 @@ package com.kay.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
+import com.kay.common.Const;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
+import com.kay.dao.CategoryMapper;
 import com.kay.dao.ProductMapper;
+import com.kay.pojo.Category;
 import com.kay.pojo.Product;
+import com.kay.service.ICategoryService;
 import com.kay.service.IProductService;
 import com.kay.util.PropertiesUtil;
 import com.kay.util.TimeUtil;
@@ -26,6 +31,12 @@ public class ProductServiceImpl implements IProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private ICategoryService iCategoryService;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Override
     public ServerResponse<String> saveOrUpdateProduct(Product product) {
@@ -147,6 +158,90 @@ public class ProductServiceImpl implements IProductService {
             ProductListVo productListVo = assembleProductListVo(product);
             productListVoList.add(productListVo);
         }
+        pageInfo.setList(productListVoList);
+
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    /**
+     * 前台商品查询
+     * @param productId
+     * @return
+     */
+    @Override
+    public ServerResponse<ProductDetailVo> getProductList(Integer productId) {
+        if (productId==null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+        }
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product==null) {
+            return ServerResponse.createByErrorMessage("产品已下架或者删除");
+        }
+        if (product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
+            return ServerResponse.createByErrorMessage("产品已下架或者删除");
+        }
+        //对象转换，pojo->vo
+        ProductDetailVo productDetailVo = assembleProductDetailVo(product);
+        return ServerResponse.createBySuccess(productDetailVo);
+    }
+
+    /**
+     * 商品的关键字搜索和动态排序
+     * @param categoryId
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @param orderBy
+     * @return
+     */
+    @Override
+    public ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize, String orderBy) {
+        //参数不合法
+        if (StringUtils.isBlank(keyword) && categoryId == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+        }
+
+        //A.处理分类
+        List<Integer> categoryIdList = new ArrayList<>();
+        if (categoryId != null) {
+             //1.判断是否有这个分类
+            Category category = categoryMapper.selectByPrimaryKey(categoryId);
+            //2.如果不存在改分类直接返回一个空的集合
+            if (category == null) {
+                PageHelper.startPage(pageNum, pageSize);
+                List<ProductListVo> productListVoList = Lists.newArrayList();
+                PageInfo pageInfo = new PageInfo(productListVoList);
+                return ServerResponse.createBySuccess(pageInfo);
+            }
+            //3.若存在分类，把categoryId当作一个大类,取出所有的节点 , 在具体查询该节点内的条件，故改list先提取出来
+            categoryIdList = iCategoryService.selectCategoryAndChildrenById(categoryId).getData();
+        }
+
+        //B.处理模糊查询条件
+        if (StringUtils.isNotBlank(keyword)) {
+            keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
+        }
+
+        //C.处理排序----排序的参数要根据接口文档或跟前端约定好
+        if (StringUtils.isNotBlank(orderBy)) {
+            String[] orderArr = orderBy.split("_");
+            //使用PageHelper提供的排序功能，格式：price desc
+            PageHelper.orderBy(orderArr[0] + " " + orderArr[1]);
+        }
+
+        //开始查询
+        PageHelper.startPage(pageNum, pageSize);
+        keyword = StringUtils.isBlank(keyword) ? null : keyword;
+        categoryIdList = categoryIdList.size() == 0 ? null : categoryIdList;
+        List<Product> productList = productMapper.selectByNameAndCategoryIds(keyword, categoryIdList);
+
+        List<ProductListVo> productListVoList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductListVo productListVo = assembleProductListVo(product);
+            productListVoList.add(productListVo);
+        }
+
+        PageInfo pageInfo = new PageInfo(productList);
         pageInfo.setList(productListVoList);
 
         return ServerResponse.createBySuccess(pageInfo);

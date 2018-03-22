@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
-    public ServerResponse addCategory(String categoryName, Integer parentId) {
+    public ServerResponse<String> addCategory(String categoryName, Integer parentId) {
         if (parentId == null && StringUtils.isBlank(categoryName)) {
             return ServerResponse.createByErrorMessage("添加品类参数错误");
         }
@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public ServerResponse setCategory(String categoryName, Integer categoryId) {
+    public ServerResponse<String> setCategory(String categoryName, Integer categoryId) {
         if (categoryId == null && StringUtils.isBlank(categoryName)) {
             return ServerResponse.createByErrorMessage("修改品类名称参数错误");
         }
@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
-    public ServerResponse getCategoryChildrenByParentId(Integer categoryId) {
+    public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
         List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
         if (CollectionUtils.isEmpty(categoryList)) {
             logger.info("未找到当前分类的子节点");
@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      */
     @Override
-    public ServerResponse getAllCategoryChildrenByParentId(Integer categoryId) {
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId) {
         Set<Category> categorySet = Sets.newHashSet(); //初始化set
         getCategoryById(categorySet, categoryId);
         //只存放子节点的id

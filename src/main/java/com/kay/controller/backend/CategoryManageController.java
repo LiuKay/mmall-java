@@ -37,7 +37,7 @@ public class CategoryManageController {
         }
         //判断是否为管理员
         if (iUserService.checkAdminRole(user).isSuccess()) {
-            return iCategoryService.getCategoryChildrenByParentId(categoryId);
+            return iCategoryService.getChildrenParallelCategory(categoryId);
         } else {
             return ServerResponse.createByErrorMessage("不是管理员用户，没有操作权限");
         }
@@ -102,7 +102,7 @@ public class CategoryManageController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录");
         }
         if (iUserService.checkAdminRole(user).isSuccess()) {
-            return iCategoryService.getAllCategoryChildrenByParentId(categoryId);
+            return iCategoryService.selectCategoryAndChildrenById(categoryId);
         } else {
             return ServerResponse.createByErrorMessage("不是管理员用户，没有操作权限");
         }
