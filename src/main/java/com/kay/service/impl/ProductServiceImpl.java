@@ -1,5 +1,7 @@
 package com.kay.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.dao.ProductMapper;
@@ -8,14 +10,19 @@ import com.kay.service.IProductService;
 import com.kay.util.PropertiesUtil;
 import com.kay.util.TimeUtil;
 import com.kay.vo.ProductDetailVo;
+import com.kay.vo.ProductListVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kay on 2018/3/20.
  */
 @Service("iProductService")
-public class IProductServiceImpl implements IProductService {
+public class ProductServiceImpl implements IProductService {
 
     @Autowired
     private ProductMapper productMapper;
@@ -78,7 +85,7 @@ public class IProductServiceImpl implements IProductService {
      * @return
      */
     @Override
-    public ServerResponse getProductDetail(Integer productId) {
+    public ServerResponse getManageProductDetail(Integer productId) {
         if (productId==null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
         }
@@ -88,8 +95,74 @@ public class IProductServiceImpl implements IProductService {
         }
 
         //对象转换，pojo->vo
-        ProductDetailVo productDetailVo = assembleProduct(product);
+        ProductDetailVo productDetailVo = assembleProductDetailVo(product);
         return ServerResponse.createBySuccess(productDetailVo);
+    }
+
+    /**
+     * 分页列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public ServerResponse<PageInfo> list(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Product> productList = productMapper.selectList();
+        PageInfo pageInfo = new PageInfo<>(productList);
+
+        List<ProductListVo> productListVoList = new ArrayList<>();
+        //返回列表对象
+        for (Product product : productList) {
+            ProductListVo productListVo = assembleProductListVo(product);
+            productListVoList.add(productListVo);
+        }
+        pageInfo.setList(productListVoList);
+
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    /**
+     * 查询列表
+     * @param productId
+     * @param productName
+     * @param pageNum
+     *@param pageSize @return
+     */
+    @Override
+    public ServerResponse<PageInfo> getManageSearchList(Integer productId, String productName, int pageNum, int pageSize) {
+
+        //拼接like 条件
+        if (StringUtils.isNotBlank(productName)) {
+            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+        }
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Product> productList = productMapper.selectListByIdAndName(productId,productName);
+        PageInfo pageInfo = new PageInfo<>(productList);
+
+        List<ProductListVo> productListVoList = new ArrayList<>();
+        //返回列表对象
+        for (Product product : productList) {
+            ProductListVo productListVo = assembleProductListVo(product);
+            productListVoList.add(productListVo);
+        }
+        pageInfo.setList(productListVoList);
+
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    private ProductListVo assembleProductListVo(Product product) {
+        ProductListVo productListVo = new ProductListVo();
+        productListVo.setId(product.getId());
+        productListVo.setName(product.getName());
+        productListVo.setCategoryId(product.getCategoryId());
+        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productListVo.setMainImage(product.getMainImage());
+        productListVo.setPrice(product.getPrice());
+        productListVo.setSubtitle(product.getSubtitle());
+        productListVo.setStatus(product.getStatus());
+        return productListVo;
     }
 
     /**
@@ -97,7 +170,7 @@ public class IProductServiceImpl implements IProductService {
      * @param product
      * @return
      */
-    private ProductDetailVo assembleProduct(Product product) {
+    private ProductDetailVo assembleProductDetailVo(Product product) {
         ProductDetailVo productDetailVo = new ProductDetailVo();
         productDetailVo.setId(product.getId());
         productDetailVo.setSubtitle(product.getSubtitle());

@@ -17,7 +17,7 @@ import java.util.UUID;
  * Created by kay on 2018/3/19.
  */
 @Service("iUserService")
-public class IUserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserMapper userMapper;

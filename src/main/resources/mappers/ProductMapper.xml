@@ -27,6 +27,25 @@
     from mmall_product
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_product
+    order BY id
+  </select>
+  <select id="selectListByIdAndName" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    <where>
+      <if test=" productId != null">
+        id=#{productId}
+      </if>
+      <if test="productName !=null">
+        name like #{productName}
+      </if>
+    </where>
+
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_product
     where id = #{id,jdbcType=INTEGER}
