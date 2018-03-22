@@ -42,7 +42,7 @@
         id=#{productId}
       </if>
       <if test="productName !=null">
-        name like #{productName}
+        and name like #{productName}
       </if>
     </where>
 
@@ -53,17 +53,17 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM mmall_product
-    <where>
+    WHERE status = 1
       <if test="productName !=null">
-        name LIKE #{productName};
+       AND name LIKE #{productName}
       </if>
       <if test="categoryIdList!=null">
-        category_id in
+        and category_id in
         <foreach collection="categoryIdList" item="item" index="index" open="(" separator="," close=")">
           #{item}
         </foreach>
       </if>
-    </where>
+
   </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

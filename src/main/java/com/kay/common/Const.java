@@ -1,5 +1,9 @@
 package com.kay.common;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 /**
  * Created by kay on 2018/3/19.
  */
@@ -11,6 +15,10 @@ public class Const {
     public interface ROLE {
         int NORMAL_USER = 0;
         int MANAGE_USER = 1;
+    }
+
+    public interface ProductListOrderBy{
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
     }
 
     public enum ProductStatusEnum{

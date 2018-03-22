@@ -224,15 +224,19 @@ public class ProductServiceImpl implements IProductService {
 
         //C.处理排序----排序的参数要根据接口文档或跟前端约定好
         if (StringUtils.isNotBlank(orderBy)) {
-            String[] orderArr = orderBy.split("_");
-            //使用PageHelper提供的排序功能，格式：price desc
-            PageHelper.orderBy(orderArr[0] + " " + orderArr[1]);
+            //将排序关键字做成常量，以免非法传参
+            if (Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
+                String[] orderArr = orderBy.split("_");
+                //使用PageHelper提供的排序功能，格式：price desc
+                PageHelper.orderBy(orderArr[0] + " " + orderArr[1]);
+            }
         }
 
         //开始查询
         PageHelper.startPage(pageNum, pageSize);
         keyword = StringUtils.isBlank(keyword) ? null : keyword;
         categoryIdList = categoryIdList.size() == 0 ? null : categoryIdList;
+        //查询符合条件的并且为在售状态的产品
         List<Product> productList = productMapper.selectByNameAndCategoryIds(keyword, categoryIdList);
 
         List<ProductListVo> productListVoList = new ArrayList<>();
