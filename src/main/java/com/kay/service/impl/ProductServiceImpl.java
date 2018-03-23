@@ -117,12 +117,12 @@ public class ProductServiceImpl implements IProductService {
      * @return
      */
     @Override
-    public ServerResponse<PageInfo> list(int pageNum, int pageSize) {
+    public ServerResponse<PageInfo> getManageProductList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Product> productList = productMapper.selectList();
         PageInfo pageInfo = new PageInfo<>(productList);
 
-        List<ProductListVo> productListVoList = new ArrayList<>();
+        List<ProductListVo> productListVoList = Lists.newArrayList();
         //返回列表对象
         for (Product product : productList) {
             ProductListVo productListVo = assembleProductListVo(product);

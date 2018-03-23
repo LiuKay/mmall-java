@@ -21,7 +21,8 @@
     from mmall_cart
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_cart
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -116,4 +117,25 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByUserIdAndProductId" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_cart
+    WHERE user_id=#{userId}
+    and product_id=#{productId}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="int">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_cart
+    WHERE user_id=#{userId}
+  </select>
+  <select id="selectUnCheckedStatusCountByUserId" resultType="int">
+    SELECT count(1)
+    FROM mmall_cart
+    WHERE user_id=#{userId}
+    and status = 0
+  </select>
+
 </mapper>

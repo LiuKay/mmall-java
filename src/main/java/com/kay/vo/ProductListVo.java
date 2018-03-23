@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 /**
  * Created by kay on 2018/3/21.
+ * 商品列表VO
  */
 public class ProductListVo {
     private Integer id;

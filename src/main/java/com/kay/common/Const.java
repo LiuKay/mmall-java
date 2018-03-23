@@ -12,6 +12,14 @@ public class Const {
     public static final String USERNAME = "username";
     public static final String EMAIL = "email";
 
+    public interface Cart{
+        int CHECKED = 1;   //已经勾选
+        int UN_CHECKED = 0;  //未勾选
+
+        String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
+        String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
+    }
+
     public interface ROLE {
         int NORMAL_USER = 0;
         int MANAGE_USER = 1;
