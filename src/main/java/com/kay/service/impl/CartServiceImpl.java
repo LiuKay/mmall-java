@@ -45,6 +45,9 @@ public class CartServiceImpl implements ICartService {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
         }
 
+        //fixme 需要判断商品是否在商品表中存在
+
+
         //1.判断购物车是否有该商品
         Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
         if (cart == null) {
@@ -151,6 +154,7 @@ public class CartServiceImpl implements ICartService {
                 cartProductVo.setUserId(userId);
                 cartProductVo.setProductId(cart.getProductId());
                 cartProductVo.setProductChecked(cart.getChecked());
+                cartProductVo.setProductTotalPrice(totalPrice);  //先设置一个默认值，以免product为空时计算报null
 
                 Product product = productMapper.selectByPrimaryKey(cart.getProductId());
                 if (product != null) {

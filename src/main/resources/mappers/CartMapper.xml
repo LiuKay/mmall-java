@@ -136,7 +136,7 @@
     SELECT count(1)
     FROM mmall_cart
     WHERE user_id=#{userId}
-    and status = 0
+    and checked = 0
   </select>
   <select id="selectCartProductCount" resultType="int" parameterType="int">
     SELECT IFNULL(sum(quantity),0) as count
@@ -145,7 +145,7 @@
   </select>
   <update id="selectOrUnSelectByUserId" parameterType="map">
     UPDATE mmall_cart
-    SET status=#{status},
+    SET checked=#{checked},
     update_time=now()
     where user_id=#{userId}
     <if test="productId !=null ">
