@@ -1,5 +1,6 @@
 package com.kay.service.impl;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.kay.common.Const;
 import com.kay.common.ResponseCode;
@@ -62,8 +63,73 @@ public class CartServiceImpl implements ICartService {
         }
 
         //2.返回VO 对象，此VO对象会多次复用，建立一个复用方法，即根据用户生成购物车VO对象
+        return this.list(userId);
+    }
+
+    /**
+     * 更新购物车数量
+     * @param userId
+     * @param productId
+     * @param count
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count) {
+        if (productId == null || userId == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+        }
+        Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
+        if (cart != null) {
+            cart.setQuantity(count);
+            int updateCount = cartMapper.updateByPrimaryKeySelective(cart);
+            if (updateCount == 0) {
+                return ServerResponse.createByErrorMessage("更新失败");
+            }
+        }
+        //TODO
+        return this.list(userId);
+    }
+
+    /**
+     * 删除---多选
+     * @param userId
+     * @param productIds  以","分割多个id
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVo> deleteByProductIds(Integer userId, String productIds) {
+        List<String> productIdList = Splitter.on(",").splitToList(productIds);
+        if (CollectionUtils.isEmpty(productIdList)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+        }
+        cartMapper.deleteByUserIdProductIds(userId, productIdList);
+
+        return this.list(userId);
+    }
+
+    @Override
+    public ServerResponse<CartVo> list(Integer userId) {
         CartVo cartVo = this.getCartVoLimit(userId);
         return ServerResponse.createBySuccess(cartVo);
+    }
+
+    /**
+     * 选中状态切换
+     * @param userId
+     * @param productId
+     * @param status
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer productId, Integer status) {
+        cartMapper.selectOrUnSelectByUserId(userId, productId, status);
+        return this.list(userId);
+    }
+
+    @Override
+    public ServerResponse<Integer> getCartProductCount(Integer userId) {
+        int count = cartMapper.selectCartProductCount(userId);
+        return ServerResponse.createBySuccess(count);
     }
 
     /**

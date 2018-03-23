@@ -26,7 +26,8 @@
     delete from mmall_cart
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kay.pojo.Cart" >
+
+    <insert id="insert" parameterType="com.kay.pojo.Cart" >
     insert into mmall_cart (id, user_id, product_id, 
       quantity, checked, create_time, 
       update_time)
@@ -137,5 +138,29 @@
     WHERE user_id=#{userId}
     and status = 0
   </select>
+  <select id="selectCartProductCount" resultType="int" parameterType="int">
+    SELECT IFNULL(sum(quantity),0) as count
+    FROM mmall_cart
+    WHERE user_id=#{userId}
+  </select>
+  <update id="selectOrUnSelectByUserId" parameterType="map">
+    UPDATE mmall_cart
+    SET status=#{status},
+    update_time=now()
+    where user_id=#{userId}
+    <if test="productId !=null ">
+      and product_id=#{productId}
+    </if>
+  </update>
 
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    DELETE FROM mmall_cart
+    WHERE user_id=#{userId}
+    <if test="productIdList != null">
+      and product_id in
+      <foreach collection="productIdList" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </delete>
 </mapper>

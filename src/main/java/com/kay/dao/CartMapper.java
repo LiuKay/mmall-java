@@ -1,5 +1,6 @@
 package com.kay.dao;
 
+import com.kay.common.ServerResponse;
 import com.kay.pojo.Cart;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,4 +24,10 @@ public interface CartMapper {
     List<Cart> selectByUserId(Integer userId);
 
     int selectUnCheckedStatusCountByUserId(Integer userId);
+
+    int deleteByUserIdProductIds(@Param("userId") Integer userId,@Param("productIdList") List<String> productIdList);
+
+    int selectOrUnSelectByUserId(@Param("userId") Integer userId,@Param("productId")  Integer productId,@Param("status")  Integer status);
+
+    int selectCartProductCount(Integer userId);
 }
