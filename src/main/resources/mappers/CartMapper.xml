@@ -145,7 +145,7 @@
   </select>
   <update id="selectOrUnSelectByUserId" parameterType="map">
     UPDATE mmall_cart
-    SET checked=#{checked},
+    SET checked=#{status},
     update_time=now()
     where user_id=#{userId}
     <if test="productId !=null ">

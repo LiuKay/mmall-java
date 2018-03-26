@@ -30,16 +30,10 @@ public class TimeUtil {
 
 
     public static String dateToStr(Date date){
-        if (date == null) {
-            return "";
-        }
-        DateTime dateTime = new DateTime(date);
-        return dateTime.toString(STANDARD_FORMAT_STR);
+        return dateToStr(date, STANDARD_FORMAT_STR);
     }
 
     public static Date strToDate(String dateStr) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(STANDARD_FORMAT_STR);
-        DateTime dateTime = dateTimeFormatter.parseDateTime(dateStr);
-        return dateTime.toDate();
+        return strToDate(dateStr, STANDARD_FORMAT_STR);
     }
 }
