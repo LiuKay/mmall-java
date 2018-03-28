@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by kay on 2018/3/20.
  * joda-time 使用
  */
-public class TimeUtil {
+public class DateTimeUtil {
 
     private static final String STANDARD_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
 

@@ -13,7 +13,7 @@ import com.kay.pojo.Product;
 import com.kay.service.ICategoryService;
 import com.kay.service.IProductService;
 import com.kay.util.PropertiesUtil;
-import com.kay.util.TimeUtil;
+import com.kay.util.DateTimeUtil;
 import com.kay.vo.ProductDetailVo;
 import com.kay.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
@@ -288,8 +288,8 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setImageHost(imgHost);
 
         //日期转换使用joda-time
-        productDetailVo.setCreateTime(TimeUtil.dateToStr(product.getCreateTime()));
-        productDetailVo.setUpdateTime(TimeUtil.dateToStr(product.getUpdateTime()));
+        productDetailVo.setCreateTime(DateTimeUtil.dateToStr(product.getCreateTime()));
+        productDetailVo.setUpdateTime(DateTimeUtil.dateToStr(product.getUpdateTime()));
         return productDetailVo;
     }
 

@@ -29,6 +29,23 @@
     from mmall_order
     where id = #{id,jdbcType=INTEGER}
   </select>
+    <select id="selectByUserIdAndOrderNo" resultMap="BaseResultMap">
+      SELECT
+      <include refid="Base_Column_List"/>
+      FROM mmall_order
+      WHERE user_id=#{userId}
+      and order_no=#{orderNo}
+
+    </select>
+  <select id="selectByOrderNo" resultType="com.kay.pojo.Order">
+
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_order
+    WHERE order_no=#{orderNo}
+
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_order
     where id = #{id,jdbcType=INTEGER}
