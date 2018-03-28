@@ -34,7 +34,14 @@
       WHERE user_id=#{userId}
       and order_no=#{orderNo}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <select id="selectByOrderNo" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_order_item
+    WHERE order_no=#{orderNo}
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -121,6 +128,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.kay.pojo.OrderItem" >
     update mmall_order_item
     <set >
@@ -171,4 +179,19 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="batchInsert" parameterType="list">
+    insert into mmall_order_item (id,order_no,user_id,
+      product_id, product_name, product_image,
+      current_unit_price, quantity, total_price,
+      create_time, update_time)
+    values
+    <foreach collection="orderItemList" index="index" item="item" separator=",">
+      (
+        #{item.id},#{item.orderNo},#{item.userId},#{item.productId},#{item.productName},#{item.productImage}
+      ,#{item.currentUnitPrice},#{item.quantity},#{item.totalPrice},now(), now()
+      )
+    </foreach>
+  </insert>
+
 </mapper>
