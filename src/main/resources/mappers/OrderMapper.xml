@@ -37,7 +37,7 @@
       and order_no=#{orderNo}
 
     </select>
-  <select id="selectByOrderNo" resultType="com.kay.pojo.Order">
+  <select id="selectByOrderNo" resultMap="BaseResultMap">
 
     SELECT
     <include refid="Base_Column_List"/>
@@ -48,7 +48,7 @@
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="int">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM mmall_cart
+    FROM mmall_order
     WHERE user_id=#{userId}
     order by create_time desc
   </select>

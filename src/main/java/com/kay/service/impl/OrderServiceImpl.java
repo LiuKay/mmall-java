@@ -660,10 +660,11 @@ public class OrderServiceImpl implements IOrderService {
         PageHelper.startPage(pageNum, pageSize);
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order!=null) {
-            PageInfo pageInfo = new PageInfo(Lists.newArrayList(order));
+
             List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
             OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
 
+            PageInfo pageInfo = new PageInfo(Lists.newArrayList(order));
             pageInfo.setList(Lists.newArrayList(orderVo));
 
             return ServerResponse.createBySuccess(pageInfo);
