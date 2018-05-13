@@ -3,6 +3,7 @@ package com.kay.service.impl;
 import com.google.common.collect.Lists;
 import com.kay.service.IFileService;
 import com.kay.util.FTPUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,10 @@ import java.util.UUID;
  * Created by kay on 2018/3/21.
  */
 @Service("iFileService")
+@Slf4j
 public class FileServiceImpl implements IFileService {
 
-    private Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+    //private Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
     /**
      * 文件上传
@@ -35,7 +37,7 @@ public class FileServiceImpl implements IFileService {
         //上传文件名
         String uploadFileName = UUID.randomUUID().toString() + "." + fileExtensionName;
 
-        logger.info("开始长传文件,上传文件的文件名:{},上传路径:{},新文件名:{}", fileName, path, uploadFileName);
+        log.info("开始长传文件,上传文件的文件名:{},上传路径:{},新文件名:{}", fileName, path, uploadFileName);
 
         //创建文件夹路径
         File fileDir = new File(path);
@@ -56,7 +58,7 @@ public class FileServiceImpl implements IFileService {
             targetFile.delete();
 
         } catch (IOException e) {
-            logger.error("文件上传异常", e);
+            log.error("文件上传异常", e);
         }
 
         return targetFile.getName();
