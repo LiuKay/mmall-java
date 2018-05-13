@@ -15,3 +15,6 @@
 ![](https://github.com/LiuKay/mmall-kay-Java/blob/master/readme-img/mmall%20项目功能接口清单.png)
 
 ps: 项目完整代码请切换分支查看
+
+- v1.0 单服务器版本
+- v2.0 集群环境
