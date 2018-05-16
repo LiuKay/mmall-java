@@ -7,7 +7,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Created by kay on 2018/5/13.
- * 封装Redis操作
+ * 对JedisPool的封装
  */
 public class RedisPool {
 
