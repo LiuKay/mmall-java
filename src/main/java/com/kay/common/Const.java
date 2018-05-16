@@ -25,6 +25,11 @@ public class Const {
         int MANAGE_USER = 1;
     }
 
+    public interface RedisCacheExTime{
+        int REDIS_SESSION_EXTIME = 60 * 30;//session 过期时间
+    }
+
+
     public interface ProductListOrderBy{
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
     }
