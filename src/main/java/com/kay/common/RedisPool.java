@@ -24,7 +24,7 @@ public class RedisPool {
     private static Integer maxIdle=Integer.parseInt(PropertiesUtil.getProperty("redis.maxIdle", "10"));
 
     //最小空闲连接数
-    private static Integer minIdle=Integer.parseInt(PropertiesUtil.getProperty("redis.minTotal", "2"));
+    private static Integer minIdle=Integer.parseInt(PropertiesUtil.getProperty("redis.minIdle", "2"));
 
     //从连接池拿出时是否进行验证，true-验证，取出的redis连接一定可用
     private static Boolean  testOnborrow=Boolean.parseBoolean(PropertiesUtil.getProperty("redis.testOnBorrow", "true"));

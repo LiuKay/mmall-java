@@ -6,7 +6,7 @@ import com.kay.dao.UserMapper;
 import com.kay.pojo.User;
 import com.kay.service.IUserService;
 import com.kay.util.MD5Util;
-import com.kay.util.RedisPoolUtil;
+import com.kay.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,7 +122,7 @@ public class UserServiceImpl implements IUserService {
         //有此用户即对应的问题也回答正确
         if (resultCount > 0) {
             String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
-            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, checkToken,60*60*12);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, checkToken,60*60*12);
             return ServerResponse.createBySuccess(checkToken); //返回token
         }
 
@@ -149,7 +149,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
         //去缓存获取token
-        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或已过期，请重新获取");
         }
