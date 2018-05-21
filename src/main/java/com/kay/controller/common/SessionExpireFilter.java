@@ -23,6 +23,9 @@ public class SessionExpireFilter implements Filter {
 
     /**
      * 判断用户是否登录，登录则重置redis里的session时间
+     * 1.读取cookie中的loginToken
+     * 2.token判空，从redis中获取user信息
+     * 3.user判空，刷新redis中对于key的过期时间
      */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

@@ -2,11 +2,11 @@ package com.kay.service.impl;
 
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
-import com.kay.common.TokenCache;
 import com.kay.dao.UserMapper;
 import com.kay.pojo.User;
 import com.kay.service.IUserService;
 import com.kay.util.MD5Util;
+import com.kay.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -110,7 +110,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-     * 忘记密码验证回答----使用本地缓存
+     * 忘记密码验证回答----token放入redis
      * @param username
      * @param question
      * @param answer
@@ -122,7 +122,7 @@ public class UserServiceImpl implements IUserService {
         //有此用户即对应的问题也回答正确
         if (resultCount > 0) {
             String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username,checkToken); //将token放入本地缓存
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, checkToken,60*60*12);
             return ServerResponse.createBySuccess(checkToken); //返回token
         }
 
@@ -149,7 +149,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
         //去缓存获取token
-        String token = TokenCache.getValue(TokenCache.TOKEN_PREFIX + username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或已过期，请重新获取");
         }
