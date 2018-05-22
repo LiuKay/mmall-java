@@ -42,5 +42,14 @@
         <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
 
+    <!--拦截器配置-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/manage/**"/>
+            <!-- 不拦截登录请求，若需要定制，具体在拦截器中实现-->
+            <!--<mvc:exclude-mapping path="/manage/user/login.do"/>-->
+            <bean class="com.kay.controller.common.interceptors.AuthorityInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

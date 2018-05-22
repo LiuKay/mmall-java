@@ -24,7 +24,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!--todo redis中session过期时间重置filter&ndash;&gt;
+    <!--todo redis中session过期时间重置filter-->
     <filter>
         <filter-name>sessionExpireFilter</filter-name>
         <filter-class>com.kay.controller.common.SessionExpireFilter</filter-class>
@@ -32,17 +32,17 @@
     <filter-mapping>
         <filter-name>sessionExpireFilter</filter-name>
         <url-pattern>*.do</url-pattern>
-    </filter-mapping>-->
+    </filter-mapping>
 
-    <!-- spring session 的过滤器-->
-    <filter>
+    <!-- todo spring session 的过滤器,此处使用原生方式，选址其一即可-->
+    <!--<filter>
         <filter-name>springSessionRepositoryFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>springSessionRepositoryFilter</filter-name>
         <url-pattern>*.do</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
 
 
     <!--监听web容器启动和关闭-->
