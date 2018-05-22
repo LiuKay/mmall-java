@@ -13,9 +13,9 @@ public class RedisPool {
 
     private static JedisPool pool;
 
-    private static String host = PropertiesUtil.getProperty("redis.host");
+    private static String host = PropertiesUtil.getProperty("redis1.host");
 
-    private static int ip = Integer.parseInt(PropertiesUtil.getProperty("redis.ip"));
+    private static int port = Integer.parseInt(PropertiesUtil.getProperty("redis1.port"));
 
     //最大连接数
     private static Integer maxTotal = Integer.parseInt(PropertiesUtil.getProperty("redis.maxTotal", "20"));
@@ -41,7 +41,7 @@ public class RedisPool {
         config.setTestOnBorrow(testOnborrow);
         config.setTestOnReturn(testOnReturn);
 
-        pool = new JedisPool(config, host, ip, 1000 * 2);
+        pool = new JedisPool(config, host, port, 1000 * 2);
     }
 
     static {

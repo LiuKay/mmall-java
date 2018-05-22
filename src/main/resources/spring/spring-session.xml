@@ -15,6 +15,15 @@
         <property name="maxInactiveIntervalInSeconds" value="1800"/>
     </bean>
 
+    <!--TODO 自定义写入的Cookie设置 -->
+    <!--<bean id="defaultCookieSerializer" class="org.springframework.session.web.http.DefaultCookieSerializer">
+        <property name="cookieName" value="SESSION_NAME"/>
+        <property name="cookiePath" value="/"/>
+        <property name="domainName" value=".kaymmall.com"/>
+        <property name="useHttpOnlyCookie" value="true"/>
+        <property name="cookieMaxAge" value="3600*24*365"/>
+    </bean>-->
+
     <!-- 连接池配置-->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxTotal" value="20"/>
