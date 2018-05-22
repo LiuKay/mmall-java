@@ -8,7 +8,10 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.kay" annotation-config="true"/>
+    <!-- 配置只扫描白名单里Controller并关闭默认过滤-->
+    <context:component-scan base-package="com.kay.controller" annotation-config="true" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
