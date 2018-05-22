@@ -9,13 +9,21 @@
      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <context:component-scan base-package="com.kay" annotation-config="true"/>
+    <bean id="redisHttpSessionConfiguration"
+          class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <!-- session 过期时间默认为30分钟-->
+        <property name="maxInactiveIntervalInSeconds" value="1800"/>
+    </bean>
 
-    <!--<context:annotation-config/>-->
-    <aop:aspectj-autoproxy/>
+    <!-- 连接池配置-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="20"/>
+    </bean>
 
-
-    <import resource="spring-dao.xml"/>
-    <import resource="spring-session.xml"/>
-
+    <!-- jedisConnectionFactory-->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="127.0.0.1"/>
+        <property name="port" value="6379"/>
+        <property name="poolConfig" ref="jedisPoolConfig"/>
+    </bean>
 </beans>
