@@ -100,7 +100,8 @@ public class CloseOrderTask {
         RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         boolean getLock = false;
         try {
-            if (getLock = lock.tryLock(2, 5, TimeUnit.SECONDS)) {
+            //todo 若任务执行时间过短，则有可能在等锁的过程中2个服务任务都会获取到锁，这与实际需要的功能不一致，故需要将waitTime设置为0
+            if (getLock = lock.tryLock(0, 5, TimeUnit.SECONDS)) {
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.redis.lock.time","2"));
                 iOrderService.closeOrder(hour);
             } else {
