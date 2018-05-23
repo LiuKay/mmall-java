@@ -215,4 +215,12 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 使用行级锁（悲观锁for update）-->
+  <select id="selectStockByPrimaryKey">
+    SELECT stock
+    FROM mmall_product
+    WHERE id=#{productId}
+    for update
+  </select>
 </mapper>

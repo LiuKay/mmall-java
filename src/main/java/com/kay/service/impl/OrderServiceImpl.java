@@ -30,6 +30,7 @@ import com.kay.vo.ShippingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -665,4 +666,38 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createByErrorMessage("订单不存在");
     }
 
+    /**
+     * 关闭在当前时间hour小时之内未支付订单
+     * @param hour
+     */
+    @Override
+    public void closeOrder(int hour) {
+        //获取当前时间hour之前时间
+        Date closeTime = DateUtils.addHours(new Date(), -hour);
+        String startTime = DateTimeUtil.dateToStr(closeTime);
+        List<Order> orderList = orderMapper.selectOrderByStatusAndStartTime(Const.OrderStatusEnum.NO_PAY.getCode(), startTime);
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+            for (OrderItem orderItem : orderItemList) {
+
+                //todo 使用写独占锁，一定要用主键where条件，防止锁表。同时必须是支持MySQL的Innodb。
+                //获取到对应产品的库存
+                Integer productStock = productMapper.selectStockByPrimaryKey(orderItem.getProductId());
+
+                //对应商品已经删除等情况,不做处理
+                if (productStock == null) {
+                    continue;
+                }
+
+                //库存数量恢复
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(productStock + orderItem.getQuantity());
+                int updateCount = productMapper.updateByPrimaryKeySelective(product);
+            }
+            //更新订单状态，关闭订单
+            orderMapper.closeOrderCloseByOrderId(order.getId());
+            log.info("关闭订单OrderNo:{}",order.getOrderNo());
+        }
+    }
 }
