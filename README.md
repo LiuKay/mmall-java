@@ -1,4 +1,6 @@
 
+线上暂时测试地址：http://116.62.192.142:8081/dist/view/index.html
+账号:liukai 密码：123456
 
 ### mmall 项目整体模块划分
 
