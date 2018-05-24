@@ -14,7 +14,18 @@
 
 ![](https://github.com/LiuKay/mmall-kay-Java/blob/master/readme-img/mmall%20项目功能接口清单.png)
 
-ps: 项目完整代码请切换分支查看
 
-- v1.0 单服务器版本
-- v2.0 集群环境
+### 涉及技术栈
+Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
+
+### 项目分支
+
+- master 发布版本
+
+- v1.0 单服务器 + FTP文件服务器
+
+    主要技术：SSM/Guava/Jackson/Joda/注解
+
+- v2.0 Tomcat集群+Nginx负载均衡+Redis分布式
+    
+    在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
