@@ -133,7 +133,7 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 取消订单
-     * fixme bug:取消订单后需要恢复商品库存
+     * 取消订单后需要恢复商品库存
      * @param userId
      * @param orderNo
      * @return
@@ -151,12 +151,13 @@ public class OrderServiceImpl implements IOrderService {
         updateOrder.setId(order.getId());
         updateOrder.setStatus(Const.OrderStatusEnum.CANCEL.getCode());
 
-        //恢复库存
-        List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, orderNo);
-        this.restoreProductStock(orderItemList);
 
         int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
         if (rowCount>0) {
+            //恢复库存
+            List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, orderNo);
+            this.restoreProductStock(orderItemList);
+
             return ServerResponse.createBySuccess();
         }
 
