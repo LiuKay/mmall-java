@@ -129,18 +129,4 @@ public class FTPUtil {
         this.ftpClient = ftpClient;
     }
 
-
-    public static void main(String[] args) {
-        File file=new File("D:\\MyDoc\\JAVA_IDEA\\mmall\\target\\mmall\\upload\\qr-1527250828877.png");
-
-        List<File> files = new ArrayList<>();
-        files.add(file);
-
-        try {
-            new FTPUtil("59.110.232.39", 21, "ftpuser", "lk123456").uploadFile("img", files);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        }
-    }
 }

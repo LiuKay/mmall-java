@@ -1,5 +1,8 @@
 package fun;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by kay on 2018/3/21.
  */
@@ -27,6 +30,8 @@ public class PrintTest {
     }
 
     public static void main(String[] args) {
-        print("&",0);
+       // print("&",0);
+        List list = new ArrayList();
+
     }
 }
