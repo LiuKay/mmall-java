@@ -34,7 +34,7 @@ public class ShippingController {
         return iShippingService.add(user.getId(), shipping);
     }
 
-    @RequestMapping("delete.do")
+    @RequestMapping("del.do")
     @ResponseBody
     public ServerResponse delete(Integer shippingId, HttpSession session){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
