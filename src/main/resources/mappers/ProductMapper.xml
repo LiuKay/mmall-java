@@ -66,6 +66,14 @@
 
   </select>
 
+  <select id="selectByPrimaryKeyAndOnSale" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    WHERE id=#{id}
+    and status=1
+  </select>
+
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_product
     where id = #{id,jdbcType=INTEGER}

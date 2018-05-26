@@ -111,17 +111,17 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createByErrorMessage("生成订单错误");
         }
 
-        //同一个订单的订单条目，设置订单号
+        //把生成的订单号更新到订单详情中去
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
 
-        //批量插入到order_item
+        //批量插入订单详情
         orderItemMapper.batchInsert(orderItemList);
 
         //减库存
         this.reduceProductStock(orderItemList);
-        //清空购物车
+        //清除已下单的购物车cart对象，也就是之前取出的选中对象
         this.clearCart(cartList);
 
         //返回前端，格式转换 生成 Vo
@@ -133,6 +133,7 @@ public class OrderServiceImpl implements IOrderService {
 
     /**
      * 取消订单
+     * fixme bug:取消订单后需要恢复商品库存
      * @param userId
      * @param orderNo
      * @return
@@ -150,12 +151,33 @@ public class OrderServiceImpl implements IOrderService {
         updateOrder.setId(order.getId());
         updateOrder.setStatus(Const.OrderStatusEnum.CANCEL.getCode());
 
+        //恢复库存
+        List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, orderNo);
+        this.restoreProductStock(orderItemList);
+
         int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
         if (rowCount>0) {
             return ServerResponse.createBySuccess();
         }
 
         return ServerResponse.createByError();
+    }
+
+    /**
+     * 恢复商品库存
+     * @param orderItemList
+     */
+    private void restoreProductStock(List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            //查出在售状态的商品
+            Product updateProduct = productMapper.selectByPrimaryKeyAndOnSale(orderItem.getProductId());
+            if (updateProduct != null) {
+                Integer quantity = orderItem.getQuantity();
+                //恢复库存
+                updateProduct.setStock(quantity + updateProduct.getStock());
+                productMapper.updateByPrimaryKeySelective(updateProduct);
+            }
+        }
     }
 
     /**
@@ -330,8 +352,8 @@ public class OrderServiceImpl implements IOrderService {
         long orderNo = this.generateOrderNo();
         order.setOrderNo(orderNo);
         order.setStatus(Const.OrderStatusEnum.NO_PAY.getCode());
-        order.setPostage(0);
-        order.setPaymentType(Const.PaymentTypeEnum.ONLINE_PAY.getCode());
+        order.setPostage(0); //fixme 扩展点：邮费
+        order.setPaymentType(Const.PaymentTypeEnum.ONLINE_PAY.getCode()); //支付类型
         order.setPayment(payment);
         order.setUserId(userId);
         order.setShippingId(shippingId);
@@ -349,6 +371,7 @@ public class OrderServiceImpl implements IOrderService {
     /**
      * 生成订单号
      * fixme 此处以后要扩展,采用分布式订单号生成策咯
+     * 可以使用Redis 生成自增主键
      * @return
      */
     private long generateOrderNo() {

@@ -45,9 +45,6 @@ public class CartServiceImpl implements ICartService {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
         }
 
-        //fixme 需要判断商品是否在商品表中存在
-
-
         //1.判断购物车是否有该商品
         Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
         if (cart == null) {
@@ -145,7 +142,7 @@ public class CartServiceImpl implements ICartService {
         List<CartProductVo> cartProductVoList = Lists.newArrayList();
         BigDecimal totalPrice = new BigDecimal("0.0");
 
-        //取出该用户所有订单，组装 CartProductVo
+        //取出该用户所有购物车条目Cart(userId,productId)，组装 CartProductVo--也即在购物车中的同一个商品信息
         List<Cart> cartList = cartMapper.selectByUserId(userId);
         if (CollectionUtils.isNotEmpty(cartList)) {
             for (Cart cart : cartList) {
@@ -169,10 +166,10 @@ public class CartServiceImpl implements ICartService {
                     //判断库存是否足够
                     if (product.getStock() >= cart.getQuantity()) {
                         buyLimitCount = cart.getQuantity();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
+                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);  //库存足够
                     }else {
                         buyLimitCount = product.getStock();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);
+                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);  //库存不够购物车中数量，自动调整为库存
                         //检测到库存不足时，修改购物车中数量
                         Cart updateStockCart = new Cart();
                         updateStockCart.setId(cart.getId());
