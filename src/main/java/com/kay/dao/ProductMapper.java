@@ -24,5 +24,5 @@ public interface ProductMapper {
 
     List<Product> selectByNameAndCategoryIds(@Param("productName") String productName,@Param("categoryIdList") List<Integer> categoryIdList);
 
-    Product selectByPrimaryKeyAndOnSale(Integer id);
+    Integer selectStockByPrimaryKey(Integer productId);
 }

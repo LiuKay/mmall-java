@@ -34,6 +34,27 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--todo redis中session过期时间重置filter-->
+    <filter>
+        <filter-name>sessionExpireFilter</filter-name>
+        <filter-class>com.kay.controller.common.SessionExpireFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>sessionExpireFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+
+    <!-- todo spring session 的过滤器,此处使用原生方式，选址其一即可-->
+    <!--<filter>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSessionRepositoryFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>-->
+
+
     <!--监听web容器启动和关闭-->
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
@@ -60,10 +81,14 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>dispatcher</servlet-name>-->
+        <!--<url-pattern>*.do</url-pattern>-->
+    <!--</servlet-mapping>-->
+
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
-        <url-pattern>*.do</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
-
 </web-app>
 

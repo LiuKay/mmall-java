@@ -60,7 +60,7 @@
   </select>
 
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mmall_order
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -229,4 +229,19 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectOrderByStatusAndStartTime" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List"/>
+    FROM mmall_order
+    WHERE status=#{status}
+    and create_time=#{startTime}
+    order by create_time
+  </select>
+
+  <select id="closeOrderCloseByOrderId" parameterType="int">
+    UPDATE mmall_order
+    SET status=0
+    WHERE id=#{id}
+  </select>
 </mapper>

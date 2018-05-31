@@ -33,4 +33,7 @@ public interface IOrderService {
     ServerResponse<PageInfo> getManageSearch(Long orderNo, int pageNum, int pageSize);
 
     ServerResponse<OrderVo> getManageSendGoods(Long orderNo);
+
+    //v2.0 增加定时关闭订单
+    void closeOrder(int hour);
 }

@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class DateTimeUtil {
 
-    private static final String STANDARD_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
+    public static final String STANDARD_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
 
     public static String dateToStr(Date date,String formatStr){
         if (date == null) {

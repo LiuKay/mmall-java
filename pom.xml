@@ -13,7 +13,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-    <org.springframework.version>4.0.0.RELEASE</org.springframework.version>
+    <org.springframework.version>4.0.3.RELEASE</org.springframework.version>
     <org.mybatis.version>3.4.1</org.mybatis.version>
     <org.mybatis.spring.version>1.3.0</org.mybatis.spring.version>
   </properties>
@@ -172,6 +172,12 @@
       <version>2.0.1</version>
     </dependency>
 
+    <!--spring session 单点登录 -->
+    <dependency>
+      <groupId>org.springframework.session</groupId>
+      <artifactId>spring-session-data-redis</artifactId>
+      <version>1.2.0.RELEASE</version>
+    </dependency>
 
 
 
@@ -236,7 +242,29 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
+      <version>2.6.0</version>
+    </dependency>
+
+    <!--redisson依赖-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-avro</artifactId>
       <version>2.9.0</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.16.20</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -270,7 +298,46 @@
       </plugin>
     </plugins>
 
+    <!-- maven 环境隔离-->
+    <resources>
+      <resource>
+        <directory>src/main/resources.${deploy.type}</directory>
+        <excludes>
+          <exclude>*.jsp</exclude>
+        </excludes>
+      </resource>
+
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
   </build>
 
+  <!--环境隔离-->
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <deploy.type>dev</deploy.type>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>beta</id>
+      <properties>
+        <deploy.type>beta</deploy.type>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>prod</id>
+      <properties>
+        <deploy.type>prod</deploy.type>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

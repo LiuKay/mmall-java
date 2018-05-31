@@ -12,6 +12,9 @@ public class Const {
     public static final String USERNAME = "username";
     public static final String EMAIL = "email";
 
+    public static final String TOKEN_PREFIX = "token_";
+
+
     public interface Cart{
         int CHECKED = 1;   //已经勾选
         int UN_CHECKED = 0;  //未勾选
@@ -24,6 +27,11 @@ public class Const {
         int NORMAL_USER = 0;
         int MANAGE_USER = 1;
     }
+
+    public interface RedisCacheExTime{
+        int REDIS_SESSION_EXTIME = 60 * 30;//session 过期时间
+    }
+
 
     public interface ProductListOrderBy{
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
@@ -144,5 +152,8 @@ public class Const {
 
     }
 
+    public interface REDIS_LOCK{
+        String CLOSE_ORDER_TASK_LOCK = "CLOSE_ORDER_TASK_LOCK";
+    }
 
 }

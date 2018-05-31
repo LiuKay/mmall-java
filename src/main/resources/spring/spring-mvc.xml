@@ -8,7 +8,10 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.kay" annotation-config="true"/>
+    <!-- 配置只扫描白名单里Controller并关闭默认过滤-->
+    <context:component-scan base-package="com.kay.controller" annotation-config="true" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -39,5 +42,14 @@
         <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
 
+    <!--拦截器配置-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/manage/**"/>
+            <!-- 不拦截登录请求，若需要定制，具体在拦截器中实现-->
+            <!--<mvc:exclude-mapping path="/manage/user/login.do"/>-->
+            <bean class="com.kay.controller.common.interceptors.AuthorityInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>
