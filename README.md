@@ -26,7 +26,7 @@ Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
 
 ### 项目分支
 
-- master 发布版本
+- master 发布版本 : 目前为v2.0
 
 - v1.0 单服务器 + FTP文件服务器
 
