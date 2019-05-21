@@ -1,10 +1,8 @@
 package com.kay.task;
 
 import com.kay.common.Const;
-import com.kay.common.RedisShardedPool;
 import com.kay.common.RedissonManager;
 import com.kay.service.IOrderService;
-import com.kay.util.DateTimeUtil;
 import com.kay.util.PropertiesUtil;
 import com.kay.util.RedisShardedPoolUtil;
 import lombok.extern.slf4j.Slf4j;
