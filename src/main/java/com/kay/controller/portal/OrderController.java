@@ -16,8 +16,6 @@ import com.kay.util.RedisShardedPoolUtil;
 import com.kay.vo.OrderVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -37,9 +34,6 @@ import java.util.Map;
 @Slf4j
 public class OrderController {
 
-
-   // private static final Logger log = LoggerFactory.getLogger(OrderController.class);
-    
     @Autowired
     private IOrderService iOrderService;
 
@@ -50,7 +44,6 @@ public class OrderController {
     @RequestMapping("create.do")
     @ResponseBody
     public ServerResponse create(HttpServletRequest request, Integer shippingId) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
