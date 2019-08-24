@@ -6,8 +6,6 @@ import org.redisson.Redisson;
 import org.redisson.config.Config;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 /**
  * Created by kay on 2018/5/23.
  */
@@ -24,7 +22,7 @@ public class RedissonManager {
     private static String host2 = PropertiesUtil.getProperty("redis2.host");
     private static int port2 = Integer.parseInt(PropertiesUtil.getProperty("redis2.port"));
 
-    @PostConstruct
+//    @PostConstruct
     private void init() {
         try {
             config.useSingleServer().setAddress(new StringBuilder().append(host1).append(":").append("port1").toString());

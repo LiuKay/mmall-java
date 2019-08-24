@@ -9,10 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,7 +37,7 @@ public class CloseOrderTask {
         log.info("定时任务结束");
     }
 
-    @PreDestroy
+//    @PreDestroy
     public void delCloseLock(){
         RedisShardedPoolUtil.del(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         log.info("Tomcat shut down 释放锁 {}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
@@ -92,7 +90,7 @@ public class CloseOrderTask {
     }
 
 
-    @Scheduled(cron = "0/10 * * * * ? ")
+//    @Scheduled(cron = "0/10 * * * * ? ")
     public void closeOrderTaskV4() {
         log.info("定时任务启动");
         RLock lock = redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);

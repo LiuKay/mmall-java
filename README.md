@@ -33,3 +33,7 @@ Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
 - v2.0 Tomcat集群+Nginx负载均衡+Redis分布式
     
     在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
+    
+- v3.0_springboot
+
+   1. 初步切换springboot, 忽略 redis 集群配置
