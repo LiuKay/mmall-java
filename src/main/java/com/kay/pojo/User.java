@@ -1,5 +1,6 @@
 package com.kay.pojo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "用户Model")
 public class User implements Serializable{
     private Integer id;
 

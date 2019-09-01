@@ -8,12 +8,10 @@ import com.kay.service.IUserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +20,8 @@ import javax.servlet.http.HttpSession;
 /**
  * Created by kay on 2018/3/19.
  */
-@Controller
-@RequestMapping("/user/")
+@Api(value = "用户相关接口")
+@RestController("/user/")
 public class UserController {
 
     @Autowired
@@ -36,8 +34,12 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
-    @ResponseBody
+    @ApiOperation(value = "登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username",value = "用户名"),
+            @ApiImplicitParam(name = "password",value = "密码")
+    })
+    @PostMapping("login.do")
     public ServerResponse<User> login(String username, String password, HttpSession session,HttpServletResponse httpServletResponse){
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
@@ -53,8 +55,8 @@ public class UserController {
     /**
      * 登出
      */
-    @RequestMapping(value = "logout.do",method = RequestMethod.POST)
-    @ResponseBody
+    @ApiOperation(value = "注销")
+    @PostMapping("logout.do")
     public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response){
         String loginToken = CookieUtil.readLoginToken(request);
         CookieUtil.delLoginToken(request, response);
@@ -67,8 +69,8 @@ public class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "register.do",method = RequestMethod.POST)
-    @ResponseBody
+    @ApiOperation(value = "注册")
+    @PostMapping("register.do")
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
     }
