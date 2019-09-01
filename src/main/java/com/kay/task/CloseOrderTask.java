@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * 注意分布式环境下，如何防止死锁问题
  */
 
-@Component
+//@Component
 @Slf4j
 public class CloseOrderTask {
 

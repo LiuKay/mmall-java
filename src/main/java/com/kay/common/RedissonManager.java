@@ -4,12 +4,11 @@ import com.kay.util.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.config.Config;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by kay on 2018/5/23.
  */
-@Component
+//@Component
 @Slf4j
 public class RedissonManager {
 
