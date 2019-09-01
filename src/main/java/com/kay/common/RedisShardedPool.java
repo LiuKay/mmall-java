@@ -48,8 +48,8 @@ public class RedisShardedPool {
         config.setTestOnBorrow(testOnborrow);
         config.setTestOnReturn(testOnReturn);
 
-        JedisShardInfo info1 = new JedisShardInfo(host1, port1,1000*2,2);  //超时时间默认是2s
-        JedisShardInfo info2 = new JedisShardInfo(host2, port2,1000*2,1);
+        JedisShardInfo info1 = new JedisShardInfo(host1, port1);  //超时时间默认是2s
+        JedisShardInfo info2 = new JedisShardInfo(host2, port2);
 
         List<JedisShardInfo> jedisShardInfoList = new ArrayList<>(2);
         jedisShardInfoList.add(info1);
