@@ -9,6 +9,8 @@
    6. 修改所有接口为 RESTfull 风格, 替换异常处理
 
 
+Swagger2 UI 地址：http://localhost:8081/swagger-ui.html
+
 前端项目地址：https://github.com/LiuKay/mmall-kay-js
 
 ### mmall 项目整体模块划分
