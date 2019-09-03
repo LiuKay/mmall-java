@@ -1,14 +1,16 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/mmall?characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/mmall?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password: lk123456
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   redis:
     host: localhost
     port: 6379
-#    dbcp2:
-#      initial-size:
+
+  session:
+    store-type: redis
 
 server:
   port: 8081

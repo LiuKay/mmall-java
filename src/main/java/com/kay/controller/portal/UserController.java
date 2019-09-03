@@ -8,19 +8,15 @@ import com.kay.service.IUserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
-import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by kay on 2018/3/19.
  */
-@Api(value = "用户相关接口")
 @RestController("/user/")
 public class UserController {
 
@@ -31,45 +27,36 @@ public class UserController {
      *用户登录
      * @param username
      * @param password
-     * @param session
      * @return
      */
-    @ApiOperation(value = "登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username",value = "用户名"),
-            @ApiImplicitParam(name = "password",value = "密码")
-    })
     @PostMapping("login.do")
-    public ServerResponse<User> login(String username, String password, HttpSession session,HttpServletResponse httpServletResponse){
+    public ServerResponse<User> login(String username, String password) {
         ServerResponse<User> response = iUserService.login(username, password);
-        if (response.isSuccess()) {
-//            session.setAttribute(Const.CURRENT_USER,response.getData());
+//        if (response.isSuccess()) {
             //写入cookie
-            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
+//            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
             //将登录用户信息存入redis，有效时间为30分钟
-            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2string(response.getData()), Const.RedisCacheExTime.REDIS_SESSION_EXTIME);
-        }
+//            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2string(response.getData()), Const.RedisCacheExTime.REDIS_SESSION_EXTIME);
+//        }
         return response;
     }
 
-    /**
-     * 登出
-     */
-    @ApiOperation(value = "注销")
-    @PostMapping("logout.do")
-    public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response){
-        String loginToken = CookieUtil.readLoginToken(request);
-        CookieUtil.delLoginToken(request, response);
-        RedisShardedPoolUtil.del(loginToken);
-        return ServerResponse.createBySuccess();
-    }
+//    /**
+//     * 登出
+//     */
+//    @PostMapping("logout.do")
+//    public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response){
+////        String loginToken = CookieUtil.readLoginToken(request);
+////        CookieUtil.delLoginToken(request, response);
+////        RedisShardedPoolUtil.del(loginToken);
+//        return ServerResponse.createBySuccess();
+//    }
 
     /**
      * 注册
      * @param user
      * @return
      */
-    @ApiOperation(value = "注册")
     @PostMapping("register.do")
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
