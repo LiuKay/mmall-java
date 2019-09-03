@@ -54,7 +54,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
-                .title("Spring MVC 测试使用 Swagger2 构建Api")
+                .title("Mmall 测试使用 Swagger2 构建Api")
                 //创建人
                 .contact(new Contact("name", "url", "email"))
                 //版本号

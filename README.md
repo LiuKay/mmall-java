@@ -1,8 +1,15 @@
 
-前端项目地址：https://github.com/LiuKay/mmall-kay-js
+#### v3.0_springboot 开发计划
 
-注意：
-项目中支付宝二维码为沙箱环境，不会产生真实交易，部分图片缺失不影响主体功能
+   1. 集成 Swagger2, 切换 SpringBoot
+   2. SpringBoot 集成 Mybaits
+   3. 集成 Spring Session
+   4. 集成 Spring Security
+   5. 配置 Spring Data Redis 或 使用 Spring Cache 管理缓存
+   6. 修改所有接口为 RESTfull 风格, 替换异常处理
+
+
+前端项目地址：https://github.com/LiuKay/mmall-kay-js
 
 ### mmall 项目整体模块划分
 
@@ -34,6 +41,4 @@ Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
     
     在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
     
-- v3.0_springboot
 
-   1. 初步切换springboot, 忽略 redis 集群配置
