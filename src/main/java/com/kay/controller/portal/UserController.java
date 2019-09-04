@@ -31,14 +31,7 @@ public class UserController {
      */
     @PostMapping("login.do")
     public ServerResponse<User> login(String username, String password) {
-        ServerResponse<User> response = iUserService.login(username, password);
-//        if (response.isSuccess()) {
-            //写入cookie
-//            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
-            //将登录用户信息存入redis，有效时间为30分钟
-//            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2string(response.getData()), Const.RedisCacheExTime.REDIS_SESSION_EXTIME);
-//        }
-        return response;
+        return iUserService.login(username, password);
     }
 
 //    /**
@@ -68,8 +61,7 @@ public class UserController {
      * @param type
      * @return
      */
-    @RequestMapping(value = "check_valid.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("check_valid.do")
     public ServerResponse<String> checkUserName(String str,String type){
         return iUserService.checkValid(str,type);
     }
@@ -79,8 +71,7 @@ public class UserController {
      * @param username
      * @return
      */
-    @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("forget_get_question.do")
     public ServerResponse<String> forgetGetQuestion(String username) {
          return iUserService.forgetGetQuestion(username);
     }
@@ -92,8 +83,7 @@ public class UserController {
      * @param answer
      * @return
      */
-    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("forget_check_answer.do")
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
         return iUserService.checkQuestionAnswer(username, question, answer);
     }
@@ -105,8 +95,7 @@ public class UserController {
      * @param forgetToken
      * @return
      */
-    @RequestMapping(value = "forget_reset_password.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("forget_reset_password.do")
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
     }
@@ -118,11 +107,8 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping("reset_password.do")
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -141,13 +127,8 @@ public class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "update_information.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping(value = "update_information.do")
     public ServerResponse updateInformation(HttpServletRequest request, User user) {
-//        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
-//        if (currentUser == null) {
-//            return ServerResponse.createByErrorMessage("用户未登录");
-//        }
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -172,11 +153,8 @@ public class UserController {
      * 获取当前用户信息
      * @return
      */
-    @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping(value = "get_user_info.do")
     public ServerResponse<User> getUserInfo(HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
@@ -193,10 +171,8 @@ public class UserController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping(value = "get_information.do")
     public ServerResponse<User> get_information(HttpServletRequest request){
-//        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");

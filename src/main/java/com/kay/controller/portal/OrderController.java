@@ -14,23 +14,20 @@ import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
 import com.kay.vo.OrderVo;
+import java.util.Iterator;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/3/27.
  */
-@Controller
-@RequestMapping("/order/")
+@RestController("/order/")
 @Slf4j
 public class OrderController {
 
@@ -41,8 +38,7 @@ public class OrderController {
     /**
      * 创建订单
      */
-    @RequestMapping("create.do")
-    @ResponseBody
+    @GetMapping("create.do")
     public ServerResponse create(HttpServletRequest request, Integer shippingId) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -59,10 +55,8 @@ public class OrderController {
     /**
      * 取消订单
      */
-    @RequestMapping("cancel.do")
-    @ResponseBody
+    @GetMapping("cancel.do")
     public ServerResponse cancel(Long orderNo,HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -75,10 +69,8 @@ public class OrderController {
     }
 
     //获取购物车中已经选中的商品详情
-    @RequestMapping("get_order_cart_product.do")
-    @ResponseBody
+    @GetMapping("get_order_cart_product.do")
     public ServerResponse getOrderCartProduct(HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -90,10 +82,8 @@ public class OrderController {
         return iOrderService.getOrderCartProduct(user.getId());
     }
 
-    @RequestMapping("detail.do")
-    @ResponseBody
+    @GetMapping("detail.do")
     public ServerResponse<OrderVo> getOrderDetail(HttpServletRequest request, Long orderNo) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -105,12 +95,10 @@ public class OrderController {
         return iOrderService.getOrderDetail(user.getId(),orderNo);
     }
 
-    @RequestMapping("list.do")
-    @ResponseBody
+    @GetMapping("list.do")
     public ServerResponse<PageInfo> getOrderList(HttpServletRequest request,
-                                                 @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                                 @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                                  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -122,15 +110,11 @@ public class OrderController {
         return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
     }
 
-
-
     /**
      * 支付
      */
-    @RequestMapping("pay.do")
-    @ResponseBody
+    @GetMapping("pay.do")
     public ServerResponse pay(Long orderNo,HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -145,18 +129,12 @@ public class OrderController {
         return iOrderService.pay(user.getId(), orderNo, path);
     }
 
-
-
-
-
-
     /**
      * 支付宝回调处理接口
      * @param request
      * @return
      */
-    @RequestMapping("alipay_callback.do")
-    @ResponseBody
+    @GetMapping("alipay_callback.do")
     public Object alipayCallback(HttpServletRequest request){
         Map<String, String> params = Maps.newHashMap();
 
@@ -196,10 +174,8 @@ public class OrderController {
         return Const.AlipayCallback.RESPONSE_FAILED;
     }
 
-    @RequestMapping("query_order_pay_status.do")
-    @ResponseBody
+    @GetMapping("query_order_pay_status.do")
     public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo,HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
