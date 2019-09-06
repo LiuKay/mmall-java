@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by kay on 2018/3/22.
  * 商品前台
  */
-@RestController("/product")
+@RestController
+@RequestMapping("/product")
 public class ProductController {
 
     @Autowired
@@ -24,7 +26,7 @@ public class ProductController {
     /**
      * 产品详情
      */
-    @GetMapping("detail.do")
+    @GetMapping("/detail")
     public ServerResponse<ProductDetailVo> getProductList(Integer productId){
         return iProductService.getProductList(productId);
     }
@@ -40,7 +42,7 @@ public class ProductController {
     /**
      * 产品搜索及动态排序List
      */
-    @GetMapping("list.do")
+    @GetMapping("/list")
     public ServerResponse<PageInfo> getProductList(@RequestParam(value = "categoryId",required = false)Integer categoryId,
                                                    @RequestParam(value = "keyword",required = false)String keyword,
                                                    @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,

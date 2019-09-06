@@ -12,21 +12,22 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/3/26.
  */
-@RestController("/shipping/")
+@RestController
+@RequestMapping("/shipping")
 public class ShippingController {
 
     @Autowired
     private IShippingService iShippingService;
 
-    @GetMapping("add.do")
+    @GetMapping("/add")
     public ServerResponse add(Shipping shipping, HttpServletRequest request){
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -38,9 +39,8 @@ public class ShippingController {
         return iShippingService.add(user.getId(), shipping);
     }
 
-    @GetMapping("del.do")
+    @GetMapping("/del")
     public ServerResponse delete(Integer shippingId, HttpServletRequest request){
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -52,9 +52,8 @@ public class ShippingController {
         return iShippingService.delete(user.getId(), shippingId);
     }
 
-    @GetMapping("select.do")
+    @GetMapping("/select")
     public ServerResponse select(Integer shippingId, HttpServletRequest request){
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -66,9 +65,8 @@ public class ShippingController {
         return iShippingService.select(user.getId(), shippingId);
     }
 
-    @GetMapping("update.do")
+    @GetMapping("/update")
     public ServerResponse update(Shipping shipping, HttpServletRequest request){
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -80,11 +78,10 @@ public class ShippingController {
         return iShippingService.update(user.getId(), shipping);
     }
 
-    @GetMapping("list.do")
+    @GetMapping("/list")
     public ServerResponse list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                HttpServletRequest request){
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
