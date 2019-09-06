@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by kay on 2018/3/19.
  */
-@RestController("/user/")
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -29,7 +30,7 @@ public class UserController {
      * @param password
      * @return
      */
-    @PostMapping("login.do")
+    @PostMapping("/login")
     public ServerResponse<User> login(String username, String password) {
         return iUserService.login(username, password);
     }
@@ -37,7 +38,7 @@ public class UserController {
 //    /**
 //     * 登出
 //     */
-//    @PostMapping("logout.do")
+//    @PostMapping("/logout")
 //    public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response){
 ////        String loginToken = CookieUtil.readLoginToken(request);
 ////        CookieUtil.delLoginToken(request, response);
@@ -50,7 +51,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @PostMapping("register.do")
+    @PostMapping("/register")
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
     }
@@ -61,7 +62,7 @@ public class UserController {
      * @param type
      * @return
      */
-    @PostMapping("check_valid.do")
+    @PostMapping("/check_valid")
     public ServerResponse<String> checkUserName(String str,String type){
         return iUserService.checkValid(str,type);
     }
@@ -71,7 +72,7 @@ public class UserController {
      * @param username
      * @return
      */
-    @PostMapping("forget_get_question.do")
+    @PostMapping("/forget_get_question")
     public ServerResponse<String> forgetGetQuestion(String username) {
          return iUserService.forgetGetQuestion(username);
     }
@@ -83,7 +84,7 @@ public class UserController {
      * @param answer
      * @return
      */
-    @PostMapping("forget_check_answer.do")
+    @PostMapping("/forget_check_answer")
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
         return iUserService.checkQuestionAnswer(username, question, answer);
     }
@@ -95,7 +96,7 @@ public class UserController {
      * @param forgetToken
      * @return
      */
-    @PostMapping("forget_reset_password.do")
+    @PostMapping("/forget_reset_password")
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
     }
@@ -107,7 +108,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @PostMapping("reset_password.do")
+    @PostMapping("/reset_password")
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -127,7 +128,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @PostMapping(value = "update_information.do")
+    @PostMapping("/update_information")
     public ServerResponse updateInformation(HttpServletRequest request, User user) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -153,7 +154,7 @@ public class UserController {
      * 获取当前用户信息
      * @return
      */
-    @PostMapping(value = "get_user_info.do")
+    @PostMapping(value = "/get_user_info")
     public ServerResponse<User> getUserInfo(HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -171,7 +172,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @PostMapping(value = "get_information.do")
+    @PostMapping(value = "/get_information")
     public ServerResponse<User> get_information(HttpServletRequest request){
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {

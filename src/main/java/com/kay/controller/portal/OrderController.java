@@ -21,13 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/3/27.
  */
-@RestController("/order/")
+@RestController
+@RequestMapping("/order")
 @Slf4j
 public class OrderController {
 
@@ -38,7 +40,7 @@ public class OrderController {
     /**
      * 创建订单
      */
-    @GetMapping("create.do")
+    @GetMapping("/create")
     public ServerResponse create(HttpServletRequest request, Integer shippingId) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -55,7 +57,7 @@ public class OrderController {
     /**
      * 取消订单
      */
-    @GetMapping("cancel.do")
+    @GetMapping("/cancel")
     public ServerResponse cancel(Long orderNo,HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -69,7 +71,7 @@ public class OrderController {
     }
 
     //获取购物车中已经选中的商品详情
-    @GetMapping("get_order_cart_product.do")
+    @GetMapping("/get_order_cart_product")
     public ServerResponse getOrderCartProduct(HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -82,7 +84,7 @@ public class OrderController {
         return iOrderService.getOrderCartProduct(user.getId());
     }
 
-    @GetMapping("detail.do")
+    @GetMapping("/detail")
     public ServerResponse<OrderVo> getOrderDetail(HttpServletRequest request, Long orderNo) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -95,7 +97,7 @@ public class OrderController {
         return iOrderService.getOrderDetail(user.getId(),orderNo);
     }
 
-    @GetMapping("list.do")
+    @GetMapping("/list")
     public ServerResponse<PageInfo> getOrderList(HttpServletRequest request,
                                                  @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                                  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
@@ -113,7 +115,7 @@ public class OrderController {
     /**
      * 支付
      */
-    @GetMapping("pay.do")
+    @GetMapping("/pay")
     public ServerResponse pay(Long orderNo,HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -134,7 +136,7 @@ public class OrderController {
      * @param request
      * @return
      */
-    @GetMapping("alipay_callback.do")
+    @GetMapping("/alipay_callback")
     public Object alipayCallback(HttpServletRequest request){
         Map<String, String> params = Maps.newHashMap();
 
@@ -174,7 +176,7 @@ public class OrderController {
         return Const.AlipayCallback.RESPONSE_FAILED;
     }
 
-    @GetMapping("query_order_pay_status.do")
+    @GetMapping("/query_order_pay_status")
     public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo,HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
