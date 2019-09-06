@@ -5,18 +5,18 @@ import com.kay.pojo.Product;
 import com.kay.service.IFileService;
 import com.kay.service.IProductService;
 import com.kay.util.PropertiesUtil;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by kay on 2018/3/20.
@@ -35,8 +35,7 @@ public class ProductManageController {
     /**
      * 分页list
      */
-    @RequestMapping("list.do")
-    @ResponseBody
+    @GetMapping("/list")
     public ServerResponse list(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
         return iProductService.getManageProductList(pageNum, pageSize);
     }
@@ -44,8 +43,7 @@ public class ProductManageController {
     /**
      * 条件查询-分页查询
      */
-    @RequestMapping("search.do")
-    @ResponseBody
+    @GetMapping("/search")
     public ServerResponse searchList(String productName,Integer productId,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
         return iProductService.getManageSearchList(productId, productName,pageNum,pageSize);
     }
@@ -53,8 +51,7 @@ public class ProductManageController {
     /**
      * 更新或添加产品
      */
-    @RequestMapping("save.do")
-    @ResponseBody
+    @GetMapping("/save")
     public ServerResponse saveProduct(Product product) {
         return iProductService.saveOrUpdateProduct(product);
     }
@@ -62,8 +59,7 @@ public class ProductManageController {
     /**
      * 修改产品状态
      */
-    @RequestMapping("set_sale_status.do")
-    @ResponseBody
+    @GetMapping("s/et_sale_status")
     public ServerResponse setSaleStatus(Integer productId,Integer status) {
         return iProductService.setSaleStatus(productId,status);
     }
@@ -72,11 +68,9 @@ public class ProductManageController {
     /**
      * 商品详情
      * @param productId
-     * @param request
      * @return
      */
-    @RequestMapping("detail.do")
-    @ResponseBody
+    @GetMapping("/detail")
     public ServerResponse getProductDetail(Integer productId) {
         return iProductService.getManageProductDetail(productId);
     }
@@ -87,9 +81,9 @@ public class ProductManageController {
      * @param request
      * @return
      */
-    @RequestMapping("upload.do")
-    @ResponseBody
-    public ServerResponse uploadFile(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request) {
+    @GetMapping("/upload")
+    public ServerResponse uploadFile(@RequestParam(value = "upload_file", required = false) MultipartFile file,
+                                     HttpServletRequest request) {
         String path = request.getSession().getServletContext().getRealPath("upload");
         String uploadFilePath = iFileService.upload(file, path);
         String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + uploadFilePath;
@@ -107,8 +101,7 @@ public class ProductManageController {
      *            "file_path": "[real file path]"
      *        }
      */
-    @RequestMapping("richtext_img_upload.do")
-    @ResponseBody
+    @GetMapping("/richtext_img_upload")
     public Map richTextUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap();
         String path = request.getSession().getServletContext().getRealPath("upload");
