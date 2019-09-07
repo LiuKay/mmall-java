@@ -1,6 +1,7 @@
 package com.kay.dao;
 
 import com.kay.pojo.User;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
@@ -32,4 +33,5 @@ public interface UserMapper {
 
     int checkEmailByUserId(@Param("userId")Integer userId,@Param("email") String email);
 
+    User loadUserByUsername(String username);
 }
