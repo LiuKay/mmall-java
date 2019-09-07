@@ -1,10 +1,15 @@
 package com.kay.config;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * @author kay
@@ -12,25 +17,31 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @Configuration
 @EnableWebSecurity
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 10)   // 在 basic 认证之前执行，将 basic 认证作为 fallback 兜底
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**", "/swagger-resources/configuration/ui", "/swagge‌​r-ui.html").permitAll()
-                .anyRequest().authenticated()
+        http.formLogin()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated();
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
-        web.ignoring().antMatchers("/api/v1/**");
+        //TODO: 开启debug 模式方便调试
+        web.debug(true);
+    }
+
+    @Override
+    protected UserDetailsService userDetailsService() {
+        return new MyUserDetailService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new MmallPasswordEncoder();
     }
 }
