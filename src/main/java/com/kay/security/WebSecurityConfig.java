@@ -1,5 +1,6 @@
-package com.kay.config;
+package com.kay.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +21,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 10)   // 在 basic 认证之前执行，将 basic 认证作为 fallback 兜底
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private LoginSuccessHandler loginSuccessHandler;
+
+    @Autowired
+    private LoginFailedHandler loginFailedHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
+                .loginProcessingUrl("/login")
+                .successHandler(loginSuccessHandler)
+                .failureHandler(loginFailedHandler)
                 .and()
                 .authorizeRequests()
                 .anyRequest()

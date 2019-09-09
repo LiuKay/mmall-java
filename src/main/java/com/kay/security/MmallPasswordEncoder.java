@@ -1,4 +1,4 @@
-package com.kay.config;
+package com.kay.security;
 
 import com.kay.util.MD5Util;
 
