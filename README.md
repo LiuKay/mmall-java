@@ -1,8 +1,7 @@
 
-前端项目地址：https://github.com/LiuKay/mmall-kay-js
+仅作为学习。
 
-注意：
-项目中支付宝二维码为沙箱环境，不会产生真实交易，部分图片缺失不影响主体功能
+前端项目地址：https://github.com/LiuKay/mmall-kay-js
 
 ### mmall 项目整体模块划分
 
@@ -34,7 +33,3 @@ Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
     
     在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
     
- ### 开发计划
- 
- 1. 引入 Swagger 管理API
- 2. 切换为SpringBoot
