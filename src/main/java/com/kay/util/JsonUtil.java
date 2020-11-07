@@ -1,17 +1,13 @@
 package com.kay.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kay.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.type.JavaType;
-import org.codehaus.jackson.type.TypeReference;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,19 +25,19 @@ public class JsonUtil {
      */
     static {
         //序列化时包括所有字段
-        objectMapper.setSerializationInclusion(JsonSerialize.Inclusion.ALWAYS);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
 
         //取消默认转换日期为时间戳的设置
-        objectMapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,false);
+//        objectMapper.configure(JsonParser.Feature.WRITE_DATES_AS_TIMESTAMPS,false);
 
         //格式化时间日期
-        objectMapper.setDateFormat(new SimpleDateFormat(DateTimeUtil.STANDARD_FORMAT_STR));
+//        objectMapper.setDateFormat(new SimpleDateFormat(DateTimeUtil.STANDARD_FORMAT_STR));
 
         //忽略空bean转json的报错，默认情况下 empty bean 会报错
-        objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+//        objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
 
         //忽略在json中存在属性却在bean无对应属性转换时报错
-        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public static <T> String  obj2string(T obj){

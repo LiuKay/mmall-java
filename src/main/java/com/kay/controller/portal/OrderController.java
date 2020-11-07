@@ -2,7 +2,7 @@ package com.kay.controller.portal;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
-import com.alipay.demo.trade.config.Configs;
+//import com.alipay.demo.trade.config.Configs;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
@@ -159,14 +159,14 @@ public class OrderController {
         //todo 非常重要：根据官方文档需要移除 sign ,sign_type 两个参数,但支付宝提供的源码里只移除了sign,故需要我们自己移除 sign_type，否则付款成功却验签会失败
         params.remove("sign_type");
 
-        try {
-            boolean alipayRSACheckV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(), "utf-8", Configs.getSignType());
-            if(!alipayRSACheckV2){
-                return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求将报警找网警");
-            }
-        } catch (AlipayApiException e) {
-            log.error("支付宝验证回调异常",e);
-        }
+//        try {
+////            boolean alipayRSACheckV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(), "utf-8", Configs.getSignType());
+////            if(!alipayRSACheckV2){
+////                return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求将报警找网警");
+////            }
+//        } catch (AlipayApiException e) {
+//            log.error("支付宝验证回调异常",e);
+//        }
 
         //验证业务数据
         ServerResponse response = iOrderService.alipayCallback(params);

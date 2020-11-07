@@ -1,10 +1,13 @@
 package com.kay.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,5 +28,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("登录成功");
         HttpSession session = httpServletRequest.getSession(false);
         Object details = authentication.getDetails();
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writer().writeValueAsString(details);
+        PrintWriter writer = httpServletResponse.getWriter();
+        writer.write(json);
+        writer.flush();
+        writer.close();
     }
 }
