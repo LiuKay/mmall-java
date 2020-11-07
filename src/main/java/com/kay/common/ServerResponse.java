@@ -1,14 +1,15 @@
 package com.kay.common;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Created by kay on 2018/3/19.
  * 服务端响应对象
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 //只返回不为空的字段,即value为null,也不返回key
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class ServerResponse<T> {
 
     private int status;
