@@ -3,6 +3,7 @@ package com.kay.common;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Created by kay on 2018/3/19.
@@ -81,12 +82,16 @@ public class ServerResponse<T> {
     }
 
     //返回失败码和自定义提示消息
-    public static <T> ServerResponse<T> createByErrorMessage(String errorMessage){
-        return new ServerResponse<T>(ResponseCode.ERROR.getCode(),errorMessage);
+    public static <T> ServerResponse<T> createByErrorMessage(String errorMessage) {
+        return new ServerResponse<T>(ResponseCode.ERROR.getCode(), errorMessage);
     }
 
     //返回其他自定义失败码和提示消息
-    public static <T> ServerResponse<T> createByErrorCodeMessage(int status, String errorMessage){
-        return new ServerResponse<T>(status,errorMessage);
+    public static <T> ServerResponse<T> createByErrorCodeMessage(int status, String errorMessage) {
+        return new ServerResponse<T>(status, errorMessage);
+    }
+
+    public static <T> ServerResponse<T> createByError(Throwable throwable) {
+        return new ServerResponse<T>(ResponseCode.ERROR.getCode(), ExceptionUtils.getStackTrace(throwable));
     }
 }

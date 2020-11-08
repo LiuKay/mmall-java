@@ -207,4 +207,11 @@
     WHERE email=#{email}
     and id!=#{userId}
   </select>
+
+  <select id="loadUserByPhone" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_user
+    where phone = #{phone,jdbcType=VARCHAR}
+  </select>
 </mapper>
