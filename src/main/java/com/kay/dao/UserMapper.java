@@ -25,13 +25,15 @@ public interface UserMapper {
 
     String selectForgetQuestion(String username);
 
-    int selectQuestionAnswer(@Param("username") String username,@Param("question") String question,@Param("answer") String answer);
+    int selectQuestionAnswer(@Param("username") String username, @Param("question") String question, @Param("answer") String answer);
 
-    int updatePasswordByUsername(@Param("username")String username,@Param("passwordNew")String passwordNew);
+    int updatePasswordByUsername(@Param("username") String username, @Param("passwordNew") String passwordNew);
 
-    int selectOldPassword(@Param("userId")Integer userId, @Param("passwordOld")String passwordOld);
+    int selectOldPassword(@Param("userId") Integer userId, @Param("passwordOld") String passwordOld);
 
-    int checkEmailByUserId(@Param("userId")Integer userId,@Param("email") String email);
+    int checkEmailByUserId(@Param("userId") Integer userId, @Param("email") String email);
 
     User loadUserByUsername(String username);
+
+    User loadUserByPhone(String phone);
 }
