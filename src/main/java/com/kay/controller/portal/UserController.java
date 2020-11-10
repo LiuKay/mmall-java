@@ -8,11 +8,12 @@ import com.kay.service.IUserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/3/19.
@@ -23,28 +24,6 @@ public class UserController {
 
     @Autowired
     private IUserService iUserService;
-
-    /**
-     *用户登录
-     * @param username
-     * @param password
-     * @return
-     */
-    @PostMapping("/login")
-    public ServerResponse<User> login(String username, String password) {
-        return iUserService.login(username, password);
-    }
-
-//    /**
-//     * 登出
-//     */
-//    @PostMapping("/logout")
-//    public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response){
-////        String loginToken = CookieUtil.readLoginToken(request);
-////        CookieUtil.delLoginToken(request, response);
-////        RedisShardedPoolUtil.del(loginToken);
-//        return ServerResponse.createBySuccess();
-//    }
 
     /**
      * 注册
