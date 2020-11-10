@@ -1,29 +1,23 @@
 package com.kay.controller.portal;
 
 import com.kay.common.Const;
-import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.User;
 import com.kay.service.IUserService;
-import com.kay.util.CookieUtil;
-import com.kay.util.JsonUtil;
-import com.kay.util.RedisShardedPoolUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/5/21.
  * Spring Session Test
  */
-@Controller
+@RestController
 @RequestMapping("/user/springsessionTest")
 public class UserSpringSessionController {
 
@@ -33,7 +27,7 @@ public class UserSpringSessionController {
     /**
      *用户登录
      */
-    @RequestMapping(value = "login.do",method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session,HttpServletResponse httpServletResponse){
 
@@ -54,7 +48,7 @@ public class UserSpringSessionController {
     /**
      * 登出
      */
-    @RequestMapping(value = "logout.do",method = RequestMethod.GET)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> logout(HttpSession session,HttpServletRequest request,HttpServletResponse response){
         /*String loginToken = CookieUtil.readLoginToken(request);
@@ -70,7 +64,7 @@ public class UserSpringSessionController {
      * 获取当前用户信息
      * @return
      */
-    @RequestMapping(value = "get_user_info.do",method = RequestMethod.GET)
+    @RequestMapping(value = "/get_user_info", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpServletRequest request,HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);

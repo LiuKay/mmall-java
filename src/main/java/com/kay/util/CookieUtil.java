@@ -16,6 +16,7 @@ public class CookieUtil {
 
     //cookie 写入域
     private final static String COOKIE_DOMAIN = ".kaymmall.com"; //一级域名
+    public static final String DEFAULT_DOMAIN = "localhost";
 
     //login token
     private final static String COOKIE_NAME = "mmall_login_token";
@@ -27,7 +28,7 @@ public class CookieUtil {
      */
     public static void writeLoginToken(HttpServletResponse response,String token) {
         Cookie cookie = new Cookie(COOKIE_NAME,token);
-        cookie.setDomain(COOKIE_DOMAIN);
+        cookie.setDomain(DEFAULT_DOMAIN);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 

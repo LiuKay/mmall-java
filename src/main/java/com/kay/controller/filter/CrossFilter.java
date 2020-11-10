@@ -3,10 +3,12 @@ package com.kay.controller.filter;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by kay on 2018/5/24.
  */
+@Component
 public class CrossFilter implements Filter{
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

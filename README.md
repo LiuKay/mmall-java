@@ -1,5 +1,15 @@
 
-仅作为学习。
+#### v3.0_springboot 开发计划
+
+   1. 集成 Swagger2, 切换 SpringBoot
+   2. SpringBoot 集成 Mybaits
+   3. 集成 Spring Session
+   4. 集成 Spring Security
+   5. 配置 Spring Data Redis 或 使用 Spring Cache 管理缓存
+   6. 修改所有接口为 RESTfull 风格, 替换异常处理
+
+
+Swagger2 UI 地址：http://localhost:8081/swagger-ui.html
 
 前端项目地址：https://github.com/LiuKay/mmall-kay-js
 
@@ -33,3 +43,4 @@ Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
     
     在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
     
+
