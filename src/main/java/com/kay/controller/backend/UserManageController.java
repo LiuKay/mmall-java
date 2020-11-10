@@ -7,21 +7,18 @@ import com.kay.service.IUserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by kay on 2018/3/19.
  * 后台用户管理
  */
 @Controller
-@RequestMapping("/manage/user")
 public class UserManageController {
 
     @Autowired
@@ -30,7 +27,7 @@ public class UserManageController {
     /**
      * 管理员登录
      */
-    @RequestMapping(value = "login.do",method = RequestMethod.POST)
+    @PostMapping(value = "/manage/login")
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpServletResponse httpServletResponse,HttpSession session) {
         ServerResponse<User> response = iUserService.login(username, password);

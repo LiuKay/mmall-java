@@ -9,47 +9,46 @@
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- 配置只扫描白名单里Controller并关闭默认过滤-->
-    <context:component-scan base-package="com.kay.controller" annotation-config="true" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-    </context:component-scan>
+    <!--    <context:component-scan base-package="com.kay.controller" annotation-config="true" use-default-filters="false">-->
+    <!--        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
+    <!--    </context:component-scan>-->
 
-    <mvc:annotation-driven>
-        <mvc:message-converters>
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <property name="supportedMediaTypes">
-                    <list>
-                        <value>text/plain;charset=UTF-8</value>
-                        <value>text/html;charset=UTF-8</value>
-                    </list>
-                </property>
-            </bean>
-            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-                <property name="supportedMediaTypes">
-                    <list>
-                        <value>application/json;charset=UTF-8</value>
-                    </list>
-                </property>
-            </bean>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
+    <!--    <mvc:annotation-driven>-->
+    <!--        <mvc:message-converters>-->
+    <!--            <bean class="org.springframework.http.converter.StringHttpMessageConverter">-->
+    <!--                <property name="supportedMediaTypes">-->
+    <!--                    <list>-->
+    <!--                        <value>text/plain;charset=UTF-8</value>-->
+    <!--                        <value>text/html;charset=UTF-8</value>-->
+    <!--                    </list>-->
+    <!--                </property>-->
+    <!--            </bean>-->
+    <!--            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">-->
+    <!--                <property name="supportedMediaTypes">-->
+    <!--                    <list>-->
+    <!--                        <value>application/json;charset=UTF-8</value>-->
+    <!--                    </list>-->
+    <!--                </property>-->
+    <!--            </bean>-->
+    <!--        </mvc:message-converters>-->
+    <!--    </mvc:annotation-driven>-->
 
 
-
-    <!-- 文件上传 -->
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="10485760"/> <!-- 10m -->
-        <property name="maxInMemorySize" value="4096" />
-        <property name="defaultEncoding" value="UTF-8"></property>
-    </bean>
+    <!--    &lt;!&ndash; TODO: 文件上传 &ndash;&gt;-->
+    <!--    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+    <!--        <property name="maxUploadSize" value="10485760"/> &lt;!&ndash; 10m &ndash;&gt;-->
+    <!--        <property name="maxInMemorySize" value="4096" />-->
+    <!--        <property name="defaultEncoding" value="UTF-8"></property>-->
+    <!--    </bean>-->
 
     <!--拦截器配置-->
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/manage/**"/>
-            <!-- 不拦截登录请求，若需要定制，具体在拦截器中实现-->
-            <!--<mvc:exclude-mapping path="/manage/user/login.do"/>-->
-            <bean class="com.kay.controller.common.interceptors.AuthorityInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors>
+    <!--    <mvc:interceptors>-->
+    <!--        <mvc:interceptor>-->
+    <!--            <mvc:mapping path="/manage/**"/>-->
+    <!--            &lt;!&ndash; 不拦截登录请求，若需要定制，具体在拦截器中实现&ndash;&gt;-->
+    <!--            &lt;!&ndash;<mvc:exclude-mapping path="/manage/user/login.do"/>&ndash;&gt;-->
+    <!--            <bean class="com.kay.controller.common.interceptors.AuthorityInterceptor"/>-->
+    <!--        </mvc:interceptor>-->
+    <!--    </mvc:interceptors>-->
 
 </beans>

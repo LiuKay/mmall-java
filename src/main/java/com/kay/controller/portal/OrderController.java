@@ -2,7 +2,7 @@ package com.kay.controller.portal;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
-import com.alipay.demo.trade.config.Configs;
+//import com.alipay.demo.trade.config.Configs;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
@@ -14,23 +14,22 @@ import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
 import com.kay.vo.OrderVo;
+import java.util.Iterator;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/3/27.
  */
-@Controller
-@RequestMapping("/order/")
+@RestController
+@RequestMapping("/order")
 @Slf4j
 public class OrderController {
 
@@ -41,8 +40,7 @@ public class OrderController {
     /**
      * 创建订单
      */
-    @RequestMapping("create.do")
-    @ResponseBody
+    @GetMapping("/create")
     public ServerResponse create(HttpServletRequest request, Integer shippingId) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
@@ -59,10 +57,8 @@ public class OrderController {
     /**
      * 取消订单
      */
-    @RequestMapping("cancel.do")
-    @ResponseBody
+    @GetMapping("/cancel")
     public ServerResponse cancel(Long orderNo,HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -75,10 +71,8 @@ public class OrderController {
     }
 
     //获取购物车中已经选中的商品详情
-    @RequestMapping("get_order_cart_product.do")
-    @ResponseBody
+    @GetMapping("/get_order_cart_product")
     public ServerResponse getOrderCartProduct(HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -90,10 +84,8 @@ public class OrderController {
         return iOrderService.getOrderCartProduct(user.getId());
     }
 
-    @RequestMapping("detail.do")
-    @ResponseBody
+    @GetMapping("/detail")
     public ServerResponse<OrderVo> getOrderDetail(HttpServletRequest request, Long orderNo) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -105,12 +97,10 @@ public class OrderController {
         return iOrderService.getOrderDetail(user.getId(),orderNo);
     }
 
-    @RequestMapping("list.do")
-    @ResponseBody
+    @GetMapping("/list")
     public ServerResponse<PageInfo> getOrderList(HttpServletRequest request,
-                                                 @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
+                                                 @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                                  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -122,15 +112,11 @@ public class OrderController {
         return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
     }
 
-
-
     /**
      * 支付
      */
-    @RequestMapping("pay.do")
-    @ResponseBody
+    @GetMapping("/pay")
     public ServerResponse pay(Long orderNo,HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
@@ -145,18 +131,12 @@ public class OrderController {
         return iOrderService.pay(user.getId(), orderNo, path);
     }
 
-
-
-
-
-
     /**
      * 支付宝回调处理接口
      * @param request
      * @return
      */
-    @RequestMapping("alipay_callback.do")
-    @ResponseBody
+    @GetMapping("/alipay_callback")
     public Object alipayCallback(HttpServletRequest request){
         Map<String, String> params = Maps.newHashMap();
 
@@ -179,14 +159,14 @@ public class OrderController {
         //todo 非常重要：根据官方文档需要移除 sign ,sign_type 两个参数,但支付宝提供的源码里只移除了sign,故需要我们自己移除 sign_type，否则付款成功却验签会失败
         params.remove("sign_type");
 
-        try {
-            boolean alipayRSACheckV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(), "utf-8", Configs.getSignType());
-            if(!alipayRSACheckV2){
-                return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求将报警找网警");
-            }
-        } catch (AlipayApiException e) {
-            log.error("支付宝验证回调异常",e);
-        }
+//        try {
+////            boolean alipayRSACheckV2 = AlipaySignature.rsaCheckV2(params, Configs.getAlipayPublicKey(), "utf-8", Configs.getSignType());
+////            if(!alipayRSACheckV2){
+////                return ServerResponse.createByErrorMessage("非法请求，验证不通过，再恶意请求将报警找网警");
+////            }
+//        } catch (AlipayApiException e) {
+//            log.error("支付宝验证回调异常",e);
+//        }
 
         //验证业务数据
         ServerResponse response = iOrderService.alipayCallback(params);
@@ -196,10 +176,8 @@ public class OrderController {
         return Const.AlipayCallback.RESPONSE_FAILED;
     }
 
-    @RequestMapping("query_order_pay_status.do")
-    @ResponseBody
+    @GetMapping("/query_order_pay_status")
     public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo,HttpServletRequest request) {
-//        User user = (User) session.getAttribute(Const.CURRENT_USER);
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isEmpty(loginToken)) {
             return ServerResponse.createByErrorMessage("用户未登录");
