@@ -10,8 +10,8 @@ import com.kay.dao.CategoryMapper;
 import com.kay.dao.ProductMapper;
 import com.kay.pojo.Category;
 import com.kay.pojo.Product;
-import com.kay.service.ICategoryService;
-import com.kay.service.IProductService;
+import com.kay.service.CategoryService;
+import com.kay.service.ProductService;
 import com.kay.util.PropertiesUtil;
 import com.kay.util.DateTimeUtil;
 import com.kay.vo.ProductDetailVo;
@@ -27,13 +27,13 @@ import java.util.List;
  * Created by kay on 2018/3/20.
  */
 @Service("iProductService")
-public class ProductServiceImpl implements IProductService {
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductMapper productMapper;
 
     @Autowired
-    private ICategoryService iCategoryService;
+    private CategoryService categoryService;
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -214,7 +214,7 @@ public class ProductServiceImpl implements IProductService {
                 return ServerResponse.createBySuccess(pageInfo);
             }
             //3.若存在分类，把categoryId当作一个大类,取出所有的节点 , 在具体查询该节点内的条件，故改list先提取出来
-            categoryIdList = iCategoryService.selectCategoryAndChildrenById(categoryId).getData();
+            categoryIdList = categoryService.selectCategoryAndChildrenById(categoryId).getData();
         }
 
         //B.处理模糊查询条件

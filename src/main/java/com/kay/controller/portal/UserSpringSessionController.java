@@ -3,7 +3,8 @@ package com.kay.controller.portal;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.User;
-import com.kay.service.IUserService;
+import com.kay.service.UserService;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserSpringSessionController {
 
     @Autowired
-    private IUserService iUserService;
+    private UserService userService;
 
     /**
      *用户登录
@@ -34,7 +35,7 @@ public class UserSpringSessionController {
 //        fixme 异常测试
 //        int i= 10/0;
 
-        ServerResponse<User> response = iUserService.login(username, password);
+        ServerResponse<User> response = userService.login(username, password);
         if (response.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER,response.getData());
 //            //写入cookie

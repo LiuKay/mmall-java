@@ -4,7 +4,7 @@ import com.kay.common.Const;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.User;
-import com.kay.service.ICartService;
+import com.kay.service.CartService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
 
     @Autowired
-    private ICartService iCartService;
+    private CartService cartService;
 
 
     /**
@@ -44,7 +44,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.add(user.getId(), productId, count);
+        return cartService.add(user.getId(), productId, count);
     }
 
     /**
@@ -64,7 +64,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.update(user.getId(), productId, count);
+        return cartService.update(user.getId(), productId, count);
     }
 
     /**
@@ -83,7 +83,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.deleteByProductIds(user.getId(), productIds);
+        return cartService.deleteByProductIds(user.getId(), productIds);
     }
 
     @GetMapping("/list")
@@ -96,7 +96,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.list(user.getId());
+        return cartService.list(user.getId());
     }
 
     @GetMapping("/select")
@@ -109,7 +109,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.selectOrUnSelect(user.getId(),productId,Const.Cart.CHECKED);
+        return cartService.selectOrUnSelect(user.getId(), productId, Const.Cart.CHECKED);
     }
 
     @GetMapping("/un_select")
@@ -122,7 +122,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.selectOrUnSelect(user.getId(),productId,Const.Cart.UN_CHECKED);
+        return cartService.selectOrUnSelect(user.getId(), productId, Const.Cart.UN_CHECKED);
     }
 
     @GetMapping("/select_all")
@@ -135,7 +135,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.selectOrUnSelect(user.getId(),null,Const.Cart.CHECKED);
+        return cartService.selectOrUnSelect(user.getId(), null, Const.Cart.CHECKED);
     }
 
     @GetMapping("/un_select_all")
@@ -148,7 +148,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iCartService.selectOrUnSelect(user.getId(),null,Const.Cart.UN_CHECKED);
+        return cartService.selectOrUnSelect(user.getId(), null, Const.Cart.UN_CHECKED);
     }
 
     @GetMapping("/get_cart_product_count")
@@ -161,7 +161,7 @@ public class CartController {
         if (user == null) {
             return ServerResponse.createBySuccess(0);
         }
-        return iCartService.getCartProductCount(user.getId());
+        return cartService.getCartProductCount(user.getId());
     }
 
 }

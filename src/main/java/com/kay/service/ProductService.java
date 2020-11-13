@@ -9,7 +9,7 @@ import com.kay.vo.ProductListVo;
 /**
  * Created by kay on 2018/3/20.
  */
-public interface IProductService {
+public interface ProductService {
     ServerResponse<String> saveOrUpdateProduct(Product product);
 
     ServerResponse<String> setSaleStatus(Integer productId, Integer status);

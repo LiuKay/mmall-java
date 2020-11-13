@@ -4,7 +4,7 @@ import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.UserMapper;
 import com.kay.pojo.User;
-import com.kay.service.IUserService;
+import com.kay.service.UserService;
 import com.kay.util.MD5Util;
 import com.kay.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -17,15 +17,15 @@ import java.util.UUID;
  * Created by kay on 2018/3/19.
  */
 @Service("iUserService")
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
-    public ServerResponse<User> login(String username,String password) {
+    public ServerResponse<User> login(String username, String password) {
         int userCount = userMapper.checkUserName(username);
-        if (userCount==0) {
+        if (userCount == 0) {
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
         String md5Password = MD5Util.MD5EncodeUtf8(password);

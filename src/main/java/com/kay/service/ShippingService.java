@@ -7,7 +7,7 @@ import com.kay.pojo.Shipping;
 /**
  * Created by kay on 2018/3/26.
  */
-public interface IShippingService {
+public interface ShippingService {
     ServerResponse add(Integer userId, Shipping shipping);
 
     ServerResponse delete(Integer userId, Integer shippingId);
@@ -16,6 +16,6 @@ public interface IShippingService {
 
     ServerResponse select(Integer userId, Integer shippingId);
 
-    ServerResponse<PageInfo> list(Integer userId,int pageNum,int pageSize);
+    ServerResponse<PageInfo> list(Integer userId, int pageNum, int pageSize);
 
 }

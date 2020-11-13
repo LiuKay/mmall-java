@@ -1,7 +1,5 @@
 package com.kay.controller.portal;
 
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.internal.util.AlipaySignature;
 //import com.alipay.demo.trade.config.Configs;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
@@ -9,7 +7,7 @@ import com.kay.common.Const;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.User;
-import com.kay.service.IOrderService;
+import com.kay.service.OrderService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
@@ -34,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     @Autowired
-    private IOrderService iOrderService;
+    private OrderService orderService;
 
 
     /**
@@ -51,7 +49,7 @@ public class OrderController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
 
-        return iOrderService.createOrder(user.getId(), shippingId);
+        return orderService.createOrder(user.getId(), shippingId);
     }
 
     /**
@@ -67,7 +65,7 @@ public class OrderController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iOrderService.cancleOrder(user.getId(), orderNo);
+        return orderService.cancleOrder(user.getId(), orderNo);
     }
 
     //获取购物车中已经选中的商品详情
@@ -81,7 +79,7 @@ public class OrderController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iOrderService.getOrderCartProduct(user.getId());
+        return orderService.getOrderCartProduct(user.getId());
     }
 
     @GetMapping("/detail")
@@ -94,7 +92,7 @@ public class OrderController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iOrderService.getOrderDetail(user.getId(),orderNo);
+        return orderService.getOrderDetail(user.getId(), orderNo);
     }
 
     @GetMapping("/list")
@@ -109,7 +107,7 @@ public class OrderController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
+        return orderService.getOrderList(user.getId(), pageNum, pageSize);
     }
 
     /**
@@ -128,7 +126,7 @@ public class OrderController {
 
         String path = request.getSession().getServletContext().getRealPath("upload");
 
-        return iOrderService.pay(user.getId(), orderNo, path);
+        return orderService.pay(user.getId(), orderNo, path);
     }
 
     /**
@@ -169,7 +167,7 @@ public class OrderController {
 //        }
 
         //验证业务数据
-        ServerResponse response = iOrderService.alipayCallback(params);
+        ServerResponse response = orderService.alipayCallback(params);
         if (response.isSuccess()) {
             return Const.AlipayCallback.RESPONSE_SUCCESS;
         }
@@ -187,7 +185,7 @@ public class OrderController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
 
-        ServerResponse response = iOrderService.queryOrderPayStatus(user.getId(), orderNo);
+        ServerResponse response = orderService.queryOrderPayStatus(user.getId(), orderNo);
         if (response.isSuccess()) {
             return ServerResponse.createBySuccess(true);
         }

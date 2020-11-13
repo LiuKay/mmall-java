@@ -4,7 +4,7 @@ import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.Shipping;
 import com.kay.pojo.User;
-import com.kay.service.IShippingService;
+import com.kay.service.ShippingService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShippingController {
 
     @Autowired
-    private IShippingService iShippingService;
+    private ShippingService shippingService;
 
     @GetMapping("/add")
     public ServerResponse add(Shipping shipping, HttpServletRequest request){
@@ -36,7 +36,7 @@ public class ShippingController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iShippingService.add(user.getId(), shipping);
+        return shippingService.add(user.getId(), shipping);
     }
 
     @GetMapping("/del")
@@ -49,7 +49,7 @@ public class ShippingController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iShippingService.delete(user.getId(), shippingId);
+        return shippingService.delete(user.getId(), shippingId);
     }
 
     @GetMapping("/select")
@@ -62,7 +62,7 @@ public class ShippingController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iShippingService.select(user.getId(), shippingId);
+        return shippingService.select(user.getId(), shippingId);
     }
 
     @GetMapping("/update")
@@ -75,7 +75,7 @@ public class ShippingController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iShippingService.update(user.getId(), shipping);
+        return shippingService.update(user.getId(), shipping);
     }
 
     @GetMapping("/list")
@@ -90,6 +90,6 @@ public class ShippingController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
         }
-        return iShippingService.list(user.getId(), pageNum, pageSize);
+        return shippingService.list(user.getId(), pageNum, pageSize);
     }
 }

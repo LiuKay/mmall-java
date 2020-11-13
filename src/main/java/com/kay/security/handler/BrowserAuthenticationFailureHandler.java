@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -39,7 +40,7 @@ public class BrowserAuthenticationFailureHandler extends SimpleUrlAuthentication
         if (LoginResponseType.JSON.equals(securityProperties.getBrowser().getLoginResponseType())) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType(MediaType.APPLICATION_JSON.toString());
-            response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
             ServerResponse<Object> serverResponse = ServerResponse.createByError(exception);
             response.getWriter().write(objectMapper.writeValueAsString(serverResponse));

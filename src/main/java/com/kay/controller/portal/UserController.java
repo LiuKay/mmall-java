@@ -4,7 +4,7 @@ import com.kay.common.Const;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.User;
-import com.kay.service.IUserService;
+import com.kay.service.UserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private IUserService iUserService;
+    private UserService userService;
 
     /**
      * 注册
@@ -32,7 +32,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public ServerResponse<String> register(User user) {
-        return iUserService.register(user);
+        return userService.register(user);
     }
 
     /**
@@ -43,7 +43,7 @@ public class UserController {
      */
     @PostMapping("/check_valid")
     public ServerResponse<String> checkUserName(String str,String type){
-        return iUserService.checkValid(str,type);
+        return userService.checkValid(str, type);
     }
 
     /**
@@ -53,7 +53,7 @@ public class UserController {
      */
     @PostMapping("/forget_get_question")
     public ServerResponse<String> forgetGetQuestion(String username) {
-         return iUserService.forgetGetQuestion(username);
+        return userService.forgetGetQuestion(username);
     }
 
     /**
@@ -65,7 +65,7 @@ public class UserController {
      */
     @PostMapping("/forget_check_answer")
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
-        return iUserService.checkQuestionAnswer(username, question, answer);
+        return userService.checkQuestionAnswer(username, question, answer);
     }
 
     /**
@@ -77,7 +77,7 @@ public class UserController {
      */
     @PostMapping("/forget_reset_password")
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
-        return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
+        return userService.forgetResetPassword(username, passwordNew, forgetToken);
     }
 
     /**
@@ -98,7 +98,7 @@ public class UserController {
         if (user == null) {
             return ServerResponse.createByErrorMessage("用户未登录");
         }
-        return iUserService.resetPassword(passwordOld, passwordNew, user);
+        return userService.resetPassword(passwordOld, passwordNew, user);
     }
 
     /**
@@ -119,7 +119,7 @@ public class UserController {
         //同时此处也为了防止横向越权的问题，即传过来的id并不是当前登录的用户id
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername()); //username 不能被更新
-        ServerResponse response=iUserService.updateUserInfo(user);
+        ServerResponse response = userService.updateUserInfo(user);
         if (response.isSuccess()) {
 //            session.setAttribute(Const.CURRENT_USER,response.getData());
             //更新Redis中用户信息
@@ -161,6 +161,6 @@ public class UserController {
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录,需要强制登录status=10");
         }
-        return iUserService.getUserInfo(user.getId());
+        return userService.getUserInfo(user.getId());
     }
 }

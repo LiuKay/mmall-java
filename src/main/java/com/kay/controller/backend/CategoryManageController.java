@@ -1,7 +1,7 @@
 package com.kay.controller.backend;
 
 import com.kay.common.ServerResponse;
-import com.kay.service.ICategoryService;
+import com.kay.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryManageController {
 
     @Autowired
-    private ICategoryService iCategoryService;
+    private CategoryService categoryService;
 
     @GetMapping(value = "/get_category")
     public ServerResponse getCategoryChildren(
             @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
-        return iCategoryService.getChildrenParallelCategory(categoryId);
+        return categoryService.getChildrenParallelCategory(categoryId);
     }
 
     /**
@@ -30,7 +30,7 @@ public class CategoryManageController {
     @GetMapping(value = "/add_category")
     public ServerResponse addCategory(String categoryName,
                                       @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
-        return iCategoryService.addCategory(categoryName, parentId);
+        return categoryService.addCategory(categoryName, parentId);
     }
 
     /**
@@ -38,7 +38,7 @@ public class CategoryManageController {
      */
     @GetMapping(value = "/set_category_name")
     public ServerResponse setCategoryName(String categoryName, Integer categoryId) {
-        return iCategoryService.setCategory(categoryName, categoryId);
+        return categoryService.setCategory(categoryName, categoryId);
     }
 
     /**
@@ -50,7 +50,7 @@ public class CategoryManageController {
     @GetMapping(value = "/get_deep_category")
     public ServerResponse getAllCategoryChildrenById(
             @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
-        return iCategoryService.selectCategoryAndChildrenById(categoryId);
+        return categoryService.selectCategoryAndChildrenById(categoryId);
 
     }
 }

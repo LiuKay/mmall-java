@@ -3,7 +3,7 @@ package com.kay.controller.backend;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.pojo.User;
-import com.kay.service.IUserService;
+import com.kay.service.UserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserManageController {
 
     @Autowired
-    private IUserService iUserService;
+    private UserService userService;
 
     /**
      * 管理员登录
@@ -30,7 +30,7 @@ public class UserManageController {
     @PostMapping(value = "/manage/login")
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpServletResponse httpServletResponse,HttpSession session) {
-        ServerResponse<User> response = iUserService.login(username, password);
+        ServerResponse<User> response = userService.login(username, password);
         if (response.isSuccess()) {
             User user = response.getData();
             if (user.getRole()== Const.ROLE.MANAGE_USER) {
