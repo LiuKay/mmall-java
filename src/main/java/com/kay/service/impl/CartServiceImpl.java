@@ -9,7 +9,7 @@ import com.kay.dao.CartMapper;
 import com.kay.dao.ProductMapper;
 import com.kay.pojo.Cart;
 import com.kay.pojo.Product;
-import com.kay.service.ICartService;
+import com.kay.service.CartService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.PropertiesUtil;
 import com.kay.vo.CartProductVo;
@@ -25,7 +25,7 @@ import java.util.List;
  * Created by kay on 2018/3/23.
  */
 @Service("iCartService")
-public class CartServiceImpl implements ICartService {
+public class CartServiceImpl implements CartService {
 
 
     @Autowired

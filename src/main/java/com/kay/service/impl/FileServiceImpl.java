@@ -1,11 +1,9 @@
 package com.kay.service.impl;
 
 import com.google.common.collect.Lists;
-import com.kay.service.IFileService;
+import com.kay.service.FileService;
 import com.kay.util.FTPUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,15 +16,16 @@ import java.util.UUID;
  */
 @Service("iFileService")
 @Slf4j
-public class FileServiceImpl implements IFileService {
+public class FileServiceImpl implements FileService {
 
     //private Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 
     /**
      * 文件上传
+     *
      * @param file
      * @param path
-     * @return  上传文件名称
+     * @return 上传文件名称
      */
     @Override
     public String upload(MultipartFile file, String path) {

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by kay on 2018/3/20.
  */
-public interface ICategoryService {
+public interface CategoryService {
 
 
     ServerResponse<String> addCategory(String categoryName, Integer parentId);

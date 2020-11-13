@@ -2,13 +2,15 @@ package com.kay.controller.backend;
 
 import com.kay.common.ServerResponse;
 import com.kay.pojo.Product;
-import com.kay.service.IFileService;
-import com.kay.service.IProductService;
+import com.kay.service.FileService;
+import com.kay.service.ProductService;
 import com.kay.util.PropertiesUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,17 +29,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductManageController {
 
     @Autowired
-    private IProductService iProductService;
+    private ProductService productService;
 
     @Autowired
-    private IFileService iFileService;
+    private FileService fileService;
 
     /**
      * 分页list
      */
     @GetMapping("/list")
     public ServerResponse list(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
-        return iProductService.getManageProductList(pageNum, pageSize);
+        return productService.getManageProductList(pageNum, pageSize);
     }
 
     /**
@@ -45,7 +47,7 @@ public class ProductManageController {
      */
     @GetMapping("/search")
     public ServerResponse searchList(String productName,Integer productId,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
-        return iProductService.getManageSearchList(productId, productName,pageNum,pageSize);
+        return productService.getManageSearchList(productId, productName, pageNum, pageSize);
     }
 
     /**
@@ -53,7 +55,7 @@ public class ProductManageController {
      */
     @GetMapping("/save")
     public ServerResponse saveProduct(Product product) {
-        return iProductService.saveOrUpdateProduct(product);
+        return productService.saveOrUpdateProduct(product);
     }
 
     /**
@@ -61,7 +63,7 @@ public class ProductManageController {
      */
     @GetMapping("s/et_sale_status")
     public ServerResponse setSaleStatus(Integer productId,Integer status) {
-        return iProductService.setSaleStatus(productId,status);
+        return productService.setSaleStatus(productId, status);
     }
 
 
@@ -72,7 +74,7 @@ public class ProductManageController {
      */
     @GetMapping("/detail")
     public ServerResponse getProductDetail(Integer productId) {
-        return iProductService.getManageProductDetail(productId);
+        return productService.getManageProductDetail(productId);
     }
 
     /**
@@ -85,7 +87,7 @@ public class ProductManageController {
     public ServerResponse uploadFile(@RequestParam(value = "upload_file", required = false) MultipartFile file,
                                      HttpServletRequest request) {
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String uploadFilePath = iFileService.upload(file, path);
+        String uploadFilePath = fileService.upload(file, path);
         String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + uploadFilePath;
         Map fileMap = new HashMap();
         fileMap.put("uri", uploadFilePath);
@@ -105,7 +107,7 @@ public class ProductManageController {
     public Map richTextUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap();
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String uploadFilePath = iFileService.upload(file, path);
+        String uploadFilePath = fileService.upload(file, path);
         if (StringUtils.isBlank(uploadFilePath)) {
             resultMap.put("success", false);
             resultMap.put("msg", "上传失败");

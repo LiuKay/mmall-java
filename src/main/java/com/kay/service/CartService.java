@@ -6,7 +6,7 @@ import com.kay.vo.CartVo;
 /**
  * Created by kay on 2018/3/23.
  */
-public interface ICartService {
+public interface CartService {
     ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count);
 
     ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count);

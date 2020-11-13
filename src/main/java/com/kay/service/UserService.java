@@ -6,9 +6,9 @@ import com.kay.pojo.User;
 /**
  * Created by kay on 2018/3/19.
  */
-public interface IUserService {
+public interface UserService {
 
-    ServerResponse<User> login(String username,String password);
+    ServerResponse<User> login(String username, String password);
 
     ServerResponse<String> register(User user);
 

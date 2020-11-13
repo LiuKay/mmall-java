@@ -2,7 +2,7 @@ package com.kay.controller.portal;
 
 import com.github.pagehelper.PageInfo;
 import com.kay.common.ServerResponse;
-import com.kay.service.IProductService;
+import com.kay.service.ProductService;
 import com.kay.vo.ProductDetailVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     @Autowired
-    private IProductService iProductService;
+    private ProductService productService;
 
     /**
      * 产品详情
      */
     @GetMapping("/detail")
     public ServerResponse<ProductDetailVo> getProductList(Integer productId){
-        return iProductService.getProductList(productId);
+        return productService.getProductList(productId);
     }
 
     /**
@@ -36,7 +36,7 @@ public class ProductController {
      */
     @GetMapping("/{productId}")
     public ServerResponse<ProductDetailVo> getProductListRESTful(@PathVariable Integer productId){
-        return iProductService.getProductList(productId);
+        return productService.getProductList(productId);
     }
 
     /**
@@ -48,7 +48,7 @@ public class ProductController {
                                                    @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                                    @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
                                                    @RequestParam(value = "orderBy",defaultValue = "") String orderBy) {
-        return iProductService.getProductByKeywordCategory(categoryId,keyword,pageNum,pageSize,orderBy);
+        return productService.getProductByKeywordCategory(categoryId, keyword, pageNum, pageSize, orderBy);
     }
 
     @GetMapping(value = "/{categoryId}/{keyword}/{pageNum}/{pageSize}/{orderBy}")
@@ -66,7 +66,7 @@ public class ProductController {
         if (StringUtils.isBlank(orderBy)) {
             orderBy = "price_asc";
         }
-        return iProductService.getProductByKeywordCategory(categoryId,keyword,pageNum,pageSize,orderBy);
+        return productService.getProductByKeywordCategory(categoryId, keyword, pageNum, pageSize, orderBy);
     }
 
     //http://localhost:8080/product/keyword/手机/1/10/price_asc/
@@ -85,7 +85,7 @@ public class ProductController {
             orderBy = "price_asc";
         }
 
-        return iProductService.getProductByKeywordCategory(null,keyword,pageNum,pageSize,orderBy);
+        return productService.getProductByKeywordCategory(null, keyword, pageNum, pageSize, orderBy);
     }
 
     //http://localhost:8080/product/category/100012/1/10/price_asc/
@@ -104,6 +104,6 @@ public class ProductController {
             orderBy = "price_asc";
         }
 
-        return iProductService.getProductByKeywordCategory(categoryId,null,pageNum,pageSize,orderBy);
+        return productService.getProductByKeywordCategory(categoryId, null, pageNum, pageSize, orderBy);
     }
 }

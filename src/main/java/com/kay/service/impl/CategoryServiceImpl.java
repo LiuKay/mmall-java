@@ -5,12 +5,10 @@ import com.google.common.collect.Sets;
 import com.kay.common.ServerResponse;
 import com.kay.dao.CategoryMapper;
 import com.kay.pojo.Category;
-import com.kay.service.ICategoryService;
+import com.kay.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +20,9 @@ import java.util.Set;
  */
 @Service("iCategoryService")
 @Slf4j
-public class CategoryServiceImpl implements ICategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
-   // private Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
+    // private Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Autowired
     private CategoryMapper categoryMapper;

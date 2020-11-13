@@ -7,8 +7,7 @@ import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.dao.ShippingMapper;
 import com.kay.pojo.Shipping;
-import com.kay.service.IShippingService;
-import org.apache.commons.collections.CollectionUtils;
+import com.kay.service.ShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.util.Map;
  * 注意横向越权的问题
  */
 @Service("iShippingService")
-public class ShippingServiceImpl implements IShippingService {
+public class ShippingServiceImpl implements ShippingService {
 
     @Autowired
     private ShippingMapper shippingMapper;
@@ -29,7 +28,7 @@ public class ShippingServiceImpl implements IShippingService {
     public ServerResponse add(Integer userId, Shipping shipping) {
         shipping.setUserId(userId);
         int insertCount = shippingMapper.insert(shipping);
-        if (insertCount>0) {
+        if (insertCount > 0) {
             Map resultMap = Maps.newHashMap();
             resultMap.put("shippingId", shipping.getId());
             return ServerResponse.createBySuccessMessage("添加地址成功", resultMap);

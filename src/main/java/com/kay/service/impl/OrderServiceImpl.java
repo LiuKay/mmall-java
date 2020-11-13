@@ -11,7 +11,7 @@ import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.*;
 import com.kay.pojo.*;
-import com.kay.service.IOrderService;
+import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtil;
 import com.kay.util.PropertiesUtil;
@@ -43,7 +43,7 @@ import java.util.*;
  */
 @Service("iOrderService")
 @Slf4j
-public class OrderServiceImpl implements IOrderService {
+public class OrderServiceImpl implements OrderService {
 
     //   private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
