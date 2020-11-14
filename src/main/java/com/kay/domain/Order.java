@@ -1,4 +1,4 @@
-package com.kay.pojo;
+package com.kay.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,24 +12,30 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem {
+public class Order {
     private Integer id;
-
-    private Integer userId;
 
     private Long orderNo;
 
-    private Integer productId;
+    private Integer userId;
 
-    private String productName;
+    private Integer shippingId;
 
-    private String productImage;
+    private BigDecimal payment;
 
-    private BigDecimal currentUnitPrice;
+    private Integer paymentType;
 
-    private Integer quantity;
+    private Integer postage;
 
-    private BigDecimal totalPrice;
+    private Integer status;
+
+    private Date paymentTime;
+
+    private Date sendTime;
+
+    private Date endTime;
+
+    private Date closeTime;
 
     private Date createTime;
 

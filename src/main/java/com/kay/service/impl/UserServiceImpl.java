@@ -3,7 +3,7 @@ package com.kay.service.impl;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.UserMapper;
-import com.kay.pojo.User;
+import com.kay.domain.User;
 import com.kay.service.UserService;
 import com.kay.util.MD5Util;
 import com.kay.util.RedisShardedPoolUtil;

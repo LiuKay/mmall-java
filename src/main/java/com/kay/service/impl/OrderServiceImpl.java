@@ -10,7 +10,7 @@ import com.google.common.collect.Maps;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.*;
-import com.kay.pojo.*;
+import com.kay.domain.*;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtil;

@@ -1,7 +1,7 @@
 package com.kay.service;
 
 import com.kay.common.ServerResponse;
-import com.kay.pojo.Category;
+import com.kay.domain.Category;
 
 import java.util.List;
 

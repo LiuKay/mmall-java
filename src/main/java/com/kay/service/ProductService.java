@@ -2,9 +2,8 @@ package com.kay.service;
 
 import com.github.pagehelper.PageInfo;
 import com.kay.common.ServerResponse;
-import com.kay.pojo.Product;
+import com.kay.domain.Product;
 import com.kay.vo.ProductDetailVo;
-import com.kay.vo.ProductListVo;
 
 /**
  * Created by kay on 2018/3/20.

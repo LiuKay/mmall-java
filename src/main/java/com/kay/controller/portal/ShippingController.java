@@ -2,13 +2,15 @@ package com.kay.controller.portal;
 
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
-import com.kay.pojo.Shipping;
-import com.kay.pojo.User;
+import com.kay.domain.Shipping;
+import com.kay.domain.User;
 import com.kay.service.ShippingService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
 import com.kay.util.RedisShardedPoolUtil;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

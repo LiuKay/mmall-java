@@ -1,6 +1,6 @@
 package com.kay.dao;
 
-import com.kay.pojo.Category;
+import com.kay.domain.Category;
 
 import java.util.List;
 

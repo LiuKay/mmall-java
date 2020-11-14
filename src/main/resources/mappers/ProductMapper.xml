@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.kay.dao.ProductMapper" >
-  <resultMap id="BaseResultMap" type="com.kay.pojo.Product" >
+  <resultMap id="BaseResultMap" type="com.kay.domain.Product" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="category_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -78,7 +78,7 @@
     delete from mmall_product
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kay.pojo.Product" >
+  <insert id="insert" parameterType="com.kay.domain.Product" >
     insert into mmall_product (id, category_id, name, 
       subtitle, main_image, sub_images, 
       detail, price, stock, 
@@ -90,7 +90,7 @@
       #{status,jdbcType=INTEGER}, now(), now()
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.kay.pojo.Product" >
+  <insert id="insertSelective" parameterType="com.kay.domain.Product" >
     insert into mmall_product
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -169,7 +169,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kay.pojo.Product" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.kay.domain.Product" >
     update mmall_product
     <set >
       <if test="categoryId != null" >
@@ -208,7 +208,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kay.pojo.Product" >
+  <update id="updateByPrimaryKey" parameterType="com.kay.domain.Product" >
     update mmall_product
     set category_id = #{categoryId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},

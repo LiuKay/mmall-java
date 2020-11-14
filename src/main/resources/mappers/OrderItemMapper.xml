@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.kay.dao.OrderItemMapper" >
-  <resultMap id="BaseResultMap" type="com.kay.pojo.OrderItem" >
+  <resultMap id="BaseResultMap" type="com.kay.domain.OrderItem" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -45,7 +45,7 @@
     delete from mmall_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kay.pojo.OrderItem" >
+  <insert id="insert" parameterType="com.kay.domain.OrderItem" >
     insert into mmall_order_item (id, user_id, order_no, 
       product_id, product_name, product_image, 
       current_unit_price, quantity, total_price, 
@@ -55,7 +55,7 @@
       #{currentUnitPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, 
       now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="com.kay.pojo.OrderItem" >
+  <insert id="insertSelective" parameterType="com.kay.domain.OrderItem" >
     insert into mmall_order_item
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -129,7 +129,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.kay.pojo.OrderItem" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.kay.domain.OrderItem" >
     update mmall_order_item
     <set >
       <if test="userId != null" >
@@ -165,7 +165,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kay.pojo.OrderItem" >
+  <update id="updateByPrimaryKey" parameterType="com.kay.domain.OrderItem" >
     update mmall_order_item
     set user_id = #{userId,jdbcType=INTEGER},
       order_no = #{orderNo,jdbcType=BIGINT},

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.kay.dao.CategoryMapper" >
-  <resultMap id="BaseResultMap" type="com.kay.pojo.Category" >
+  <resultMap id="BaseResultMap" type="com.kay.domain.Category" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="parent_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -32,7 +32,7 @@
     delete from mmall_category
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.kay.pojo.Category" >
+  <insert id="insert" parameterType="com.kay.domain.Category" >
     insert into mmall_category (id, parent_id, name, 
       status, sort_order, create_time, 
       update_time)
@@ -40,7 +40,7 @@
       #{status,jdbcType=BIT}, #{sortOrder,jdbcType=INTEGER}, now(),
       now())
   </insert>
-  <insert id="insertSelective" parameterType="com.kay.pojo.Category" >
+  <insert id="insertSelective" parameterType="com.kay.domain.Category" >
     insert into mmall_category
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -89,7 +89,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kay.pojo.Category" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.kay.domain.Category" >
     update mmall_category
     <set >
       <if test="parentId != null" >
@@ -113,7 +113,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kay.pojo.Category" >
+  <update id="updateByPrimaryKey" parameterType="com.kay.domain.Category" >
     update mmall_category
     set parent_id = #{parentId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},

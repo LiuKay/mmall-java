@@ -1,7 +1,7 @@
 package com.kay.service;
 
 import com.kay.common.ServerResponse;
-import com.kay.pojo.User;
+import com.kay.domain.User;
 
 /**
  * Created by kay on 2018/3/19.

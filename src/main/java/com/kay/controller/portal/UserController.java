@@ -3,7 +3,7 @@ package com.kay.controller.portal;
 import com.kay.common.Const;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
-import com.kay.pojo.User;
+import com.kay.domain.User;
 import com.kay.service.UserService;
 import com.kay.util.CookieUtil;
 import com.kay.util.JsonUtil;
