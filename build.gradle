@@ -45,6 +45,9 @@ dependencies {
     implementation 'com.alipay.sdk:alipay-sdk-java:4.10.170.ALL'
     implementation 'com.google.guava:guava:30.0-jre'
 
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.modelmapper:modelmapper:2.3.5'
+
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'commons-net:commons-net:3.1'
     implementation 'org.hashids:hashids:1.0.1'

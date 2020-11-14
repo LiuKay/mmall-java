@@ -10,7 +10,7 @@
       <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="question" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="answer" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="role" jdbcType="INTEGER" javaType="com.kay.domain.Role" />
+      <arg column="role" jdbcType="INTEGER" javaType="com.kay.domain.Role" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
