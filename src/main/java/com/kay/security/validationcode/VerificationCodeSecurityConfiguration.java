@@ -1,5 +1,6 @@
 package com.kay.security.validationcode;
 
+import com.kay.security.authentication.jwt.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -25,6 +26,6 @@ public class VerificationCodeSecurityConfiguration extends SecurityConfigurerAda
 
     @Override
     public void configure(HttpSecurity builder) throws Exception {
-        builder.addFilterBefore(verificationCodeFilter, UsernamePasswordAuthenticationFilter.class);
+        builder.addFilterBefore(verificationCodeFilter, JwtTokenFilter.class);
     }
 }

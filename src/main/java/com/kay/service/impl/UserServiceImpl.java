@@ -3,6 +3,7 @@ package com.kay.service.impl;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.UserMapper;
+import com.kay.domain.Role;
 import com.kay.domain.User;
 import com.kay.service.UserService;
 import com.kay.util.MD5Util;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
         }
         //密码加密
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
-        user.setRole(Const.ROLE.NORMAL_USER);
+        user.setRole(Role.USER);
         int userCount =userMapper.insert(user);
 
         if (userCount == 0) {
@@ -245,7 +246,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServerResponse checkAdminRole(User user) {
-        if (user!= null && user.getRole().intValue() == Const.ROLE.MANAGE_USER) {
+        if (user != null && Role.ADMIN == user.getRole()) {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();

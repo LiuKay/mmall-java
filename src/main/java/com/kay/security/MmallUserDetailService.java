@@ -2,7 +2,6 @@ package com.kay.security;
 
 import com.kay.dao.UserMapper;
 import com.kay.domain.User;
-import com.kay.exception.PhoneNumberNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

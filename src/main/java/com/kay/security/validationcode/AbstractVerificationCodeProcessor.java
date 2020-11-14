@@ -47,6 +47,10 @@ public abstract class AbstractVerificationCodeProcessor<T extends VerificationCo
         String sessionKey = getSessionKey(request);
 
         T validationCode = (T) sessionStrategy.getAttribute(request, sessionKey);
+        if (validationCode == null) {
+            throw new VerificationCodeException("Verification code does not exist.");
+        }
+
         String codeInRequest;
         try {
             codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), type.getParamName());

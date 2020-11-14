@@ -6,6 +6,7 @@ import com.kay.security.properties.VerificationCodeProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -34,6 +35,7 @@ public class VerificationCodeAuthenticationFilter extends OncePerRequestFilter i
     private static final String MOBILE_LOGIN_URL = SecurityConstants.LOGIN_MOBILE_PROCESSING_URL;
 
     @Autowired
+    @Qualifier("authFailureHandler")
     private AuthenticationFailureHandler failureHandler;
 
     @Autowired
@@ -77,6 +79,7 @@ public class VerificationCodeAuthenticationFilter extends OncePerRequestFilter i
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         ValidationCodeType type = getValidationCodeType(request);
+        //if has validation code in request,process the code
         if (null != type) {
             try {
                 logger.info("Validate Code. Request \"" + request.getRequestURI() + "\" - Type: " + type);

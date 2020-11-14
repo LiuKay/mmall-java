@@ -22,9 +22,11 @@ import org.springframework.stereotype.Component;
 public class SmsCodeSecurityConfiguration extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     @Autowired
+    @Qualifier("authSuccessHandler")
     private AuthenticationSuccessHandler successHandler;
 
     @Autowired
+    @Qualifier("authFailureHandler")
     private AuthenticationFailureHandler failureHandler;
 
     @Autowired
