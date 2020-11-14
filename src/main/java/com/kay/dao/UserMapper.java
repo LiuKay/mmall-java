@@ -1,6 +1,6 @@
 package com.kay.dao;
 
-import com.kay.pojo.User;
+import com.kay.domain.User;
 
 import org.apache.ibatis.annotations.Param;
 

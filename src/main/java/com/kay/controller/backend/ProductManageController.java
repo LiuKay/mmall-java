@@ -1,7 +1,7 @@
 package com.kay.controller.backend;
 
 import com.kay.common.ServerResponse;
-import com.kay.pojo.Product;
+import com.kay.domain.Product;
 import com.kay.service.FileService;
 import com.kay.service.ProductService;
 import com.kay.util.PropertiesUtil;

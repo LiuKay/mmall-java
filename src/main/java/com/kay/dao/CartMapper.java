@@ -1,7 +1,6 @@
 package com.kay.dao;
 
-import com.kay.common.ServerResponse;
-import com.kay.pojo.Cart;
+import com.kay.domain.Cart;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

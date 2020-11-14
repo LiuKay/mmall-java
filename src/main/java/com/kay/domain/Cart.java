@@ -1,4 +1,4 @@
-package com.kay.pojo;
+package com.kay.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,18 +11,16 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayInfo {
+public class Cart {
     private Integer id;
 
     private Integer userId;
 
-    private Long orderNo;
+    private Integer productId;
 
-    private Integer payPlatform;
+    private Integer quantity;
 
-    private String platformNumber;
-
-    private String platformStatus;
+    private Integer checked;
 
     private Date createTime;
 

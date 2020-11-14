@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.kay.common.ServerResponse;
 import com.kay.dao.CategoryMapper;
-import com.kay.pojo.Category;
+import com.kay.domain.Category;
 import com.kay.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;

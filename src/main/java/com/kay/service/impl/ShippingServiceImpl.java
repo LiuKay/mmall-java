@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.dao.ShippingMapper;
-import com.kay.pojo.Shipping;
+import com.kay.domain.Shipping;
 import com.kay.service.ShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

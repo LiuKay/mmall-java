@@ -1,4 +1,4 @@
-package com.kay.pojo;
+package com.kay.domain;
 
 import lombok.*;
 

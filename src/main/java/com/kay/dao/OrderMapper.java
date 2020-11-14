@@ -1,6 +1,6 @@
 package com.kay.dao;
 
-import com.kay.pojo.Order;
+import com.kay.domain.Order;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

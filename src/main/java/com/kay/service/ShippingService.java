@@ -2,7 +2,7 @@ package com.kay.service;
 
 import com.github.pagehelper.PageInfo;
 import com.kay.common.ServerResponse;
-import com.kay.pojo.Shipping;
+import com.kay.domain.Shipping;
 
 /**
  * Created by kay on 2018/3/26.

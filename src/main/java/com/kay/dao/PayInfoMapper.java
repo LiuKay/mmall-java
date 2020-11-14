@@ -1,6 +1,6 @@
 package com.kay.dao;
 
-import com.kay.pojo.PayInfo;
+import com.kay.domain.PayInfo;
 
 public interface PayInfoMapper {
     int deleteByPrimaryKey(Integer id);

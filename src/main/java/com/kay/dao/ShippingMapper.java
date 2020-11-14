@@ -1,6 +1,6 @@
 package com.kay.dao;
 
-import com.kay.pojo.Shipping;
+import com.kay.domain.Shipping;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
