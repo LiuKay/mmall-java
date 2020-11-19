@@ -1,18 +1,12 @@
 package com.kay.controller.portal;
 
 import com.kay.common.Const;
-import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
-import com.kay.domain.User;
+import com.kay.service.AuthService;
 import com.kay.service.CartService;
-import com.kay.util.CookieUtil;
-import com.kay.util.JsonUtil;
-import com.kay.util.RedisShardedPoolUtil;
-import org.apache.commons.lang3.StringUtils;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cart")
 public class CartController {
 
-    @Autowired
-    private CartService cartService;
+    private final CartService cartService;
 
+    private final AuthService authService;
+
+    @Autowired
+    public CartController(CartService cartService, AuthService authService) {
+        this.cartService = cartService;
+        this.authService = authService;
+    }
 
     /**
      * 添加产品
@@ -36,15 +36,7 @@ public class CartController {
      */
     @GetMapping("/add")
     public ServerResponse add(Integer productId, Integer count, HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.add(user.getId(), productId, count);
+        return cartService.add(getUserId(request), productId, count);
     }
 
     /**
@@ -56,15 +48,7 @@ public class CartController {
      */
     @GetMapping("/update")
     public ServerResponse update(Integer productId,Integer count,HttpServletRequest request){
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.update(user.getId(), productId, count);
+        return cartService.update(getUserId(request), productId, count);
     }
 
     /**
@@ -75,93 +59,41 @@ public class CartController {
      */
     @GetMapping("/delete_product")
     public ServerResponse delete(String productIds,HttpServletRequest request){
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.deleteByProductIds(user.getId(), productIds);
+        return cartService.deleteByProductIds(getUserId(request), productIds);
     }
 
     @GetMapping("/list")
     public ServerResponse list(HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.list(user.getId());
+        return cartService.list(getUserId(request));
     }
 
     @GetMapping("/select")
     public ServerResponse select(HttpServletRequest request,Integer productId) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.selectOrUnSelect(user.getId(), productId, Const.Cart.CHECKED);
+        return cartService.selectOrUnSelect(getUserId(request), productId, Const.Cart.CHECKED);
     }
 
     @GetMapping("/un_select")
     public ServerResponse unSelect(HttpServletRequest request,Integer productId) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.selectOrUnSelect(user.getId(), productId, Const.Cart.UN_CHECKED);
+        return cartService.selectOrUnSelect(getUserId(request), productId, Const.Cart.UN_CHECKED);
     }
 
     @GetMapping("/select_all")
     public ServerResponse selectAll(HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.selectOrUnSelect(user.getId(), null, Const.Cart.CHECKED);
+        return cartService.selectOrUnSelect(getUserId(request), null, Const.Cart.CHECKED);
     }
 
     @GetMapping("/un_select_all")
     public ServerResponse unSelectAll(HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return cartService.selectOrUnSelect(user.getId(), null, Const.Cart.UN_CHECKED);
+        return cartService.selectOrUnSelect(getUserId(request), null, Const.Cart.UN_CHECKED);
     }
 
     @GetMapping("/get_cart_product_count")
     public ServerResponse<Integer> getCartProductCount(HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createBySuccess(0);
-        }
-        return cartService.getCartProductCount(user.getId());
+        return cartService.getCartProductCount(getUserId(request));
+    }
+
+    private Integer getUserId(HttpServletRequest request) {
+        return authService.getUserId(request);
     }
 
 }

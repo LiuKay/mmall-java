@@ -4,19 +4,14 @@ package com.kay.controller.portal;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
-import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
-import com.kay.domain.User;
+import com.kay.service.AuthService;
 import com.kay.service.OrderService;
-import com.kay.util.CookieUtil;
-import com.kay.util.JsonUtil;
-import com.kay.util.RedisShardedPoolUtil;
 import com.kay.vo.OrderVo;
 import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,25 +26,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final AuthService authService;
 
+    @Autowired
+    public OrderController(OrderService orderService, AuthService authService) {
+        this.orderService = orderService;
+        this.authService = authService;
+    }
 
     /**
      * 创建订单
      */
     @GetMapping("/create")
     public ServerResponse create(HttpServletRequest request, Integer shippingId) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-
-        return orderService.createOrder(user.getId(), shippingId);
+        return orderService.createOrder(getUserId(request), shippingId);
     }
 
     /**
@@ -57,57 +48,25 @@ public class OrderController {
      */
     @GetMapping("/cancel")
     public ServerResponse cancel(Long orderNo,HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return orderService.cancleOrder(user.getId(), orderNo);
+        return orderService.cancleOrder(getUserId(request), orderNo);
     }
 
     //获取购物车中已经选中的商品详情
     @GetMapping("/get_order_cart_product")
     public ServerResponse getOrderCartProduct(HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return orderService.getOrderCartProduct(user.getId());
+        return orderService.getOrderCartProduct(getUserId(request));
     }
 
     @GetMapping("/detail")
     public ServerResponse<OrderVo> getOrderDetail(HttpServletRequest request, Long orderNo) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return orderService.getOrderDetail(user.getId(), orderNo);
+        return orderService.getOrderDetail(getUserId(request), orderNo);
     }
 
     @GetMapping("/list")
     public ServerResponse<PageInfo> getOrderList(HttpServletRequest request,
                                                  @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                                  @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-        return orderService.getOrderList(user.getId(), pageNum, pageSize);
+        return orderService.getOrderList(getUserId(request), pageNum, pageSize);
     }
 
     /**
@@ -115,18 +74,9 @@ public class OrderController {
      */
     @GetMapping("/pay")
     public ServerResponse pay(Long orderNo,HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-
+        Integer userId = getUserId(request);
         String path = request.getSession().getServletContext().getRealPath("upload");
-
-        return orderService.pay(user.getId(), orderNo, path);
+        return orderService.pay(userId, orderNo, path);
     }
 
     /**
@@ -175,17 +125,8 @@ public class OrderController {
     }
 
     @GetMapping("/query_order_pay_status")
-    public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo,HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (StringUtils.isEmpty(loginToken)) {
-            return ServerResponse.createByErrorMessage("用户未登录");
-        }
-        User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDescription());
-        }
-
-        ServerResponse response = orderService.queryOrderPayStatus(user.getId(), orderNo);
+    public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo, HttpServletRequest request) {
+        ServerResponse response = orderService.queryOrderPayStatus(getUserId(request), orderNo);
         if (response.isSuccess()) {
             return ServerResponse.createBySuccess(true);
         }
@@ -193,4 +134,7 @@ public class OrderController {
         return ServerResponse.createBySuccess(false);
     }
 
+    private Integer getUserId(HttpServletRequest request) {
+        return authService.getUserId(request);
+    }
 }
