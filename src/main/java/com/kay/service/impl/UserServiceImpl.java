@@ -7,12 +7,9 @@ import com.kay.domain.Role;
 import com.kay.domain.User;
 import com.kay.service.UserService;
 import com.kay.util.MD5Util;
-import com.kay.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 /**
  * Created by kay on 2018/3/19.
@@ -121,11 +118,12 @@ public class UserServiceImpl implements UserService {
     public ServerResponse<String> checkQuestionAnswer(String username, String question, String answer) {
         int resultCount = userMapper.selectQuestionAnswer(username, question, answer);
         //有此用户即对应的问题也回答正确
-        if (resultCount > 0) {
-            String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
-            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, checkToken,60*60*12);
-            return ServerResponse.createBySuccess(checkToken); //返回token
-        }
+        //TODO: 替换成验证码
+//        if (resultCount > 0) {
+//            String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
+//            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, checkToken,60*60*12);
+//            return ServerResponse.createBySuccess(checkToken); //返回token
+//        }
 
         return ServerResponse.createByErrorMessage("验证失败");
     }
@@ -145,20 +143,22 @@ public class UserServiceImpl implements UserService {
         }
         //2.检验用户的合法性，否则直接获取token前缀的key去拿token的value会有风险
         ServerResponse<String> valid = this.checkValid(username, Const.USERNAME);
-        if(valid.isSuccess()){
+        if (valid.isSuccess()) {
             //成功说明checkValid检验重复的用户不存在
             return ServerResponse.createByErrorMessage("用户名不存在");
         }
         //去缓存获取token
-        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX);
+        //TODO: 替换验证码
+//        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX);
+        String token = null;
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或已过期，请重新获取");
         }
 
-        if (StringUtils.equals(token,forgetToken)) {
+        if (StringUtils.equals(token, forgetToken)) {
             String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
             //更新新密码
-            int updateCount = userMapper.updatePasswordByUsername(username,md5Password);
+            int updateCount = userMapper.updatePasswordByUsername(username, md5Password);
             if (updateCount > 0) {
                 //判断更新行数
                 return ServerResponse.createBySuccessMessage("密码重置成功");
