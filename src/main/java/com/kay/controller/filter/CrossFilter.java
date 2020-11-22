@@ -10,17 +10,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CrossFilter implements Filter{
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse response= (HttpServletResponse) servletResponse;
-        String origin= servletRequest.getRemoteHost()+":"+servletRequest.getRemotePort();
-        //logger.debug(" CrossFilter : remote host and port:[{}]",origin);
-        // System.out.println("********************************"+origin);
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         response.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS,DELETE");
@@ -29,8 +22,4 @@ public class CrossFilter implements Filter{
         filterChain.doFilter(servletRequest,response);
     }
 
-    @Override
-    public void destroy() {
-
-    }
 }
