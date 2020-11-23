@@ -4,7 +4,6 @@ import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.domain.User;
 import com.kay.service.UserService;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -56,7 +55,7 @@ public class UserSpringSessionController {
         CookieUtil.delLoginToken(request, response);
         RedisShardedPoolUtil.del(loginToken);*/
         session.removeAttribute(Const.CURRENT_USER);
-        return ServerResponse.createBySuccess();
+        return ServerResponse.success();
     }
 
 
@@ -77,9 +76,9 @@ public class UserSpringSessionController {
         User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);*/
 
         if(user != null){
-            return ServerResponse.createBySuccess(user);
+            return ServerResponse.success(user);
         }
-        return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
+        return ServerResponse.error("用户未登录,无法获取当前用户的信息");
     }
 
 }

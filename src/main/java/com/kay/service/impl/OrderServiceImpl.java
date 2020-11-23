@@ -9,8 +9,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
-import com.kay.dao.*;
-import com.kay.domain.*;
+import com.kay.dao.CartMapper;
+import com.kay.dao.OrderItemMapper;
+import com.kay.dao.OrderMapper;
+import com.kay.dao.PayInfoMapper;
+import com.kay.dao.ProductMapper;
+import com.kay.dao.ShippingMapper;
+import com.kay.domain.Cart;
+import com.kay.domain.Order;
+import com.kay.domain.OrderItem;
+import com.kay.domain.PayInfo;
+import com.kay.domain.Product;
+import com.kay.domain.Shipping;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtil;
@@ -19,15 +29,18 @@ import com.kay.vo.OrderItemVo;
 import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
 import com.kay.vo.ShippingVo;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 //import com.alipay.demo.trade.config.Configs;
 //import com.alipay.demo.trade.model.ExtendParams;
@@ -98,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
         if (CollectionUtils.isEmpty(orderItemList)) {
-            return ServerResponse.createByErrorMessage("购物车为空");
+            return ServerResponse.error("购物车为空");
         }
 
         //计算总价
@@ -108,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
         //组装订单对象
         Order order = this.assembleOrder(userId, shippingId, payment);
         if (order == null) {
-            return ServerResponse.createByErrorMessage("生成订单错误");
+            return ServerResponse.error("生成订单错误");
         }
 
         //同一个订单的订单条目，设置订单号
@@ -127,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
         //返回前端，格式转换 生成 Vo
         OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
 
-        return ServerResponse.createBySuccess(orderVo);
+        return ServerResponse.success(orderVo);
     }
 
 
@@ -140,10 +153,10 @@ public class OrderServiceImpl implements OrderService {
     public ServerResponse cancleOrder(Integer userId, Long orderNo) {
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
-            return ServerResponse.createByErrorMessage("该用户此订单不存在");
+            return ServerResponse.error("该用户此订单不存在");
         }
         if (order.getStatus()!= Const.OrderStatusEnum.NO_PAY.getCode()) {
-            return ServerResponse.createByErrorMessage("已付款，无法取消订单");
+            return ServerResponse.error("已付款，无法取消订单");
         }
 
         Order updateOrder = new Order();
@@ -152,10 +165,10 @@ public class OrderServiceImpl implements OrderService {
 
         int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
         if (rowCount>0) {
-            return ServerResponse.createBySuccess();
+            return ServerResponse.success();
         }
 
-        return ServerResponse.createByError();
+        return ServerResponse.error();
     }
 
     /**
@@ -186,7 +199,7 @@ public class OrderServiceImpl implements OrderService {
         orderProductVo.setOrderItemVoList(orderItemVoList);
         orderProductVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
 
-        return ServerResponse.createBySuccess(orderProductVo);
+        return ServerResponse.success(orderProductVo);
     }
 
     /**
@@ -201,9 +214,9 @@ public class OrderServiceImpl implements OrderService {
         if (order != null) {
             List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, orderNo);
             OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-            return ServerResponse.createBySuccess(orderVo);
+            return ServerResponse.success(orderVo);
         }
-        return ServerResponse.createByErrorMessage("找不到该订单");
+        return ServerResponse.error("找不到该订单");
     }
 
     @Override
@@ -215,7 +228,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderVo> orderVoList = this.assembleOrderVoList(userId,orderList);
         pageInfo.setList(orderVoList);
 
-        return ServerResponse.createBySuccess(pageInfo);
+        return ServerResponse.success(pageInfo);
     }
 
 
@@ -368,7 +381,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> orderItemList = Lists.newArrayList();
 
         if (CollectionUtils.isEmpty(cartList)) {
-            return ServerResponse.createByErrorMessage("购物车为空");
+            return ServerResponse.error("购物车为空");
         }
 
         //校验购物车的数量，包括产品的状态和数量
@@ -377,12 +390,12 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = new OrderItem();
             Product product = productMapper.selectByPrimaryKey(cart.getProductId());
             if (Const.ProductStatusEnum.ON_SALE.getCode() != product.getStatus()) {
-                return ServerResponse.createByErrorMessage("产品" + product.getName() + "不是在售状态");
+                return ServerResponse.error("产品" + product.getName() + "不是在售状态");
             }
 
             //检查库存
             if (cart.getQuantity() > product.getStock()) {
-                return ServerResponse.createByErrorMessage("产品" + product.getName() + "库存不足");
+                return ServerResponse.error("产品" + product.getName() + "库存不足");
             }
 
             orderItem.setUserId(userId);
@@ -395,7 +408,7 @@ public class OrderServiceImpl implements OrderService {
 
             orderItemList.add(orderItem);
         }
-        return ServerResponse.createBySuccess(orderItemList);
+        return ServerResponse.success(orderItemList);
     }
 
 
@@ -403,7 +416,7 @@ public class OrderServiceImpl implements OrderService {
         Map<String, String> resultMap = Maps.newHashMap();
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
-            return ServerResponse.createByErrorMessage("找不到该订单");
+            return ServerResponse.error("找不到该订单");
         }
         resultMap.put("orderNo", String.valueOf(order.getOrderNo()));
 
@@ -549,12 +562,12 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order == null) {
-            return ServerResponse.createByErrorMessage("非本站订单，回调忽略");
+            return ServerResponse.error("非本站订单，回调忽略");
         }
         //订单状态
         if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()) {
             //需要返回success
-            return ServerResponse.createBySuccessMessage("支付宝重复调用");
+            return ServerResponse.successWithMessage("支付宝重复调用");
         }
 
         //回调状态
@@ -575,19 +588,19 @@ public class OrderServiceImpl implements OrderService {
         payInfo.setPlatformStatus(tradeStatus);
         payInfoMapper.insert(payInfo);
 
-        return ServerResponse.createBySuccess();
+        return ServerResponse.success();
     }
 
     public ServerResponse queryOrderPayStatus(Integer userId, Long orderNo) {
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order==null) {
-            return ServerResponse.createByErrorMessage("用户没该订单");
+            return ServerResponse.error("用户没该订单");
         }
         //成功的订单
         if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()) {
-            return ServerResponse.createBySuccess();
+            return ServerResponse.success();
         }
-        return ServerResponse.createByError();
+        return ServerResponse.error();
     }
 
 
@@ -607,7 +620,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderVo> orderVoList = this.assembleOrderVoList(null, orderList);
         pageInfo.setList(orderVoList);
-        return ServerResponse.createBySuccess(pageInfo);
+        return ServerResponse.success(pageInfo);
     }
 
     @Override
@@ -616,9 +629,9 @@ public class OrderServiceImpl implements OrderService {
         if (order!=null) {
             List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
             OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-            return ServerResponse.createBySuccess(orderVo);
+            return ServerResponse.success(orderVo);
         }
-        return ServerResponse.createByErrorMessage("订单不存在");
+        return ServerResponse.error("订单不存在");
     }
 
     /**
@@ -639,9 +652,9 @@ public class OrderServiceImpl implements OrderService {
             PageInfo pageInfo = new PageInfo(Lists.newArrayList(order));
             pageInfo.setList(Lists.newArrayList(orderVo));
 
-            return ServerResponse.createBySuccess(pageInfo);
+            return ServerResponse.success(pageInfo);
         }
-        return ServerResponse.createByErrorMessage("订单不存在");
+        return ServerResponse.error("订单不存在");
     }
 
     /**
@@ -657,10 +670,10 @@ public class OrderServiceImpl implements OrderService {
                 order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
                 order.setSendTime(new Date());
                 orderMapper.updateByPrimaryKeySelective(order);
-                return ServerResponse.createBySuccess("发货成功");
+                return ServerResponse.success("发货成功");
             }
         }
-        return ServerResponse.createByErrorMessage("订单不存在");
+        return ServerResponse.error("订单不存在");
     }
 
     /**

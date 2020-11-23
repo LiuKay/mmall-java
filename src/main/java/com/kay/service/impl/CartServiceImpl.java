@@ -14,12 +14,11 @@ import com.kay.util.BigDecimalUtil;
 import com.kay.util.PropertiesUtil;
 import com.kay.vo.CartProductVo;
 import com.kay.vo.CartVo;
+import java.math.BigDecimal;
+import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Created by kay on 2018/3/23.
@@ -42,7 +41,7 @@ public class CartServiceImpl implements CartService {
      */
     public ServerResponse<CartVo> add(Integer userId, Integer productId,Integer count) {
         if (productId == null || count == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
 
         //1.判断购物车是否有该商品
@@ -76,14 +75,14 @@ public class CartServiceImpl implements CartService {
     @Override
     public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count) {
         if (productId == null || userId == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
         if (cart != null) {
             cart.setQuantity(count);
             int updateCount = cartMapper.updateByPrimaryKeySelective(cart);
             if (updateCount == 0) {
-                return ServerResponse.createByErrorMessage("更新失败");
+                return ServerResponse.error("更新失败");
             }
         }
         //TODO
@@ -100,7 +99,7 @@ public class CartServiceImpl implements CartService {
     public ServerResponse<CartVo> deleteByProductIds(Integer userId, String productIds) {
         List<String> productIdList = Splitter.on(",").splitToList(productIds);
         if (CollectionUtils.isEmpty(productIdList)) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         cartMapper.deleteByUserIdProductIds(userId, productIdList);
 
@@ -110,7 +109,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public ServerResponse<CartVo> list(Integer userId) {
         CartVo cartVo = this.getCartVoLimit(userId);
-        return ServerResponse.createBySuccess(cartVo);
+        return ServerResponse.success(cartVo);
     }
 
     /**
@@ -129,7 +128,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public ServerResponse<Integer> getCartProductCount(Integer userId) {
         int count = cartMapper.selectCartProductCount(userId);
-        return ServerResponse.createBySuccess(count);
+        return ServerResponse.success(count);
     }
 
     /**
