@@ -5,10 +5,11 @@
    2. SpringBoot 集成 Mybaits
    3. 集成 Spring Security
    4. 配置 Spring Data Redis 或 使用 Spring Cache 管理缓存
-   5. 修改所有接口为 RESTfull 风格, 定义统一的异常处理
+   5. 修改所有接口为 RESTFull 风格, 摒弃正常返回时的包装对象, 定义统一的错误处理机制
    6. 支持手机验证码登录，移除cookie，使用JWT作为认证
    7. 支持本地测试，使用 testcontainers
    8. 替换maven 使用gradle 作为依赖管理
+
 
 
 Swagger2 UI 地址：http://localhost:8081/swagger-ui.html

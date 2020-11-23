@@ -128,10 +128,10 @@ public class OrderController {
     public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo, HttpServletRequest request) {
         ServerResponse response = orderService.queryOrderPayStatus(getUserId(request), orderNo);
         if (response.isSuccess()) {
-            return ServerResponse.createBySuccess(true);
+            return ServerResponse.success(true);
         }
 
-        return ServerResponse.createBySuccess(false);
+        return ServerResponse.success(false);
     }
 
     private Integer getUserId(HttpServletRequest request) {

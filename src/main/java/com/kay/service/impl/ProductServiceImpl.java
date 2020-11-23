@@ -12,16 +12,15 @@ import com.kay.domain.Category;
 import com.kay.domain.Product;
 import com.kay.service.CategoryService;
 import com.kay.service.ProductService;
-import com.kay.util.PropertiesUtil;
 import com.kay.util.DateTimeUtil;
+import com.kay.util.PropertiesUtil;
 import com.kay.vo.ProductDetailVo;
 import com.kay.vo.ProductListVo;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by kay on 2018/3/20.
@@ -41,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ServerResponse<String> saveOrUpdateProduct(Product product) {
         if (product==null) {
-            return ServerResponse.createByErrorMessage("更新或新增产品参数错误");
+            return ServerResponse.error("更新或新增产品参数错误");
         }
 
         //业务，主图使用子图中的第一个图
@@ -56,16 +55,16 @@ public class ProductServiceImpl implements ProductService {
         if (product.getId()==null) {
             int insertCount = productMapper.insert(product);
             if (insertCount > 0) {
-                return ServerResponse.createBySuccessMessage("添加产品成功");
+                return ServerResponse.successWithMessage("添加产品成功");
             }
         }else {
             int updateCount = productMapper.updateByPrimaryKey(product);
             if (updateCount>0) {
-                return ServerResponse.createBySuccessMessage("更新产品成功");
+                return ServerResponse.successWithMessage("更新产品成功");
             }
         }
 
-        return ServerResponse.createByErrorMessage("添加或更新产品失败");
+        return ServerResponse.error("添加或更新产品失败");
     }
 
     /**
@@ -77,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ServerResponse<String> setSaleStatus(Integer productId, Integer status) {
         if (productId == null || status == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
 
         Product product = new Product();
@@ -85,9 +84,9 @@ public class ProductServiceImpl implements ProductService {
         product.setStatus(status);
         int updateCount = productMapper.updateByPrimaryKeySelective(product);
         if (updateCount > 0) {
-            return ServerResponse.createBySuccessMessage("修改产品状态成功");
+            return ServerResponse.successWithMessage("修改产品状态成功");
         }
-        return ServerResponse.createByErrorMessage("修改产品状态失败");
+        return ServerResponse.error("修改产品状态失败");
     }
 
     /**
@@ -98,16 +97,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ServerResponse getManageProductDetail(Integer productId) {
         if (productId==null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         Product product = productMapper.selectByPrimaryKey(productId);
         if (product==null) {
-            return ServerResponse.createByErrorMessage("产品已下架或者删除");
+            return ServerResponse.error("产品已下架或者删除");
         }
 
         //对象转换，pojo->vo
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);
-        return ServerResponse.createBySuccess(productDetailVo);
+        return ServerResponse.success(productDetailVo);
     }
 
     /**
@@ -130,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
         }
         pageInfo.setList(productListVoList);
 
-        return ServerResponse.createBySuccess(pageInfo);
+        return ServerResponse.success(pageInfo);
     }
 
     /**
@@ -160,7 +159,7 @@ public class ProductServiceImpl implements ProductService {
         }
         pageInfo.setList(productListVoList);
 
-        return ServerResponse.createBySuccess(pageInfo);
+        return ServerResponse.success(pageInfo);
     }
 
     /**
@@ -171,18 +170,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ServerResponse<ProductDetailVo> getProductList(Integer productId) {
         if (productId==null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         Product product = productMapper.selectByPrimaryKey(productId);
         if (product==null) {
-            return ServerResponse.createByErrorMessage("产品已下架或者删除");
+            return ServerResponse.error("产品已下架或者删除");
         }
         if (product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
-            return ServerResponse.createByErrorMessage("产品已下架或者删除");
+            return ServerResponse.error("产品已下架或者删除");
         }
         //对象转换，pojo->vo
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);
-        return ServerResponse.createBySuccess(productDetailVo);
+        return ServerResponse.success(productDetailVo);
     }
 
     /**
@@ -198,7 +197,7 @@ public class ProductServiceImpl implements ProductService {
     public ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize, String orderBy) {
         //参数不合法
         if (StringUtils.isBlank(keyword) && categoryId == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDescription());
+            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
 
         //A.处理分类
@@ -211,7 +210,7 @@ public class ProductServiceImpl implements ProductService {
                 PageHelper.startPage(pageNum, pageSize);
                 List<ProductListVo> productListVoList = Lists.newArrayList();
                 PageInfo pageInfo = new PageInfo(productListVoList);
-                return ServerResponse.createBySuccess(pageInfo);
+                return ServerResponse.success(pageInfo);
             }
             //3.若存在分类，把categoryId当作一个大类,取出所有的节点 , 在具体查询该节点内的条件，故改list先提取出来
             categoryIdList = categoryService.selectCategoryAndChildrenById(categoryId).getData();
@@ -248,7 +247,7 @@ public class ProductServiceImpl implements ProductService {
         PageInfo pageInfo = new PageInfo(productList);
         pageInfo.setList(productListVoList);
 
-        return ServerResponse.createBySuccess(pageInfo);
+        return ServerResponse.success(pageInfo);
     }
 
     private ProductListVo assembleProductListVo(Product product) {

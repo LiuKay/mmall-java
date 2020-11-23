@@ -2,96 +2,95 @@ package com.kay.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
- * Created by kay on 2018/3/19.
- * 服务端响应对象
+ * Server Response
  */
-//只返回不为空的字段,即value为null,也不返回key
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class ServerResponse<T> {
 
-    private int status;
-    private String msg;
+    /**
+     * 客户端开发人员只允许识别 code
+     */
+    private int code;
+
+    /**
+     * 此 message 只对开发人员所识别，不允许直接暴露给用户，只使用在开发阶段
+     */
+    private String message;
+
+    /**
+     * 成功时返回的数据
+     */
     private T data;
 
-    private ServerResponse(int status){
-        this.status = status;
+    private ServerResponse(int code) {
+        this.code = code;
     }
 
-    private ServerResponse(int status,String message) {
-        this.status = status;
-        this.msg = message;
+    private ServerResponse(int code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
-    private ServerResponse(int status,T data){
-        this.status = status;
+    private ServerResponse(int code, T data) {
+        this.code = code;
         this.data = data;
     }
 
-    private ServerResponse(int status, String message, T data) {
-        this.status = status;
-        this.msg = message;
+    private ServerResponse(int code, String message, T data) {
+        this.code = code;
+        this.message = message;
         this.data = data;
     }
 
     @JsonIgnore
-    //不序列化，留给调用者判断是否成功
     public boolean isSuccess() {
-        return this.status == ResponseCode.SUCCESS.getCode();
+        return this.code == ResponseCode.SUCCESS.getCode();
     }
 
-    public int getStatus(){
-        return this.status;
+    public int getCode() {
+        return this.code;
     }
 
     public T getData() {
         return this.data;
     }
 
-    public String getMsg() {
-        return this.msg;
+    public String getMessage() {
+        return this.message;
     }
 
-
-    //只返回成功状态码
-    public static <T> ServerResponse<T> createBySuccess() {
-        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
+    public static <T> ServerResponse<T> create(ResponseCode status) {
+        return new ServerResponse<>(status.getCode(), status.getDescription());
     }
 
-    //返回成功状态和数据
-    public static <T> ServerResponse<T> createBySuccess(T data) {
-        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(), data);
+    public static <T> ServerResponse<T> success() {
+        return new ServerResponse<>(ResponseCode.SUCCESS.getCode());
     }
 
-    //返回成功状态和提示消息
-    public static <T> ServerResponse<T> createBySuccessMessage(String message) {
-        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),message);
+    public static <T> ServerResponse<T> success(T data) {
+        return new ServerResponse<>(ResponseCode.SUCCESS.getCode(), data);
     }
 
-    //返回成功状态、消息和数据
-    public static <T> ServerResponse<T> createBySuccessMessage(String message,T data) {
-        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),message,data);
+    public static <T> ServerResponse<T> successWithMessage(String message) {
+        return new ServerResponse<>(ResponseCode.SUCCESS.getCode(), message);
     }
 
-    //返回失败码
-    public static <T> ServerResponse<T> createByError(){
-        return new ServerResponse<T>(ResponseCode.ERROR.getCode(),ResponseCode.ERROR.getDescription());
+    public static <T> ServerResponse<T> successWithData(String message, T data) {
+        return new ServerResponse<>(ResponseCode.SUCCESS.getCode(), message, data);
     }
 
-    //返回失败码和自定义提示消息
-    public static <T> ServerResponse<T> createByErrorMessage(String errorMessage) {
-        return new ServerResponse<T>(ResponseCode.ERROR.getCode(), errorMessage);
+    public static <T> ServerResponse<T> error() {
+        return new ServerResponse<>(ResponseCode.ERROR.getCode(), ResponseCode.ERROR.getDescription());
     }
 
-    //返回其他自定义失败码和提示消息
-    public static <T> ServerResponse<T> createByErrorCodeMessage(int status, String errorMessage) {
-        return new ServerResponse<T>(status, errorMessage);
+    public static <T> ServerResponse<T> error(String errorMessage) {
+        return new ServerResponse<>(ResponseCode.ERROR.getCode(), errorMessage);
     }
 
-    public static <T> ServerResponse<T> createByError(Throwable throwable) {
-        return new ServerResponse<T>(ResponseCode.ERROR.getCode(), ExceptionUtils.getStackTrace(throwable));
+    public static <T> ServerResponse<T> error(Throwable throwable) {
+        return new ServerResponse<>(ResponseCode.ERROR.getCode(), ExceptionUtils.getStackTrace(throwable));
     }
 }

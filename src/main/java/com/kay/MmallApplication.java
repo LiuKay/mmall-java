@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2019/8/23 21:50
  */
 @SpringBootApplication
-//@EnableRedisHttpSession
 @MapperScan("com.kay.dao")
 public class MmallApplication {
     public static void main(String[] args) {

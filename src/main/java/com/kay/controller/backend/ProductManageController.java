@@ -5,12 +5,10 @@ import com.kay.domain.Product;
 import com.kay.service.FileService;
 import com.kay.service.ProductService;
 import com.kay.util.PropertiesUtil;
-
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -92,7 +90,7 @@ public class ProductManageController {
         Map fileMap = new HashMap();
         fileMap.put("uri", uploadFilePath);
         fileMap.put("url", url);
-        return ServerResponse.createBySuccess(fileMap);
+        return ServerResponse.success(fileMap);
     }
 
     /**

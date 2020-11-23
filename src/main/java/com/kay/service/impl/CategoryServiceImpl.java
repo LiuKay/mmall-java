@@ -6,14 +6,13 @@ import com.kay.common.ServerResponse;
 import com.kay.dao.CategoryMapper;
 import com.kay.domain.Category;
 import com.kay.service.CategoryService;
+import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by kay on 2018/3/20.
@@ -36,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ServerResponse<String> addCategory(String categoryName, Integer parentId) {
         if (parentId == null && StringUtils.isBlank(categoryName)) {
-            return ServerResponse.createByErrorMessage("添加品类参数错误");
+            return ServerResponse.error("添加品类参数错误");
         }
         Category category = new Category();
         category.setParentId(parentId);
@@ -46,24 +45,24 @@ public class CategoryServiceImpl implements CategoryService {
 
         int insertCount = categoryMapper.insertSelective(category);
         if (insertCount > 0) {
-            return ServerResponse.createBySuccessMessage("添加品类成功");
+            return ServerResponse.successWithMessage("添加品类成功");
         }
-        return ServerResponse.createByErrorMessage("添加品类失败");
+        return ServerResponse.error("添加品类失败");
     }
 
     @Override
     public ServerResponse<String> setCategory(String categoryName, Integer categoryId) {
         if (categoryId == null && StringUtils.isBlank(categoryName)) {
-            return ServerResponse.createByErrorMessage("修改品类名称参数错误");
+            return ServerResponse.error("修改品类名称参数错误");
         }
         Category category = new Category();
         category.setId(categoryId);
         category.setName(categoryName);
         int updateCount = categoryMapper.updateByPrimaryKeySelective(category);
         if (updateCount > 0) {
-            return ServerResponse.createBySuccessMessage("更新品类名字成功");
+            return ServerResponse.successWithMessage("更新品类名字成功");
         }
-        return ServerResponse.createByErrorMessage("更新品类名字失败");
+        return ServerResponse.error("更新品类名字失败");
     }
 
     /**
@@ -77,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (CollectionUtils.isEmpty(categoryList)) {
             log.info("未找到当前分类的子节点");
         }
-        return ServerResponse.createBySuccess(categoryList);
+        return ServerResponse.success(categoryList);
     }
 
     /**
@@ -97,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 //        }
 
-        return ServerResponse.createBySuccess(categoryList);
+        return ServerResponse.success(categoryList);
     }
 
     /**

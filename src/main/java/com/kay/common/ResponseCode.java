@@ -6,9 +6,14 @@ package com.kay.common;
 public enum ResponseCode {
 
     SUCCESS(0, "SUCCESS"),
-    ERROR(1, "ERROR"),
-    NEED_LOGIN(10,"NEED_LOGIN"),
-    ILLEGAL_ARGUMENT(2, "ILLEGAL_ARGUMENT");
+
+    ERROR(-1, "UNKNOWN ERROR"),
+
+    /* user related 1001- 1999 */
+    NEED_LOGIN(1001, "NEED_LOGIN"),
+
+    /* parameter related 2001-2999 */
+    ILLEGAL_ARGUMENT(2001, "ILLEGAL_ARGUMENT");
 
     private int code;
     private String description;
