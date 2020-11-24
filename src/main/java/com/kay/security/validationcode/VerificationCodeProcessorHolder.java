@@ -1,9 +1,8 @@
 package com.kay.security.validationcode;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * @author LiuKay
@@ -23,7 +22,8 @@ public class VerificationCodeProcessorHolder {
         String processorBeanName = processorType + VerificationCodeProcessor.class.getSimpleName();
         VerificationCodeProcessor codeProcessor = processorMap.get(processorBeanName);
         if (codeProcessor == null) {
-            throw new VerificationCodeException("Could not find VerificationCodeProcessor with name:" + processorBeanName);
+            throw new VerificationCodeException(
+                    "Could not find VerificationCodeProcessor with name:" + processorBeanName);
         }
         return codeProcessor;
     }

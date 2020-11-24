@@ -1,9 +1,8 @@
 package com.kay.dao;
 
 import com.kay.domain.Shipping;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface ShippingMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,11 +17,11 @@ public interface ShippingMapper {
 
     int updateByPrimaryKey(Shipping record);
 
-    int deleteByIdAndUserId(@Param("userId") Integer userId,@Param("shippingId") Integer shippingId);
+    int deleteByIdAndUserId(@Param("userId") Integer userId, @Param("shippingId") Integer shippingId);
 
     int updateByIdAndUserId(Shipping shipping);
 
-    Shipping selectByIdAndUserId(@Param("userId") Integer userId,@Param("shippingId") Integer shippingId);
+    Shipping selectByIdAndUserId(@Param("userId") Integer userId, @Param("shippingId") Integer shippingId);
 
     List<Shipping> selectByUserId(Integer userId);
 }

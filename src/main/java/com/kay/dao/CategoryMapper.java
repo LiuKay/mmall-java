@@ -1,7 +1,6 @@
 package com.kay.dao;
 
 import com.kay.domain.Category;
-
 import java.util.List;
 
 public interface CategoryMapper {

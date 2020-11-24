@@ -2,7 +2,6 @@ package com.kay.security.validationcode.image;
 
 
 import com.kay.security.validationcode.VerificationCode;
-
 import java.awt.image.BufferedImage;
 
 /**

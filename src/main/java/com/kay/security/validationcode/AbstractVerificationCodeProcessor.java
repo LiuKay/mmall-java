@@ -1,5 +1,6 @@
 package com.kay.security.validationcode;
 
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
@@ -7,8 +8,6 @@ import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
-
-import java.util.Map;
 
 /**
  * Template Method for process verification code
@@ -19,7 +18,8 @@ import java.util.Map;
  * @author LiuKay
  * @since 2019/12/7
  */
-public abstract class AbstractVerificationCodeProcessor<T extends VerificationCode> implements VerificationCodeProcessor {
+public abstract class AbstractVerificationCodeProcessor<T extends VerificationCode> implements
+                                                                                    VerificationCodeProcessor {
 
     private static final String SESSION_VALIDATION_CODE = "VALIDATION_CODE_";
 
@@ -101,7 +101,8 @@ public abstract class AbstractVerificationCodeProcessor<T extends VerificationCo
         String generatorBeanName = type + "CodeGenerator";
         VerificationCodeGenerator generator = validateCodeGenerators.get(generatorBeanName);
         if (generator == null) {
-            throw new VerificationCodeException("Could not find VerificationCodeGenerator with bean name :" + generatorBeanName);
+            throw new VerificationCodeException(
+                    "Could not find VerificationCodeGenerator with bean name :" + generatorBeanName);
         }
         return (T) generator.generate(request);
     }

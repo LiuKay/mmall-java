@@ -38,17 +38,18 @@ public class ShippingServiceImpl implements ShippingService {
 
     /**
      * 删除：注意横向越权问题
+     *
      * @param userId
      * @param shippingId
      * @return
      */
     @Override
     public ServerResponse<String> delete(Integer userId, Integer shippingId) {
-        if(shippingId==null){
+        if (shippingId == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         int count = shippingMapper.deleteByIdAndUserId(userId, shippingId);
-        if (count ==1) {
+        if (count == 1) {
             return ServerResponse.successWithMessage("删除地址成功");
         }
         return ServerResponse.error("删除地址失败");
@@ -56,7 +57,7 @@ public class ShippingServiceImpl implements ShippingService {
 
     @Override
     public ServerResponse update(Integer userId, Shipping shipping) {
-        if(shipping ==null){
+        if (shipping == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         //防止横向越权
@@ -70,7 +71,7 @@ public class ShippingServiceImpl implements ShippingService {
 
     @Override
     public ServerResponse select(Integer userId, Integer shippingId) {
-        if(shippingId==null){
+        if (shippingId == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         Shipping shipping = shippingMapper.selectByIdAndUserId(userId, shippingId);
@@ -82,8 +83,8 @@ public class ShippingServiceImpl implements ShippingService {
     }
 
     @Override
-    public ServerResponse<PageInfo> list(Integer userId,int pageNum,int pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
+    public ServerResponse<PageInfo> list(Integer userId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<Shipping> shippingList = shippingMapper.selectByUserId(userId);
         PageInfo pageInfo = new PageInfo<>(shippingList);
         return ServerResponse.success(pageInfo);

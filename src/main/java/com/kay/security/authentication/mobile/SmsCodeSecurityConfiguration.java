@@ -1,6 +1,5 @@
 package com.kay.security.authentication.mobile;
 
-import com.kay.security.MmallUserDetailService;
 import com.kay.security.PhoneUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,7 +44,7 @@ public class SmsCodeSecurityConfiguration extends SecurityConfigurerAdapter<Defa
         smsCodeAuthenticationProvider.setUserDetailsService((PhoneUserDetailService) userDetailsService);
 
         http.authenticationProvider(smsCodeAuthenticationProvider)
-                .addFilterAfter(smsCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterAfter(smsCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 }

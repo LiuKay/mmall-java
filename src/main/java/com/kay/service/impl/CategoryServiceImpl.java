@@ -28,6 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 添加品类
+     *
      * @param categoryName
      * @param parentId
      * @return
@@ -67,6 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 获取子节点（同级）
+     *
      * @param categoryId
      * @return
      */
@@ -81,6 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 获取本节点及孩子节点的ID
+     *
      * @param categoryId
      * @return
      */
@@ -91,21 +94,20 @@ public class CategoryServiceImpl implements CategoryService {
         //只存放子节点的id
         List<Integer> categoryList = Lists.newArrayList();
 //        if (categoryId != null) {
-            for (Category category : categorySet) {
-                categoryList.add(category.getId());
-            }
+        for (Category category : categorySet) {
+            categoryList.add(category.getId());
+        }
 //        }
 
         return ServerResponse.success(categoryList);
     }
 
     /**
-     *
-     * @param categorySet  初始set，Category需要重写hashCode 和 equals方法
+     * @param categorySet 初始set，Category需要重写hashCode 和 equals方法
      * @param categoryId
      * @return
      */
-    private Set<Category> getCategoryById(Set categorySet,Integer categoryId){
+    private Set<Category> getCategoryById(Set categorySet, Integer categoryId) {
         //添加当前节点
         Category category = categoryMapper.selectByPrimaryKey(categoryId);
         if (category != null) {

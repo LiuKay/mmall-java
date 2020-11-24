@@ -25,18 +25,19 @@ public class UserSpringSessionController {
     private UserService userService;
 
     /**
-     *用户登录
+     * 用户登录
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session,HttpServletResponse httpServletResponse){
+    public ServerResponse<User> login(String username, String password, HttpSession session,
+                                      HttpServletResponse httpServletResponse) {
 
 //        fixme 异常测试
 //        int i= 10/0;
 
         ServerResponse<User> response = userService.login(username, password);
         if (response.isSuccess()) {
-            session.setAttribute(Const.CURRENT_USER,response.getData());
+            session.setAttribute(Const.CURRENT_USER, response.getData());
 //            //写入cookie
 //            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
 //            //将登录用户信息存入redis，有效时间为30分钟
@@ -50,7 +51,8 @@ public class UserSpringSessionController {
      */
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session,HttpServletRequest request,HttpServletResponse response){
+    public ServerResponse<String> logout(HttpSession session, HttpServletRequest request,
+                                         HttpServletResponse response) {
         /*String loginToken = CookieUtil.readLoginToken(request);
         CookieUtil.delLoginToken(request, response);
         RedisShardedPoolUtil.del(loginToken);*/
@@ -59,14 +61,14 @@ public class UserSpringSessionController {
     }
 
 
-
     /**
      * 获取当前用户信息
+     *
      * @return
      */
     @RequestMapping(value = "/get_user_info", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpServletRequest request,HttpSession session) {
+    public ServerResponse<User> getUserInfo(HttpServletRequest request, HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
 
         /*String loginToken = CookieUtil.readLoginToken(request);
@@ -75,7 +77,7 @@ public class UserSpringSessionController {
         }
         User user = JsonUtil.string2obj(RedisShardedPoolUtil.get(loginToken), User.class);*/
 
-        if(user != null){
+        if (user != null) {
             return ServerResponse.success(user);
         }
         return ServerResponse.error("用户未登录,无法获取当前用户的信息");

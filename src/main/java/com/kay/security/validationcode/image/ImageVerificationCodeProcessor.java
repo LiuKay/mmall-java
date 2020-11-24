@@ -1,11 +1,10 @@
 package com.kay.security.validationcode.image;
 
 import com.kay.security.validationcode.AbstractVerificationCodeProcessor;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
-
-import javax.imageio.ImageIO;
-import java.io.IOException;
 
 /**
  * @author LiuKay

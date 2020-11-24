@@ -29,6 +29,7 @@ public class CartController {
 
     /**
      * 添加产品
+     *
      * @param productId
      * @param count
      * @param request
@@ -41,24 +42,26 @@ public class CartController {
 
     /**
      * 更新数量
+     *
      * @param productId
      * @param count
      * @param request
      * @return
      */
     @GetMapping("/update")
-    public ServerResponse update(Integer productId,Integer count,HttpServletRequest request){
+    public ServerResponse update(Integer productId, Integer count, HttpServletRequest request) {
         return cartService.update(getUserId(request), productId, count);
     }
 
     /**
      * 移除产品
+     *
      * @param productIds
      * @param request
      * @return
      */
     @GetMapping("/delete_product")
-    public ServerResponse delete(String productIds,HttpServletRequest request){
+    public ServerResponse delete(String productIds, HttpServletRequest request) {
         return cartService.deleteByProductIds(getUserId(request), productIds);
     }
 
@@ -68,12 +71,12 @@ public class CartController {
     }
 
     @GetMapping("/select")
-    public ServerResponse select(HttpServletRequest request,Integer productId) {
+    public ServerResponse select(HttpServletRequest request, Integer productId) {
         return cartService.selectOrUnSelect(getUserId(request), productId, Const.Cart.CHECKED);
     }
 
     @GetMapping("/un_select")
-    public ServerResponse unSelect(HttpServletRequest request,Integer productId) {
+    public ServerResponse unSelect(HttpServletRequest request, Integer productId) {
         return cartService.selectOrUnSelect(getUserId(request), productId, Const.Cart.UN_CHECKED);
     }
 

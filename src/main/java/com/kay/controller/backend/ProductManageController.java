@@ -36,7 +36,8 @@ public class ProductManageController {
      * 分页list
      */
     @GetMapping("/list")
-    public ServerResponse list(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+    public ServerResponse list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return productService.getManageProductList(pageNum, pageSize);
     }
 
@@ -44,7 +45,9 @@ public class ProductManageController {
      * 条件查询-分页查询
      */
     @GetMapping("/search")
-    public ServerResponse searchList(String productName,Integer productId,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,@RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+    public ServerResponse searchList(String productName, Integer productId,
+                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return productService.getManageSearchList(productId, productName, pageNum, pageSize);
     }
 
@@ -60,13 +63,14 @@ public class ProductManageController {
      * 修改产品状态
      */
     @GetMapping("s/et_sale_status")
-    public ServerResponse setSaleStatus(Integer productId,Integer status) {
+    public ServerResponse setSaleStatus(Integer productId, Integer status) {
         return productService.setSaleStatus(productId, status);
     }
 
 
     /**
      * 商品详情
+     *
      * @param productId
      * @return
      */
@@ -77,6 +81,7 @@ public class ProductManageController {
 
     /**
      * 文件上传
+     *
      * @param file
      * @param request
      * @return
@@ -95,14 +100,15 @@ public class ProductManageController {
 
     /**
      * 富文本上传-------富文本上传根据使用的插件，有固定的返回值设置，这里使用Simditor
-     *         {
-     *            "success": true/false,
-     *                "msg": "error message", # optional
-     *            "file_path": "[real file path]"
-     *        }
+     * {
+     * "success": true/false,
+     * "msg": "error message", # optional
+     * "file_path": "[real file path]"
+     * }
      */
     @GetMapping("/richtext_img_upload")
-    public Map richTextUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+    public Map richTextUpload(@RequestParam(value = "upload_file", required = false) MultipartFile file,
+                              HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = new HashMap();
         String path = request.getSession().getServletContext().getRealPath("upload");
         String uploadFilePath = fileService.upload(file, path);
@@ -116,7 +122,7 @@ public class ProductManageController {
         resultMap.put("msg", "上传成功");
         resultMap.put("file_path", url);
         //插件约定
-        response.addHeader("Access-Control-Allow-Headers","X-File-Name");
+        response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
         return resultMap;
     }
 }

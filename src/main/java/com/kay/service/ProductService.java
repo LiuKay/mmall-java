@@ -21,5 +21,6 @@ public interface ProductService {
 
     ServerResponse<ProductDetailVo> getProductList(Integer productId);
 
-    ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize, String orderBy);
+    ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize,
+                                                         String orderBy);
 }

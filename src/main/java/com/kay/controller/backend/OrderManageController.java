@@ -24,7 +24,7 @@ public class OrderManageController {
     @GetMapping("/list")
     public ServerResponse<PageInfo> list(
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-            @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return orderService.getManageList(pageNum, pageSize);
     }
 
@@ -39,8 +39,8 @@ public class OrderManageController {
      */
     @GetMapping("/search")
     public ServerResponse<PageInfo> search(@RequestParam("orderNo") Long orderNo,
-                                           @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
-                                           @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return orderService.getManageSearch(orderNo, pageNum, pageSize);
 
     }

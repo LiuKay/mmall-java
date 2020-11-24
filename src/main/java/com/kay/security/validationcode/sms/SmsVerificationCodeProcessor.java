@@ -26,8 +26,10 @@ public class SmsVerificationCodeProcessor extends AbstractVerificationCodeProces
     }
 
     @Override
-    protected void send(ServletWebRequest request, VerificationCode verificationCode) throws ServletRequestBindingException {
-        String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(), DEFAULT_PARAMETER_NAME_MOBILE);
+    protected void send(ServletWebRequest request, VerificationCode verificationCode) throws
+                                                                                      ServletRequestBindingException {
+        String mobile = ServletRequestUtils
+                .getRequiredStringParameter(request.getRequest(), DEFAULT_PARAMETER_NAME_MOBILE);
         smsCodeSender.send(mobile, verificationCode.getCode());
     }
 }

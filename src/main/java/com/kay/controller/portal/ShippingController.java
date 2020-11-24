@@ -42,19 +42,19 @@ public class ShippingController {
     }
 
     @GetMapping("/select")
-    public ServerResponse select(Integer shippingId, HttpServletRequest request){
+    public ServerResponse select(Integer shippingId, HttpServletRequest request) {
         return shippingService.select(getUserId(request), shippingId);
     }
 
     @GetMapping("/update")
-    public ServerResponse update(Shipping shipping, HttpServletRequest request){
+    public ServerResponse update(Shipping shipping, HttpServletRequest request) {
         return shippingService.update(getUserId(request), shipping);
     }
 
     @GetMapping("/list")
     public ServerResponse list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                               @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                               HttpServletRequest request){
+                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                               HttpServletRequest request) {
         return shippingService.list(getUserId(request), pageNum, pageSize);
     }
 }

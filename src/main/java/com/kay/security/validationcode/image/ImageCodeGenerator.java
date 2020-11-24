@@ -3,12 +3,13 @@ package com.kay.security.validationcode.image;
 import com.kay.security.properties.SecurityProperties;
 import com.kay.security.validationcode.VerificationCode;
 import com.kay.security.validationcode.VerificationCodeGenerator;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.context.request.ServletWebRequest;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.context.request.ServletWebRequest;
 
 /**
  * Default verification code generator
@@ -28,9 +29,9 @@ public class ImageCodeGenerator implements VerificationCodeGenerator {
     @Override
     public VerificationCode generate(ServletWebRequest request) {
         int width = ServletRequestUtils.getIntParameter(request.getRequest(), "width",
-                properties.getValidation().getImage().getWidth());
+                                                        properties.getValidation().getImage().getWidth());
         int height = ServletRequestUtils.getIntParameter(request.getRequest(), "height",
-                properties.getValidation().getImage().getHeight());
+                                                         properties.getValidation().getImage().getHeight());
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         Graphics g = image.getGraphics();

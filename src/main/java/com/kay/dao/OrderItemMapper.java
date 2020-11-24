@@ -1,9 +1,8 @@
 package com.kay.dao;
 
 import com.kay.domain.OrderItem;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface OrderItemMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,11 +17,11 @@ public interface OrderItemMapper {
 
     int updateByPrimaryKey(OrderItem record);
 
-    List<OrderItem> selectByUserIdOrderNo(@Param("userId") Integer userId,@Param("orderNo") Long orderNo);
+    List<OrderItem> selectByUserIdOrderNo(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
 
     List<OrderItem> selectByOrderNo(Long orderNo);
 
 
-    void batchInsert(@Param("orderItemList")List<OrderItem> orderItemList);
+    void batchInsert(@Param("orderItemList") List<OrderItem> orderItemList);
 
 }

@@ -1,7 +1,6 @@
 package com.kay.common;
 
 import com.google.common.collect.Sets;
-
 import java.util.Set;
 
 /**
@@ -15,7 +14,7 @@ public class Const {
     public static final String TOKEN_PREFIX = "token_";
 
 
-    public interface Cart{
+    public interface Cart {
         int CHECKED = 1;   //已经勾选
         int UN_CHECKED = 0;  //未勾选
 
@@ -28,17 +27,17 @@ public class Const {
         int MANAGE_USER = 1;
     }
 
-    public interface RedisCacheExTime{
+    public interface RedisCacheExTime {
         int REDIS_SESSION_EXTIME = 60 * 30;//session 过期时间
     }
 
 
-    public interface ProductListOrderBy{
-        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
+    public interface ProductListOrderBy {
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
     }
 
-    public enum ProductStatusEnum{
-        ON_SALE(1,"在售");
+    public enum ProductStatusEnum {
+        ON_SALE(1, "在售");
 
         private int code;
         private String value;
@@ -57,13 +56,13 @@ public class Const {
         }
     }
 
-    public enum OrderStatusEnum{
-        CANCEL(0,"已取消"),
-        NO_PAY(10,"未支付"),
-        PAID(20,"已付款"),
-        SHIPPED(40,"已发货"),
-        ORDER_SUCCESS(50,"订单完成"),
-        ORDER_CLOSE(60,"订单关闭");
+    public enum OrderStatusEnum {
+        CANCEL(0, "已取消"),
+        NO_PAY(10, "未支付"),
+        PAID(20, "已付款"),
+        SHIPPED(40, "已发货"),
+        ORDER_SUCCESS(50, "订单完成"),
+        ORDER_CLOSE(60, "订单关闭");
 
         private String value;
         private int code;
@@ -81,9 +80,9 @@ public class Const {
             return value;
         }
 
-        public static OrderStatusEnum codeOf(int code){
-            for(OrderStatusEnum orderStatusEnum : values()){
-                if(orderStatusEnum.getCode() == code){
+        public static OrderStatusEnum codeOf(int code) {
+            for (OrderStatusEnum orderStatusEnum : values()) {
+                if (orderStatusEnum.getCode() == code) {
                     return orderStatusEnum;
                 }
             }
@@ -92,7 +91,7 @@ public class Const {
 
     }
 
-    public interface AlipayCallback{
+    public interface AlipayCallback {
         String TRADE_STATUS_WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
         String TRADE_STATUS_TRADE_SUCCESS = "TRADE_SUCCESS";
 
@@ -100,13 +99,14 @@ public class Const {
         String RESPONSE_FAILED = "failed";
     }
 
-    public enum PayPlatformEnum{
-        ALIPAY(1,"支付宝");
+    public enum PayPlatformEnum {
+        ALIPAY(1, "支付宝");
 
-        PayPlatformEnum(int code,String value){
+        PayPlatformEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
+
         private String value;
         private int code;
 
@@ -122,13 +122,14 @@ public class Const {
     /**
      * 支付方式
      */
-    public enum PaymentTypeEnum{
-        ONLINE_PAY(1,"在线支付");
+    public enum PaymentTypeEnum {
+        ONLINE_PAY(1, "在线支付");
 
-        PaymentTypeEnum(int code,String value){
+        PaymentTypeEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
+
         private String value;
         private int code;
 
@@ -141,9 +142,9 @@ public class Const {
         }
 
 
-        public static PaymentTypeEnum codeOf(int code){
-            for(PaymentTypeEnum paymentTypeEnum : values()){
-                if(paymentTypeEnum.getCode() == code){
+        public static PaymentTypeEnum codeOf(int code) {
+            for (PaymentTypeEnum paymentTypeEnum : values()) {
+                if (paymentTypeEnum.getCode() == code) {
                     return paymentTypeEnum;
                 }
             }
@@ -152,7 +153,7 @@ public class Const {
 
     }
 
-    public interface REDIS_LOCK{
+    public interface REDIS_LOCK {
         String CLOSE_ORDER_TASK_LOCK = "CLOSE_ORDER_TASK_LOCK";
     }
 
