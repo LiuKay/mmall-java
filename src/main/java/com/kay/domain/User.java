@@ -1,17 +1,9 @@
 package com.kay.domain;
 
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter
@@ -41,7 +33,8 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String username, String password, String email, String phone, String question, String answer, Role role, Date createTime, Date updateTime) {
+    public User(Integer id, String username, String password, String email, String phone, String question,
+                String answer, Role role, Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;

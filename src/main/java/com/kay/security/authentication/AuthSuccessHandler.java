@@ -28,7 +28,8 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                        Authentication authentication) throws ServletException, IOException {
         log.info(">>onAuthenticationSuccess:Login Success");
         User user = (User) authentication.getDetails();
         //TODO:refactor

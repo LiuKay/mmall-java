@@ -27,7 +27,7 @@ public class ProductController {
      * 产品详情
      */
     @GetMapping("/detail")
-    public ServerResponse<ProductDetailVo> getProductList(Integer productId){
+    public ServerResponse<ProductDetailVo> getProductList(Integer productId) {
         return productService.getProductList(productId);
     }
 
@@ -35,7 +35,7 @@ public class ProductController {
      * 产品详情 RESTful
      */
     @GetMapping("/{productId}")
-    public ServerResponse<ProductDetailVo> getProductListRESTful(@PathVariable Integer productId){
+    public ServerResponse<ProductDetailVo> getProductListRESTful(@PathVariable Integer productId) {
         return productService.getProductList(productId);
     }
 
@@ -43,20 +43,21 @@ public class ProductController {
      * 产品搜索及动态排序List
      */
     @GetMapping("/list")
-    public ServerResponse<PageInfo> getProductList(@RequestParam(value = "categoryId",required = false)Integer categoryId,
-                                                   @RequestParam(value = "keyword",required = false)String keyword,
-                                                   @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
-                                                   @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                                                   @RequestParam(value = "orderBy",defaultValue = "") String orderBy) {
+    public ServerResponse<PageInfo> getProductList(
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "orderBy", defaultValue = "") String orderBy) {
         return productService.getProductByKeywordCategory(categoryId, keyword, pageNum, pageSize, orderBy);
     }
 
     @GetMapping(value = "/{categoryId}/{keyword}/{pageNum}/{pageSize}/{orderBy}")
-    public ServerResponse<PageInfo> getProductListRESTful(@PathVariable(value = "categoryId")Integer categoryId,
-                                                   @PathVariable(value = "keyword")String keyword,
-                                                   @PathVariable(value = "pageNum") Integer pageNum,
-                                                   @PathVariable(value = "pageSize") Integer pageSize,
-                                                   @PathVariable(value = "orderBy") String orderBy) {
+    public ServerResponse<PageInfo> getProductListRESTful(@PathVariable(value = "categoryId") Integer categoryId,
+                                                          @PathVariable(value = "keyword") String keyword,
+                                                          @PathVariable(value = "pageNum") Integer pageNum,
+                                                          @PathVariable(value = "pageSize") Integer pageSize,
+                                                          @PathVariable(value = "orderBy") String orderBy) {
         if (pageNum == null) {
             pageNum = 1;
         }
@@ -71,17 +72,17 @@ public class ProductController {
 
     //http://localhost:8080/product/keyword/手机/1/10/price_asc/
     @GetMapping(value = "/keyword/{keyword}/{pageNum}/{pageSize}/{orderBy}")
-    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "keyword")String keyword,
+    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "keyword") String keyword,
                                                 @PathVariable(value = "pageNum") Integer pageNum,
                                                 @PathVariable(value = "pageSize") Integer pageSize,
-                                                @PathVariable(value = "orderBy") String orderBy){
-        if(pageNum == null){
+                                                @PathVariable(value = "orderBy") String orderBy) {
+        if (pageNum == null) {
             pageNum = 1;
         }
-        if(pageSize == null){
+        if (pageSize == null) {
             pageSize = 10;
         }
-        if(StringUtils.isBlank(orderBy)){
+        if (StringUtils.isBlank(orderBy)) {
             orderBy = "price_asc";
         }
 
@@ -90,17 +91,17 @@ public class ProductController {
 
     //http://localhost:8080/product/category/100012/1/10/price_asc/
     @GetMapping(value = "/category/{categoryId}/{pageNum}/{pageSize}/{orderBy}")
-    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "categoryId")Integer categoryId,
+    public ServerResponse<PageInfo> listRESTful(@PathVariable(value = "categoryId") Integer categoryId,
                                                 @PathVariable(value = "pageNum") Integer pageNum,
                                                 @PathVariable(value = "pageSize") Integer pageSize,
-                                                @PathVariable(value = "orderBy") String orderBy){
-        if(pageNum == null){
+                                                @PathVariable(value = "orderBy") String orderBy) {
+        if (pageNum == null) {
             pageNum = 1;
         }
-        if(pageSize == null){
+        if (pageSize == null) {
             pageSize = 10;
         }
-        if(StringUtils.isBlank(orderBy)){
+        if (StringUtils.isBlank(orderBy)) {
             orderBy = "price_asc";
         }
 

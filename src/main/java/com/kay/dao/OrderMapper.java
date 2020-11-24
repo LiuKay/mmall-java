@@ -1,9 +1,8 @@
 package com.kay.dao;
 
 import com.kay.domain.Order;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface OrderMapper {
     int deleteByPrimaryKey(Integer id);
@@ -26,7 +25,7 @@ public interface OrderMapper {
 
     List<Order> selectAllOrder();
 
-    List<Order> selectOrderByStatusAndStartTime(@Param("status") Integer status,@Param("startTime") String startTime);
+    List<Order> selectOrderByStatusAndStartTime(@Param("status") Integer status, @Param("startTime") String startTime);
 
     void closeOrderCloseByOrderId(Integer id);
 }

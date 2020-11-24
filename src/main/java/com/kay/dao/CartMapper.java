@@ -1,9 +1,8 @@
 package com.kay.dao;
 
 import com.kay.domain.Cart;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface CartMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,15 +17,16 @@ public interface CartMapper {
 
     int updateByPrimaryKey(Cart record);
 
-    Cart selectByUserIdAndProductId(@Param("userId") Integer userId,@Param("productId") Integer productId);
+    Cart selectByUserIdAndProductId(@Param("userId") Integer userId, @Param("productId") Integer productId);
 
     List<Cart> selectByUserId(Integer userId);
 
     int selectUnCheckedStatusCountByUserId(Integer userId);
 
-    int deleteByUserIdProductIds(@Param("userId") Integer userId,@Param("productIdList") List<String> productIdList);
+    int deleteByUserIdProductIds(@Param("userId") Integer userId, @Param("productIdList") List<String> productIdList);
 
-    int selectOrUnSelectByUserId(@Param("userId") Integer userId,@Param("productId")  Integer productId,@Param("status")  Integer status);
+    int selectOrUnSelectByUserId(@Param("userId") Integer userId, @Param("productId") Integer productId,
+                                 @Param("status") Integer status);
 
     int selectCartProductCount(Integer userId);
 

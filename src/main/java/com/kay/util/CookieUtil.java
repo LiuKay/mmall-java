@@ -1,11 +1,10 @@
 package com.kay.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by kay on 2018/5/16.
@@ -23,23 +22,25 @@ public class CookieUtil {
 
     /**
      * 写入login cookie
+     *
      * @param response
      * @param token
      */
-    public static void writeLoginToken(HttpServletResponse response,String token) {
-        Cookie cookie = new Cookie(COOKIE_NAME,token);
+    public static void writeLoginToken(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie(COOKIE_NAME, token);
         cookie.setDomain(DEFAULT_DOMAIN);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         //不设置maxAge 只会存在于内存，不会写入硬盘
-        cookie.setMaxAge(3600*24*10); //有效期10天
-        log.info("write cookieName:{} ,cookieValue:{}",cookie.getName(),cookie.getValue());
+        cookie.setMaxAge(3600 * 24 * 10); //有效期10天
+        log.info("write cookieName:{} ,cookieValue:{}", cookie.getName(), cookie.getValue());
         response.addCookie(cookie);
     }
 
     /**
      * 读取 login cookie
+     *
      * @param request
      * @return
      */
@@ -59,6 +60,7 @@ public class CookieUtil {
 
     /**
      * 删除cookie
+     *
      * @param request
      * @param response
      */

@@ -1,14 +1,12 @@
 package com.kay.util;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.net.ftp.FTPClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by geely
@@ -42,7 +40,7 @@ public class FTPUtil {
         boolean uploaded = true;
         FileInputStream fis = null;
         //连接FTP服务器
-        boolean isConnect=connectServer(this.ip, this.port, this.user, this.pwd);
+        boolean isConnect = connectServer(this.ip, this.port, this.user, this.pwd);
         if (isConnect) {
             try {
                 ftpClient.changeWorkingDirectory(remotePath);

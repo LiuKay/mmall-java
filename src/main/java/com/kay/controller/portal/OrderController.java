@@ -1,6 +1,7 @@
 package com.kay.controller.portal;
 
 //import com.alipay.demo.trade.config.Configs;
+
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
@@ -47,7 +48,7 @@ public class OrderController {
      * 取消订单
      */
     @GetMapping("/cancel")
-    public ServerResponse cancel(Long orderNo,HttpServletRequest request) {
+    public ServerResponse cancel(Long orderNo, HttpServletRequest request) {
         return orderService.cancleOrder(getUserId(request), orderNo);
     }
 
@@ -65,7 +66,7 @@ public class OrderController {
     @GetMapping("/list")
     public ServerResponse<PageInfo> getOrderList(HttpServletRequest request,
                                                  @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                                                 @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) {
+                                                 @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return orderService.getOrderList(getUserId(request), pageNum, pageSize);
     }
 
@@ -73,7 +74,7 @@ public class OrderController {
      * 支付
      */
     @GetMapping("/pay")
-    public ServerResponse pay(Long orderNo,HttpServletRequest request) {
+    public ServerResponse pay(Long orderNo, HttpServletRequest request) {
         Integer userId = getUserId(request);
         String path = request.getSession().getServletContext().getRealPath("upload");
         return orderService.pay(userId, orderNo, path);
@@ -81,18 +82,19 @@ public class OrderController {
 
     /**
      * 支付宝回调处理接口
+     *
      * @param request
      * @return
      */
     @GetMapping("/alipay_callback")
-    public Object alipayCallback(HttpServletRequest request){
+    public Object alipayCallback(HttpServletRequest request) {
         Map<String, String> params = Maps.newHashMap();
 
         Map requestParams = request.getParameterMap();
-        for (Iterator iterator =requestParams.keySet().iterator();iterator.hasNext();) {
+        for (Iterator iterator = requestParams.keySet().iterator(); iterator.hasNext(); ) {
             String name = (String) iterator.next();
             String[] values = (String[]) requestParams.get(name);
-            String valueStr="";
+            String valueStr = "";
             for (int i = 0; i < values.length; i++) {
                 //拼接 valueStr,用逗号拼接，最后一次不加逗号
                 valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
@@ -100,7 +102,8 @@ public class OrderController {
 
             params.put(name, valueStr);
         }
-        log.info("支付宝回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"), params.toString());
+        log.info("支付宝回调,sign:{},trade_status:{},参数:{}", params.get("sign"), params.get("trade_status"),
+                 params.toString());
 
         // todo 根据官方文档验证签名
 

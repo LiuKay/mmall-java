@@ -28,6 +28,7 @@ public class UserController {
 
     /**
      * 注册
+     *
      * @param user
      * @return
      */
@@ -38,17 +39,19 @@ public class UserController {
 
     /**
      * 验证用户名和email是否已经存在
+     *
      * @param str
      * @param type
      * @return
      */
     @PostMapping("/check_valid")
-    public ServerResponse<String> checkUserName(String str,String type){
+    public ServerResponse<String> checkUserName(String str, String type) {
         return userService.checkValid(str, type);
     }
 
     /**
      * 忘记密码获取问题
+     *
      * @param username
      * @return
      */
@@ -59,6 +62,7 @@ public class UserController {
 
     /**
      * 忘记密码验证回答
+     *
      * @param username
      * @param question
      * @param answer
@@ -70,7 +74,8 @@ public class UserController {
     }
 
     /**
-     *验证通过后重置密码，带着上次返回的token
+     * 验证通过后重置密码，带着上次返回的token
+     *
      * @param username
      * @param passwordNew
      * @param forgetToken
@@ -83,6 +88,7 @@ public class UserController {
 
     /**
      * 已登录用户的重置密码
+     *
      * @param passwordOld
      * @param passwordNew
      * @param request
@@ -106,6 +112,7 @@ public class UserController {
 
     /**
      * 更新用户信息-----注意横向越权问题
+     *
      * @param request
      * @param user
      * @return
@@ -136,6 +143,7 @@ public class UserController {
 
     /**
      * 获取当前用户信息
+     *
      * @return
      */
     //TODO: refactor
@@ -154,6 +162,7 @@ public class UserController {
 
     /**
      * 获取当前用户详细信息
+     *
      * @param request
      * @return
      */

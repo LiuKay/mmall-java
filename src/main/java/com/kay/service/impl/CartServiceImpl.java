@@ -35,11 +35,12 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 添加到购物车
+     *
      * @param userId
      * @param productId
      * @return
      */
-    public ServerResponse<CartVo> add(Integer userId, Integer productId,Integer count) {
+    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
         if (productId == null || count == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
@@ -54,7 +55,7 @@ public class CartServiceImpl implements CartService {
             //默认勾选
             insertCart.setChecked(Const.Cart.CHECKED);
             cartMapper.insert(insertCart);
-        }else {
+        } else {
             //已有产品，数量相加
             count = count + cart.getQuantity();
             cart.setQuantity(count);
@@ -67,6 +68,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 更新购物车数量
+     *
      * @param userId
      * @param productId
      * @param count
@@ -91,8 +93,9 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 删除---多选
+     *
      * @param userId
-     * @param productIds  以","分割多个id
+     * @param productIds 以","分割多个id
      * @return
      */
     @Override
@@ -114,6 +117,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 选中状态切换
+     *
      * @param userId
      * @param productId
      * @param status
@@ -133,6 +137,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 购物车返回对象生成
+     *
      * @param userId
      * @return
      */
@@ -166,7 +171,7 @@ public class CartServiceImpl implements CartService {
                     if (product.getStock() >= cart.getQuantity()) {
                         buyLimitCount = cart.getQuantity();
                         cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);  //库存足够
-                    }else {
+                    } else {
                         buyLimitCount = product.getStock();
                         cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);  //库存不够购物车中数量，自动调整为库存
                         //检测到库存不足时，修改购物车中数量
@@ -177,11 +182,13 @@ public class CartServiceImpl implements CartService {
                     }
                     cartProductVo.setQuantity(buyLimitCount);
                     //计算该商品总价，利用封装好的BigDecimalUtil工具类
-                    cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cartProductVo.getQuantity()));
+                    cartProductVo.setProductTotalPrice(
+                            BigDecimalUtil.mul(product.getPrice().doubleValue(), cartProductVo.getQuantity()));
                 }
                 //计算选中商品的购物车总价
                 if (cartProductVo.getProductChecked() == Const.Cart.CHECKED) {
-                    totalPrice = BigDecimalUtil.add(totalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
+                    totalPrice = BigDecimalUtil
+                            .add(totalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
                 }
                 cartProductVoList.add(cartProductVo);
             }
@@ -196,6 +203,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 是否全选
+     *
      * @param userId
      * @return
      */

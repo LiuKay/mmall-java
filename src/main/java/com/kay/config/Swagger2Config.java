@@ -15,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * http://localhost:8081/swagger-ui.html#/
+ *
  * @author kay
  * @date 2019/9/1 20:22
  */
@@ -26,6 +27,7 @@ public class Swagger2Config {
      * 对所有api扫描配置:controller路径
      */
     private static final String BASE_PACKAGE = "com.kay.controller";
+
     /**
      * Swagger2的配置文件：内容、扫描包等
      *

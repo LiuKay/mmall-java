@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         //密码加密
         user.setPassword(MD5Util.md5EncodeUtf8(user.getPassword()));
         user.setRole(Role.USER);
-        int userCount =userMapper.insert(user);
+        int userCount = userMapper.insert(user);
 
         if (userCount == 0) {
             return ServerResponse.error("注册失败");
@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 验证用户名和密码
+     *
      * @param str
      * @param type
      * @return
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService {
                     return ServerResponse.error("email已被注册");
                 }
             }
-        }else {
+        } else {
             return ServerResponse.error("参数错误");
         }
         return ServerResponse.successWithMessage("校验成功");
@@ -93,13 +94,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public ServerResponse<String> forgetGetQuestion(String username) {
         ServerResponse<String> valid = this.checkValid(username, Const.USERNAME);
-        if(valid.isSuccess()){
+        if (valid.isSuccess()) {
             //成功说明checkValid检验重复的用户不存在
             return ServerResponse.error("用户不存在");
         }
 
         //查找忘记密码问题
-        String question=userMapper.selectForgetQuestion(username);
+        String question = userMapper.selectForgetQuestion(username);
         if (StringUtils.isNotBlank(question)) {
             return ServerResponse.success(question);
         }
@@ -109,6 +110,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 忘记密码验证回答----token放入redis
+     *
      * @param username
      * @param question
      * @param answer
@@ -130,6 +132,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 重置密码：检验token是否有效，重置新密码
+     *
      * @param username
      * @param passwordNew
      * @param forgetToken
@@ -163,7 +166,7 @@ public class UserServiceImpl implements UserService {
                 //判断更新行数
                 return ServerResponse.successWithMessage("密码重置成功");
             }
-        }else {
+        } else {
             return ServerResponse.error("token错误，请重新获取token");
         }
         return ServerResponse.error("修改密码失败");
@@ -171,6 +174,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 登录用户重置密码
+     *
      * @param passwordOld
      * @param passwordNew
      * @param user
@@ -180,7 +184,7 @@ public class UserServiceImpl implements UserService {
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
         //1.首先校验用户旧密码
         int resultCount = userMapper.selectOldPassword(user.getId(), MD5Util.md5EncodeUtf8(passwordOld));
-        if (resultCount==0) {
+        if (resultCount == 0) {
             return ServerResponse.error("旧密码错误");
         }
         //2.设置新密码
@@ -193,9 +197,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     /**
-     *  更新用户信息
+     * 更新用户信息
+     *
      * @param user
      * @return
      */
@@ -215,7 +219,7 @@ public class UserServiceImpl implements UserService {
         updateUser.setAnswer(user.getAnswer());
         //fixme 有个字段upadateTime 默认设置为mysql的now() 函数，但是是mybatis的动态sql判断upadateTime不为空时更新，应该改为只要更新了信息就更新该字段
         int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
-        if (updateCount>0) {
+        if (updateCount > 0) {
             return ServerResponse.successWithMessage("用户信息更新成功");
         }
         return ServerResponse.error("用户信息更新失败");
@@ -223,6 +227,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取用户信息---注意用户密码不能返回
+     *
      * @param userId
      * @return
      */
@@ -238,9 +243,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     /**
      * 检查是否为管理员
+     *
      * @param user
      * @return
      */

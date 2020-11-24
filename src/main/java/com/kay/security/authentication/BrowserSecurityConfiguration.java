@@ -1,5 +1,10 @@
 package com.kay.security.authentication;
 
+import static com.kay.security.properties.SecurityConstants.AUTHENTICATION_URL;
+import static com.kay.security.properties.SecurityConstants.LOGIN_FORM_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.LOGIN_MOBILE_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.VERIFICATION_CODE_URL;
+
 import com.kay.security.authentication.jwt.JwtTokenFilter;
 import com.kay.security.authentication.jwt.JwtTokenProvider;
 import com.kay.security.authentication.mobile.SmsCodeSecurityConfiguration;
@@ -10,15 +15,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static com.kay.security.properties.SecurityConstants.*;
 
 @Configuration
 @EnableWebSecurity
@@ -50,47 +52,43 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // If a user try to access a resource without having enough permissions
-//        http.exceptionHandling().accessDeniedPage("/login");
-
         // Apply JWT
         applyJwtFilter(http);
 
         http.apply(verificationCodeSecurityConfiguration).and()
-                .apply(smsCodeSecurityConfiguration).and()
-                .formLogin()
-                .loginPage(AUTHENTICATION_URL)
-                .loginProcessingUrl(LOGIN_FORM_PROCESSING_URL)
-                .successHandler(authSuccessHandler)
-                .failureHandler(authFailureHandler)
-                .and()
-                .authorizeRequests()
-                .antMatchers(
-                        securityProperties.getBrowser().getLoginPage(),
-                        AUTHENTICATION_URL,
-                        LOGIN_MOBILE_PROCESSING_URL,
-                        VERIFICATION_CODE_URL)
-                .permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .csrf().disable();
+            .apply(smsCodeSecurityConfiguration).and()
+            .formLogin()
+            .loginPage(AUTHENTICATION_URL)
+            .loginProcessingUrl(LOGIN_FORM_PROCESSING_URL)
+            .successHandler(authSuccessHandler)
+            .failureHandler(authFailureHandler)
+            .and()
+            .authorizeRequests()
+            .antMatchers(
+                    securityProperties.getBrowser().getLoginPage(),
+                    AUTHENTICATION_URL,
+                    LOGIN_MOBILE_PROCESSING_URL,
+                    VERIFICATION_CODE_URL)
+            .permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .csrf().disable();
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         // Allow swagger to be accessed without authentication
         web.ignoring().antMatchers("/v2/api-docs")//
-                .antMatchers("/swagger-resources/**")//
-                .antMatchers("/swagger-ui.html")//
-                .antMatchers("/configuration/**")//
-                .antMatchers("/webjars/**")//
-                .antMatchers("/public")
+           .antMatchers("/swagger-resources/**")//
+           .antMatchers("/swagger-ui.html")//
+           .antMatchers("/configuration/**")//
+           .antMatchers("/webjars/**")//
+           .antMatchers("/public")
 
-                // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
-                .and()
-                .ignoring()
-                .antMatchers("/h2-console/**/**");
-        ;
+           // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
+           .and()
+           .ignoring()
+           .antMatchers("/h2-console/**/**");
     }
 
     @Override

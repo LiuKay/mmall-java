@@ -39,27 +39,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ServerResponse<String> saveOrUpdateProduct(Product product) {
-        if (product==null) {
+        if (product == null) {
             return ServerResponse.error("更新或新增产品参数错误");
         }
 
         //业务，主图使用子图中的第一个图
-        if (product.getSubImages()!=null) {
+        if (product.getSubImages() != null) {
             String[] imageArr = product.getSubImages().split(",");
-            if (imageArr.length>0) {
+            if (imageArr.length > 0) {
                 product.setMainImage(imageArr[0]);
             }
         }
 
         //判断是更新还是新增，有产品id->更新，无产品id->新增产品
-        if (product.getId()==null) {
+        if (product.getId() == null) {
             int insertCount = productMapper.insert(product);
             if (insertCount > 0) {
                 return ServerResponse.successWithMessage("添加产品成功");
             }
-        }else {
+        } else {
             int updateCount = productMapper.updateByPrimaryKey(product);
-            if (updateCount>0) {
+            if (updateCount > 0) {
                 return ServerResponse.successWithMessage("更新产品成功");
             }
         }
@@ -69,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 产品上下架
+     *
      * @param productId
      * @param status
      * @return
@@ -91,16 +92,17 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 返回商品信息
+     *
      * @param productId
      * @return
      */
     @Override
     public ServerResponse getManageProductDetail(Integer productId) {
-        if (productId==null) {
+        if (productId == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         Product product = productMapper.selectByPrimaryKey(productId);
-        if (product==null) {
+        if (product == null) {
             return ServerResponse.error("产品已下架或者删除");
         }
 
@@ -111,6 +113,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 分页列表
+     *
      * @param pageNum
      * @param pageSize
      * @return
@@ -134,13 +137,15 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 查询列表
+     *
      * @param productId
      * @param productName
      * @param pageNum
-     *@param pageSize @return
+     * @param pageSize    @return
      */
     @Override
-    public ServerResponse<PageInfo> getManageSearchList(Integer productId, String productName, int pageNum, int pageSize) {
+    public ServerResponse<PageInfo> getManageSearchList(Integer productId, String productName, int pageNum,
+                                                        int pageSize) {
 
         //拼接like 条件
         if (StringUtils.isNotBlank(productName)) {
@@ -148,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         PageHelper.startPage(pageNum, pageSize);
-        List<Product> productList = productMapper.selectListByIdAndName(productId,productName);
+        List<Product> productList = productMapper.selectListByIdAndName(productId, productName);
         PageInfo pageInfo = new PageInfo<>(productList);
 
         List<ProductListVo> productListVoList = new ArrayList<>();
@@ -164,19 +169,20 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 前台商品查询
+     *
      * @param productId
      * @return
      */
     @Override
     public ServerResponse<ProductDetailVo> getProductList(Integer productId) {
-        if (productId==null) {
+        if (productId == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
         }
         Product product = productMapper.selectByPrimaryKey(productId);
-        if (product==null) {
+        if (product == null) {
             return ServerResponse.error("产品已下架或者删除");
         }
-        if (product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
+        if (product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()) {
             return ServerResponse.error("产品已下架或者删除");
         }
         //对象转换，pojo->vo
@@ -186,6 +192,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 商品的关键字搜索和动态排序
+     *
      * @param categoryId
      * @param keyword
      * @param pageNum
@@ -194,7 +201,8 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize, String orderBy) {
+    public ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum,
+                                                                int pageSize, String orderBy) {
         //参数不合法
         if (StringUtils.isBlank(keyword) && categoryId == null) {
             return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
@@ -203,7 +211,7 @@ public class ProductServiceImpl implements ProductService {
         //A.处理分类
         List<Integer> categoryIdList = new ArrayList<>();
         if (categoryId != null) {
-             //1.判断是否有这个分类
+            //1.判断是否有这个分类
             Category category = categoryMapper.selectByPrimaryKey(categoryId);
             //2.如果不存在改分类直接返回一个空的集合
             if (category == null) {
@@ -255,7 +263,7 @@ public class ProductServiceImpl implements ProductService {
         productListVo.setId(product.getId());
         productListVo.setName(product.getName());
         productListVo.setCategoryId(product.getCategoryId());
-        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/"));
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());
@@ -265,6 +273,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 将对象转化
+     *
      * @param product
      * @return
      */
