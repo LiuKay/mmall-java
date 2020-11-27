@@ -125,6 +125,7 @@ public abstract class AbstractVerificationCodeProcessor<T extends VerificationCo
      * @param verificationCode
      */
     private void store(ServletWebRequest request, T verificationCode) {
+        //TODO: redis or db
         sessionStrategy.setAttribute(request, getSessionKey(request), verificationCode);
     }
 
@@ -135,6 +136,7 @@ public abstract class AbstractVerificationCodeProcessor<T extends VerificationCo
      * @return
      */
     private String getSessionKey(ServletWebRequest request) {
+        //TODO: redis or db
         return SESSION_VALIDATION_CODE + getValidationCodeType(request).name();
     }
 

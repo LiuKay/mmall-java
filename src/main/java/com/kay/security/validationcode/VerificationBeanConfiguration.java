@@ -3,7 +3,6 @@ package com.kay.security.validationcode;
 import com.kay.security.properties.SecurityProperties;
 import com.kay.security.validationcode.sms.DefaultSmsCodeSender;
 import com.kay.security.validationcode.VerificationCodeGenerator;
-import com.kay.security.validationcode.image.ImageCodeGenerator;
 import com.kay.security.validationcode.sms.SmsCodeGenerator;
 import com.kay.security.validationcode.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,6 @@ public class VerificationBeanConfiguration {
     @Autowired
     public VerificationBeanConfiguration(SecurityProperties securityProperties) {
         this.securityProperties = securityProperties;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(name = "imageCodeGenerator")
-    VerificationCodeGenerator imageCodeGenerator() {
-        return new ImageCodeGenerator(securityProperties);
     }
 
     @Bean
