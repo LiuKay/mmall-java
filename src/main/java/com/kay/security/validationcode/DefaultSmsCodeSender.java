@@ -1,4 +1,4 @@
-package com.kay.security.validationcode.sms;
+package com.kay.security.validationcode;
 
 
 import lombok.extern.slf4j.Slf4j;
