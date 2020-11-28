@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiOperation;
  * @since 2019/12/5
  */
 @RestController
-@Api(value = "登录相关API")
+@Api(value = "验证相关API")
 public class LoginController {
 
     private final AuthService authService;
@@ -25,21 +25,10 @@ public class LoginController {
         this.authService = authService;
     }
 
-    @GetMapping("/smsCode")
+    @GetMapping("/code/smsCode")
     @ApiOperation(value = "获取手机验证码")
-    public String createSmsCode(@RequestParam String mobile) throws Exception {
-        return authService.getSmsCode(mobile);
+    public void createSmsCode(@RequestParam String mobile) {
+        authService.sendVerificationCode(mobile);
     }
 
-    @GetMapping("/login/form")
-    @ApiOperation(value = "用户名密码登录")
-    public String loginForm(@RequestParam String username, @RequestParam String password) {
-        return authService.login(username, password);
-    }
-
-    @GetMapping("/login/mobile")
-    @ApiOperation(value = "手机验证码登录")
-    public String login(@RequestParam String mobile, @RequestParam String smsCode) {
-        return authService.loginByMobile(mobile, smsCode);
-    }
 }

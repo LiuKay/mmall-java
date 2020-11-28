@@ -1,18 +1,15 @@
 package com.kay.service;
 
 import com.kay.dao.UserMapper;
-import com.kay.domain.User;
-import com.kay.exception.NotFoundException;
 import com.kay.security.authentication.jwt.JwtTokenProvider;
+import com.kay.security.validationcode.VerificationCodeProcessor;
 import com.kay.vo.UserIdentityDTO;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -26,6 +23,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private VerificationCodeProcessor verificationCodeProcessor;
+
     @Override
     public UserIdentityDTO getUser(HttpServletRequest request) {
         return tokenProvider.getUserIdentity(request);
@@ -37,28 +37,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String getSmsCode(String mobile) {
-        //TODO
-        return null;
+    public void sendVerificationCode(String mobile) {
+        verificationCodeProcessor.send(mobile);
     }
 
-    @Override
-    public String login(String username, String password) {
-        User user = Optional.ofNullable(userMapper.loadUserByUsername(username))
-                .orElseThrow(() -> new NotFoundException("User not found."));
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("Incorrect password.");
-        }
-
-        return tokenProvider.createToken(username, user.getId(), user.getRole());
-    }
-
-    @Override
-    public String loginByMobile(String mobile, String smsCode) {
-        User user = Optional.ofNullable(userMapper.loadUserByPhone(mobile))
-                .orElseThrow(() -> new NotFoundException("User not found."));
-        //TODO check smsCode in redis or db
-        return null;
-    }
 }

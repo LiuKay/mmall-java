@@ -1,38 +1,18 @@
 package com.kay.security.validationcode;
 
-import java.time.LocalDateTime;
+import java.time.Duration;
 
-/**
- * @author LiuKay
- * @since 2019/12/7
- */
+import lombok.Getter;
+
+@Getter
 public class VerificationCode {
 
     private String code;
-    private LocalDateTime expiredTime;
+    private Duration duration;
 
     public VerificationCode(String code, int expiredSeconds) {
         this.code = code;
-        this.expiredTime = LocalDateTime.now().plusSeconds(expiredSeconds);
+        this.duration = Duration.ofSeconds(expiredSeconds);
     }
 
-    public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expiredTime);
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public LocalDateTime getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(LocalDateTime expiredTime) {
-        this.expiredTime = expiredTime;
-    }
 }
