@@ -1,5 +1,7 @@
 package com.kay.security.authentication.jwt;
 
+import com.google.common.base.Preconditions;
+
 import com.kay.domain.Role;
 import com.kay.security.JwtAuthenticationException;
 import com.kay.vo.UserIdentityDTO;
@@ -86,23 +88,13 @@ public class JwtTokenProvider {
         if (StringUtils.isEmpty(token)) {
             return null;
         }
-        Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-        try {
-            Integer userId = body.get(USER_ID_NAME, Integer.class);
-            String roleName = body.get(AUTH_NAME, String.class);
-            return new UserIdentityDTO(body.getSubject(), userId, Role.valueOf(roleName));
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException |
-                SignatureException | IllegalArgumentException exception) {
-            throw new JwtAuthenticationException("Token is invalid", exception);
-        }
+        return validateAndDecode(token);
     }
 
     public UserIdentityDTO validateAndDecode(String token) {
-        if (StringUtils.isEmpty(token)) {
-            return null;
-        }
-        Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        Preconditions.checkNotNull(token, "token can not be null.");
         try {
+            Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
             Integer userId = body.get(USER_ID_NAME, Integer.class);
             String roleName = body.get(AUTH_NAME, String.class);
             return new UserIdentityDTO(body.getSubject(), userId, Role.valueOf(roleName));
