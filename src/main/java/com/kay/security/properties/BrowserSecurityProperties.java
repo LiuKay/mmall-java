@@ -8,8 +8,6 @@ public class BrowserSecurityProperties {
 
     private String loginPage = SecurityConstants.LOGIN_FORM_PAGE;
 
-    private LoginResponseType loginResponseType = LoginResponseType.JSON;
-
     private int rememberTime = 3600;
 
     public String getLoginPage() {
@@ -18,14 +16,6 @@ public class BrowserSecurityProperties {
 
     public void setLoginPage(String loginPage) {
         this.loginPage = loginPage;
-    }
-
-    public LoginResponseType getLoginResponseType() {
-        return loginResponseType;
-    }
-
-    public void setLoginResponseType(LoginResponseType loginResponseType) {
-        this.loginResponseType = loginResponseType;
     }
 
     public int getRememberTime() {

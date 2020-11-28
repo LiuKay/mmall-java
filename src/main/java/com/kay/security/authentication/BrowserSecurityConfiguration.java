@@ -1,24 +1,26 @@
 package com.kay.security.authentication;
 
+import com.kay.dao.UserMapper;
 import com.kay.security.authentication.jwt.JwtTokenFilter;
 import com.kay.security.authentication.jwt.JwtTokenProvider;
-import com.kay.security.authentication.mobile.SmsCodeSecurityConfiguration;
+import com.kay.security.authentication.login.UserLoginAuthenticationProvider;
+import com.kay.security.authentication.mobile.MobileLoginSecurityConfig;
 import com.kay.security.properties.SecurityProperties;
-import com.kay.security.validationcode.VerificationCodeSecurityConfiguration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.kay.security.properties.SecurityConstants.*;
+import static com.kay.security.properties.SecurityConstants.LOGIN_FORM_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.LOGIN_MOBILE_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.VERIFICATION_CODE_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -26,12 +28,6 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityProperties securityProperties;
-
-    @Autowired
-    private VerificationCodeSecurityConfiguration verificationCodeSecurityConfiguration;
-
-    @Autowired
-    private SmsCodeSecurityConfiguration smsCodeSecurityConfiguration;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -44,22 +40,30 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Qualifier("authFailureHandler")
     private AuthFailureHandler authFailureHandler;
 
+    @Autowired
+    private MobileLoginSecurityConfig mobileLoginSecurityConfig;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // If a user try to access a resource without having enough permissions
-//        http.exceptionHandling().accessDeniedPage("/login");
-
         // Apply JWT
-        applyJwtFilter(http);
+        JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider, authFailureHandler);
+        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.apply(verificationCodeSecurityConfiguration).and()
-                .apply(smsCodeSecurityConfiguration).and()
+        // apply mobile login
+        http.apply(mobileLoginSecurityConfig);
+
+        http.authenticationProvider(new UserLoginAuthenticationProvider(userMapper, passwordEncoder))
                 .formLogin()
-                .loginPage(AUTHENTICATION_URL)
                 .loginProcessingUrl(LOGIN_FORM_PROCESSING_URL)
                 .successHandler(authSuccessHandler)
                 .failureHandler(authFailureHandler)
@@ -67,13 +71,13 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         securityProperties.getBrowser().getLoginPage(),
-                        AUTHENTICATION_URL,
                         LOGIN_MOBILE_PROCESSING_URL,
                         VERIFICATION_CODE_URL)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();
+
     }
 
     @Override
@@ -90,17 +94,6 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .ignoring()
                 .antMatchers("/h2-console/**/**");
-        ;
     }
 
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    private void applyJwtFilter(HttpSecurity http) {
-        JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider, authFailureHandler);
-        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
-    }
 }

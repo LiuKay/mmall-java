@@ -1,6 +1,7 @@
 package com.kay.service;
 
 import com.kay.vo.UserIdentityDTO;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface AuthService {
@@ -9,9 +10,6 @@ public interface AuthService {
 
     Integer getUserId(HttpServletRequest request);
 
-    String getSmsCode(String mobile);
+    void sendVerificationCode(String mobile);
 
-    String login(String username, String password);
-
-    String loginByMobile(String mobile, String smsCode);
 }
