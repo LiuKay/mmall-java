@@ -1,6 +1,8 @@
-package com.kay.security.authentication;
+package com.kay.security;
 
 import com.kay.dao.UserMapper;
+import com.kay.security.authentication.AuthFailureHandler;
+import com.kay.security.authentication.AuthSuccessHandler;
 import com.kay.security.authentication.jwt.JwtTokenFilter;
 import com.kay.security.authentication.jwt.JwtTokenProvider;
 import com.kay.security.authentication.login.UserLoginAuthenticationProvider;
@@ -27,7 +29,7 @@ import static com.kay.security.properties.SecurityConstants.VERIFICATION_CODE_UR
 
 @Configuration
 @EnableWebSecurity
-public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("${server.error.path}")
     private String errorPath;
