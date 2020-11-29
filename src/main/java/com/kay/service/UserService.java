@@ -1,30 +1,29 @@
 package com.kay.service;
 
-import com.kay.common.ServerResponse;
 import com.kay.domain.User;
-
-import lombok.NonNull;
+import com.kay.vo.UserIdentityDTO;
 
 /**
  * Created by kay on 2018/3/19.
  */
 public interface UserService {
 
-    ServerResponse<String> register(User user);
+    UserIdentityDTO register(User user);
 
-    ServerResponse<String> checkValid(String str, @NonNull RegisterType registerType);
+    boolean existedUsername(String username);
 
-    ServerResponse<String> forgetGetQuestion(String username);
+    boolean existedEmail(String email);
 
-    ServerResponse<String> checkQuestionAnswer(String username, String question, String answer);
+    String forgetGetQuestion(String username);
 
-    ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken);
+    String checkAnswerAndGenerateToken(String username, String question, String answer);
 
-    ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
+    void forgetResetPassword(String username, String passwordNew, String forgetToken);
 
-    ServerResponse updateUserInfo(User user);
+    void resetPassword(Integer userId, String passwordOld, String passwordNew);
 
-    ServerResponse<User> getUserInfo(Integer userId);
+    void updateUserInfo(User user);
 
-    ServerResponse checkAdminRole(User user);
+    User getUserInfo(Integer userId);
+
 }

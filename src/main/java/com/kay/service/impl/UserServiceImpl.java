@@ -1,17 +1,21 @@
 package com.kay.service.impl;
 
-import com.kay.common.ServerResponse;
 import com.kay.dao.UserMapper;
 import com.kay.domain.Role;
 import com.kay.domain.User;
+import com.kay.exception.NotFoundException;
 import com.kay.exception.UserAlreadyExistException;
-import com.kay.service.RegisterType;
 import com.kay.service.UserService;
 import com.kay.util.MD5Util;
+import com.kay.vo.UserIdentityDTO;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.UUID;
 
 /**
  * Created by kay on 2018/3/19.
@@ -19,74 +23,51 @@ import org.springframework.stereotype.Service;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
+    private static final String FORGET_TOKEN_SUFFIX = ":forget_token";
+
+
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
     @Override
-    public ServerResponse<String> register(User user) {
-        //验证用户名和email
-        ServerResponse<String> validResponse = checkValid(user.getUsername(), RegisterType.USERNAME);
-        if (!validResponse.isSuccess()) {
-            return validResponse;
+    public UserIdentityDTO register(User user) {
+        if (!existedUsername(user.getUsername()) || !existedEmail(user.getEmail())) {
+            throw new UserAlreadyExistException("Username or email already existed.");
         }
-        validResponse = checkValid(user.getEmail(), RegisterType.EMAIL);
-        if (!validResponse.isSuccess()) {
-            return validResponse;
-        }
-        //密码加密
         user.setPassword(MD5Util.md5EncodeUtf8(user.getPassword()));
         user.setRole(Role.USER);
-        int userCount = userMapper.insert(user);
-
-        if (userCount == 0) {
-            return ServerResponse.error("注册失败");
-        }
-
-        return ServerResponse.successWithMessage("注册成功");
+        userMapper.insert(user);
+        return UserIdentityDTO.fromUser(user);
     }
 
 
-    /**
-     * 验证用户名和密码
-     *
-     * @param str
-     * @param registerType
-     * @return
-     */
     @Override
-    public ServerResponse<String> checkValid(String str, RegisterType registerType) {
-        if (RegisterType.USERNAME == registerType) {
-            int userCount = userMapper.checkUserName(str);
-            if (userCount > 0) {
-                throw new UserAlreadyExistException(String.format("Username %s already exists.", str));
-            }
+    public boolean existedUsername(String username) {
+        int userCount = userMapper.checkUserName(username);
+        if (userCount > 0) {
+            return true;
         }
-        if (RegisterType.EMAIL == registerType) {
-
-            int emailCount = userMapper.checkEmail(str);
-            if (emailCount > 0) {
-                return ServerResponse.error("email已被注册");
-            }
-        }
-
-        return ServerResponse.successWithMessage("校验成功");
+        return false;
     }
 
     @Override
-    public ServerResponse<String> forgetGetQuestion(String username) {
-        ServerResponse<String> valid = this.checkValid(username, RegisterType.USERNAME);
-        if (valid.isSuccess()) {
-            //成功说明checkValid检验重复的用户不存在
-            return ServerResponse.error("用户不存在");
+    public boolean existedEmail(String email) {
+        int emailCount = userMapper.checkEmail(email);
+        if (emailCount > 0) {
+            return true;
         }
+        return false;
+    }
 
-        //查找忘记密码问题
-        String question = userMapper.selectForgetQuestion(username);
-        if (StringUtils.isNotBlank(question)) {
-            return ServerResponse.success(question);
+    @Override
+    public String forgetGetQuestion(String username) {
+        if (!existedUsername(username)) {
+            throw new NotFoundException(String.format("Not found username:%s", username));
         }
-
-        return ServerResponse.error("提示问题的答案为空");
+        return userMapper.selectForgetQuestion(username);
     }
 
     /**
@@ -98,17 +79,14 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ServerResponse<String> checkQuestionAnswer(String username, String question, String answer) {
+    public String checkAnswerAndGenerateToken(String username, String question, String answer) {
         int resultCount = userMapper.selectQuestionAnswer(username, question, answer);
-        //有此用户即对应的问题也回答正确
-        //TODO: 替换成验证码
-//        if (resultCount > 0) {
-//            String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
-//            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, checkToken,60*60*12);
-//            return ServerResponse.createBySuccess(checkToken); //返回token
-//        }
-
-        return ServerResponse.error("验证失败");
+        if (resultCount > 0) {
+            String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
+            redisTemplate.boundValueOps(username + FORGET_TOKEN_SUFFIX).set(checkToken, Duration.ofMinutes(5));
+            return checkToken;
+        }
+        throw new IllegalArgumentException("Safe question answer is incorrect.");
     }
 
     /**
@@ -120,61 +98,45 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
-        //1.检验传入的token是否为空，为空直接返回
-        if (StringUtils.isBlank(forgetToken)) {
-            return ServerResponse.error("token不能为空");
-        }
-        //2.检验用户的合法性，否则直接获取token前缀的key去拿token的value会有风险
-        ServerResponse<String> valid = this.checkValid(username, RegisterType.EMAIL);
-        if (valid.isSuccess()) {
-            //成功说明checkValid检验重复的用户不存在
-            return ServerResponse.error("用户名不存在");
+    public void forgetResetPassword(String username, String passwordNew, String forgetToken) {
+        if (!existedUsername(username)) {
+            throw new NotFoundException("Username '%s' not found.");
         }
         //去缓存获取token
-        //TODO: 替换验证码
-//        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX);
-        String token = null;
+        String token = redisTemplate.boundValueOps(username + FORGET_TOKEN_SUFFIX).get();
         if (StringUtils.isBlank(token)) {
-            return ServerResponse.error("token无效或已过期，请重新获取");
+            throw new NotFoundException("Forget token is expired.");
         }
 
-        if (StringUtils.equals(token, forgetToken)) {
-            String md5Password = MD5Util.md5EncodeUtf8(passwordNew);
-            //更新新密码
-            int updateCount = userMapper.updatePasswordByUsername(username, md5Password);
-            if (updateCount > 0) {
-                //判断更新行数
-                return ServerResponse.successWithMessage("密码重置成功");
-            }
-        } else {
-            return ServerResponse.error("token错误，请重新获取token");
+        if (!StringUtils.equals(token, forgetToken)) {
+            throw new IllegalArgumentException("Forget token is not matched.");
         }
-        return ServerResponse.error("修改密码失败");
+        String md5Password = MD5Util.md5EncodeUtf8(passwordNew);
+        userMapper.updatePasswordByUsername(username, md5Password);
     }
 
     /**
      * 登录用户重置密码
      *
+     * @param userId
      * @param passwordOld
      * @param passwordNew
-     * @param user
      * @return
      */
     @Override
-    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
+    public void resetPassword(Integer userId, String passwordOld, String passwordNew) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user == null) {
+            throw new NotFoundException(String.format("User not found for userId:%s", userId));
+        }
         //1.首先校验用户旧密码
         int resultCount = userMapper.selectOldPassword(user.getId(), MD5Util.md5EncodeUtf8(passwordOld));
         if (resultCount == 0) {
-            return ServerResponse.error("旧密码错误");
+            throw new IllegalArgumentException("Old password is incorrect.");
         }
         //2.设置新密码
         user.setPassword(MD5Util.md5EncodeUtf8(passwordNew));
-        int updateCount = userMapper.updateByPrimaryKeySelective(user);
-        if (updateCount > 0) {
-            return ServerResponse.successWithMessage("密码重置成功");
-        }
-        return ServerResponse.error("密码重置失败");
+        userMapper.updateByPrimaryKeySelective(user);
     }
 
 
@@ -185,58 +147,30 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ServerResponse updateUserInfo(User user) {
-        //1.检验Email的合法性，不能是别人已经注册的email
+    public void updateUserInfo(User user) {
         int resultCount = userMapper.checkEmailByUserId(user.getId(), user.getEmail());
         if (resultCount > 0) {
-            return ServerResponse.error("email已经存在，请更换");
+            throw new IllegalArgumentException("Email has already been used.");
         }
-        //2.更新用户信息----注意，用户名不能被更新
+
         User updateUser = new User();
         updateUser.setId(user.getId());
         updateUser.setEmail(user.getEmail());
         updateUser.setPhone(user.getPhone());
         updateUser.setQuestion(user.getQuestion());
         updateUser.setAnswer(user.getAnswer());
-        //fixme 有个字段upadateTime 默认设置为mysql的now() 函数，但是是mybatis的动态sql判断upadateTime不为空时更新，应该改为只要更新了信息就更新该字段
-        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
-        if (updateCount > 0) {
-            return ServerResponse.successWithMessage("用户信息更新成功");
-        }
-        return ServerResponse.error("用户信息更新失败");
+        userMapper.updateByPrimaryKeySelective(updateUser);
     }
 
-    /**
-     * 获取用户信息---注意用户密码不能返回
-     *
-     * @param userId
-     * @return
-     */
     @Override
-    public ServerResponse<User> getUserInfo(Integer userId) {
+    public User getUserInfo(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) {
-            return ServerResponse.error("未找到用户");
+            throw new NotFoundException(String.format("User not found, userId:%s", userId));
         }
-        //注意：用户密码不能返回
-        user.setPassword(StringUtils.EMPTY);
-        return ServerResponse.success(user);
+
+        user.setPassword("HIDDEN");
+        return user;
     }
-
-
-    /**
-     * 检查是否为管理员
-     *
-     * @param user
-     * @return
-     */
-    @Override
-    public ServerResponse checkAdminRole(User user) {
-        if (user != null && Role.ADMIN == user.getRole()) {
-            return ServerResponse.success();
-        }
-        return ServerResponse.error();
-    }
-
 
 }
