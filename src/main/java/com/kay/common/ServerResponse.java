@@ -2,12 +2,16 @@ package com.kay.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Server Response
+ *
+ * @deprecated remove
  */
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+@Deprecated
 public class ServerResponse<T> {
 
     /**

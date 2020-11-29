@@ -4,18 +4,19 @@ import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.domain.User;
 import com.kay.service.UserService;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 /**
- * Created by kay on 2018/5/21.
- * Spring Session Test
+ * Created by kay on 2018/5/21. Spring Session Test
  */
 @RestController
 @RequestMapping("/user/springsessionTest")
@@ -23,28 +24,6 @@ public class UserSpringSessionController {
 
     @Autowired
     private UserService userService;
-
-    /**
-     * 用户登录
-     */
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session,
-                                      HttpServletResponse httpServletResponse) {
-
-//        fixme 异常测试
-//        int i= 10/0;
-
-        ServerResponse<User> response = userService.login(username, password);
-        if (response.isSuccess()) {
-            session.setAttribute(Const.CURRENT_USER, response.getData());
-//            //写入cookie
-//            CookieUtil.writeLoginToken(httpServletResponse,session.getId());
-//            //将登录用户信息存入redis，有效时间为30分钟
-//            RedisShardedPoolUtil.setEx(session.getId(), JsonUtil.obj2string(response.getData()), Const.RedisCacheExTime.REDIS_SESSION_EXTIME);
-        }
-        return response;
-    }
 
     /**
      * 登出

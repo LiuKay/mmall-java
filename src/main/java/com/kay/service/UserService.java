@@ -3,16 +3,16 @@ package com.kay.service;
 import com.kay.common.ServerResponse;
 import com.kay.domain.User;
 
+import lombok.NonNull;
+
 /**
  * Created by kay on 2018/3/19.
  */
 public interface UserService {
 
-    ServerResponse<User> login(String username, String password);
-
     ServerResponse<String> register(User user);
 
-    ServerResponse<String> checkValid(String str, String type);
+    ServerResponse<String> checkValid(String str, @NonNull RegisterType registerType);
 
     ServerResponse<String> forgetGetQuestion(String username);
 

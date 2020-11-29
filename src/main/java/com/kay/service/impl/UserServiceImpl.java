@@ -1,12 +1,14 @@
 package com.kay.service.impl;
 
-import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.UserMapper;
 import com.kay.domain.Role;
 import com.kay.domain.User;
+import com.kay.exception.UserAlreadyExistException;
+import com.kay.service.RegisterType;
 import com.kay.service.UserService;
 import com.kay.util.MD5Util;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,39 +16,20 @@ import org.springframework.stereotype.Service;
 /**
  * Created by kay on 2018/3/19.
  */
-@Service("iUserService")
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
-    public ServerResponse<User> login(String username, String password) {
-        int userCount = userMapper.checkUserName(username);
-        if (userCount == 0) {
-            return ServerResponse.error("用户名不存在");
-        }
-        String md5Password = MD5Util.md5EncodeUtf8(password);
-        User user = userMapper.selecLogin(username, md5Password);
-        if (user == null) {
-            return ServerResponse.error("密码错误");
-        }
-
-        //登录成功，敏感信息不返回,可以新建一个专门返回的 UserVo
-        user.setPassword(StringUtils.EMPTY);
-        user.setQuestion(StringUtils.EMPTY);
-        user.setAnswer(StringUtils.EMPTY);
-        return ServerResponse.success(user);
-    }
-
-    @Override
     public ServerResponse<String> register(User user) {
         //验证用户名和email
-        ServerResponse<String> validResponse = checkValid(user.getUsername(), Const.USERNAME);
+        ServerResponse<String> validResponse = checkValid(user.getUsername(), RegisterType.USERNAME);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
-        validResponse = checkValid(user.getEmail(), Const.EMAIL);
+        validResponse = checkValid(user.getEmail(), RegisterType.EMAIL);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
@@ -67,33 +50,31 @@ public class UserServiceImpl implements UserService {
      * 验证用户名和密码
      *
      * @param str
-     * @param type
+     * @param registerType
      * @return
      */
     @Override
-    public ServerResponse<String> checkValid(String str, String type) {
-        if (StringUtils.isNotBlank(type)) {
-            if (Const.USERNAME.equals(type)) {
-                int userCount = userMapper.checkUserName(str);
-                if (userCount > 0) {
-                    return ServerResponse.error("用户名已存在");
-                }
+    public ServerResponse<String> checkValid(String str, RegisterType registerType) {
+        if (RegisterType.USERNAME == registerType) {
+            int userCount = userMapper.checkUserName(str);
+            if (userCount > 0) {
+                throw new UserAlreadyExistException(String.format("Username %s already exists.", str));
             }
-            if (Const.EMAIL.equals(type)) {
-                int emailCount = userMapper.checkEmail(str);
-                if (emailCount > 0) {
-                    return ServerResponse.error("email已被注册");
-                }
-            }
-        } else {
-            return ServerResponse.error("参数错误");
         }
+        if (RegisterType.EMAIL == registerType) {
+
+            int emailCount = userMapper.checkEmail(str);
+            if (emailCount > 0) {
+                return ServerResponse.error("email已被注册");
+            }
+        }
+
         return ServerResponse.successWithMessage("校验成功");
     }
 
     @Override
     public ServerResponse<String> forgetGetQuestion(String username) {
-        ServerResponse<String> valid = this.checkValid(username, Const.USERNAME);
+        ServerResponse<String> valid = this.checkValid(username, RegisterType.USERNAME);
         if (valid.isSuccess()) {
             //成功说明checkValid检验重复的用户不存在
             return ServerResponse.error("用户不存在");
@@ -145,7 +126,7 @@ public class UserServiceImpl implements UserService {
             return ServerResponse.error("token不能为空");
         }
         //2.检验用户的合法性，否则直接获取token前缀的key去拿token的value会有风险
-        ServerResponse<String> valid = this.checkValid(username, Const.USERNAME);
+        ServerResponse<String> valid = this.checkValid(username, RegisterType.EMAIL);
         if (valid.isSuccess()) {
             //成功说明checkValid检验重复的用户不存在
             return ServerResponse.error("用户名不存在");

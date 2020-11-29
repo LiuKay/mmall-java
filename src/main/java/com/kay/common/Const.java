@@ -1,11 +1,13 @@
 package com.kay.common;
 
 import com.google.common.collect.Sets;
+
 import java.util.Set;
 
 /**
- * Created by kay on 2018/3/19.
+ * Created by kay on 2018/3/19. TODO: need to replace by Enum
  */
+@Deprecated
 public class Const {
     public static final String CURRENT_USER = "current_user";
     public static final String USERNAME = "username";
