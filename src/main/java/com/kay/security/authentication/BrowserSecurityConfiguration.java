@@ -5,10 +5,12 @@ import com.kay.security.authentication.jwt.JwtTokenFilter;
 import com.kay.security.authentication.jwt.JwtTokenProvider;
 import com.kay.security.authentication.login.UserLoginAuthenticationProvider;
 import com.kay.security.authentication.mobile.MobileLoginSecurityConfig;
+import com.kay.security.properties.SecurityConstants;
 import com.kay.security.properties.SecurityProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -20,11 +22,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static com.kay.security.properties.SecurityConstants.LOGIN_FORM_PROCESSING_URL;
 import static com.kay.security.properties.SecurityConstants.LOGIN_MOBILE_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.LOGIN_REQUIRE;
 import static com.kay.security.properties.SecurityConstants.VERIFICATION_CODE_URL;
 
 @Configuration
 @EnableWebSecurity
 public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Value("${server.error.path}")
+    private String errorPath;
 
     @Autowired
     private SecurityProperties securityProperties;
@@ -64,6 +70,7 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authenticationProvider(new UserLoginAuthenticationProvider(userMapper, passwordEncoder))
                 .formLogin()
+                .loginPage(SecurityConstants.LOGIN_REQUIRE)
                 .loginProcessingUrl(LOGIN_FORM_PROCESSING_URL)
                 .successHandler(authSuccessHandler)
                 .failureHandler(authFailureHandler)
@@ -71,6 +78,8 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         securityProperties.getBrowser().getLoginPage(),
+                        LOGIN_REQUIRE,
+                        errorPath,
                         LOGIN_MOBILE_PROCESSING_URL,
                         VERIFICATION_CODE_URL)
                 .permitAll()

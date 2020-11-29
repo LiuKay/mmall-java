@@ -1,16 +1,18 @@
 package com.kay.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiErrorResponse {
 
-    private HttpStatus status;
+    private Integer status;
 
-    /* business error code */
+    /* business error code for developer*/
     private String errorCode;
 
     /* international message */
@@ -25,4 +27,6 @@ public class ApiErrorResponse {
     private String path;
 
     private String method;
+
+    public String trace;
 }

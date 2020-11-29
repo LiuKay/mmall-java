@@ -3,8 +3,10 @@ package com.kay.common;
 import com.kay.exception.BaseException;
 import com.kay.exception.NotFoundException;
 import com.kay.util.TimestampProvider;
-import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,23 +15,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.UrlPathHelper;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final String NO_CODE_AVAILABLE = "NO_CODE_AVAILABLE";
     private static final UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
 
-    private final HttpServletRequest httpServletRequest;
-
-    private final TimestampProvider timestampProvider;
+    @Value("${application.error.include-trace:false}")
+    private boolean includeTrace;
 
     @Autowired
-    public CustomExceptionHandler(HttpServletRequest httpServletRequest,
-                                  TimestampProvider timestampProvider) {
-        this.httpServletRequest = httpServletRequest;
-        this.timestampProvider = timestampProvider;
-    }
+    private HttpServletRequest httpServletRequest;
 
+    @Autowired
+    private TimestampProvider timestampProvider;
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ApiErrorResponse> handleException(Exception exception) {
@@ -54,15 +55,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ApiErrorResponse createError(Throwable throwable, HttpStatus status) {
+        String trace = includeTrace ? ExceptionUtils.getStackTrace(throwable) : null;
         return ApiErrorResponse.builder()
-                               .status(status)
-                               .errorCode(getCode(throwable))
-                               .message(throwable.getLocalizedMessage())
-                               .detail(throwable.getMessage())
-                               .timestamp(timestampProvider.getTimestampAsString())
-                               .path(URL_PATH_HELPER.getOriginatingServletPath(httpServletRequest))
-                               .method(httpServletRequest.getMethod())
-                               .build();
+                .status(status.value())
+                .errorCode(getCode(throwable))
+                .message(throwable.getLocalizedMessage())
+                .detail(throwable.getMessage())
+                .timestamp(timestampProvider.getTimestampAsString())
+                .path(URL_PATH_HELPER.getOriginatingServletPath(httpServletRequest))
+                .method(httpServletRequest.getMethod())
+                .trace(trace)
+                .build();
     }
 
     private String getCode(Throwable throwable) {

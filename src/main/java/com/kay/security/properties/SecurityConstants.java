@@ -8,6 +8,8 @@ public final class SecurityConstants {
 
     public static final String LOGIN_FORM_PROCESSING_URL = "/authentication/form";
 
+    public static final String LOGIN_REQUIRE = "/authentication/require";
+
     public static final String LOGIN_FORM_PAGE = "/default_login.html";
 
     public static final String VERIFICATION_CODE_URL = "/code/*";
