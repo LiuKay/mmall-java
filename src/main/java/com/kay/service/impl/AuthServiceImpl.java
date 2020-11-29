@@ -1,8 +1,9 @@
-package com.kay.service;
+package com.kay.service.impl;
 
 import com.kay.dao.UserMapper;
 import com.kay.security.authentication.jwt.JwtTokenProvider;
 import com.kay.security.validationcode.VerificationCodeProcessor;
+import com.kay.service.AuthService;
 import com.kay.vo.UserIdentityDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;

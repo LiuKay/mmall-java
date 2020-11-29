@@ -1,6 +1,7 @@
-package com.kay.common;
+package com.kay.config;
 
 import com.kay.util.TimestampProvider;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
