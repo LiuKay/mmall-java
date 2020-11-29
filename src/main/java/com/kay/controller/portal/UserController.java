@@ -3,12 +3,15 @@ package com.kay.controller.portal;
 import com.kay.common.ServerResponse;
 import com.kay.domain.User;
 import com.kay.service.AuthService;
+import com.kay.service.RegisterType;
 import com.kay.service.UserService;
-import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by kay on 2018/3/19.
@@ -46,7 +49,7 @@ public class UserController {
      */
     @PostMapping("/check_valid")
     public ServerResponse<String> checkUserName(String str, String type) {
-        return userService.checkValid(str, type);
+        return userService.checkValid(str, RegisterType.valueOf(type.toUpperCase()));
     }
 
     /**
