@@ -1,24 +1,29 @@
 package com.kay.controller.portal;
 
-import com.kay.common.Const;
-import com.kay.common.ServerResponse;
+import com.kay.common.ChoiceEnum;
 import com.kay.service.AuthService;
 import com.kay.service.CartService;
+import com.kay.vo.CartVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kay on 2018/3/23.
  */
+@Api("Carts - 购物车")
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/carts")
 public class CartController {
 
     private final CartService cartService;
-
     private final AuthService authService;
 
     @Autowired
@@ -27,16 +32,9 @@ public class CartController {
         this.authService = authService;
     }
 
-    /**
-     * 添加产品
-     *
-     * @param productId
-     * @param count
-     * @param request
-     * @return
-     */
-    @GetMapping("/add")
-    public ServerResponse add(Integer productId, Integer count, HttpServletRequest request) {
+    @ApiOperation("Add product to charts")
+    @PostMapping
+    public CartVo add(@RequestParam Integer productId, @RequestParam Integer count, HttpServletRequest request) {
         return cartService.add(getUserId(request), productId, count);
     }
 
@@ -48,8 +46,9 @@ public class CartController {
      * @param request
      * @return
      */
-    @GetMapping("/update")
-    public ServerResponse update(Integer productId, Integer count, HttpServletRequest request) {
+    @ApiOperation("update count")
+    @GetMapping("/update_count")
+    public CartVo update(Integer productId, Integer count, HttpServletRequest request) {
         return cartService.update(getUserId(request), productId, count);
     }
 
@@ -60,38 +59,40 @@ public class CartController {
      * @param request
      * @return
      */
-    @GetMapping("/delete_product")
-    public ServerResponse delete(String productIds, HttpServletRequest request) {
+    @ApiOperation("remove product from charts")
+    @GetMapping("/remove_product")
+    public CartVo delete(@RequestBody String productIds, HttpServletRequest request) {
         return cartService.deleteByProductIds(getUserId(request), productIds);
     }
 
+    @ApiOperation("list")
     @GetMapping("/list")
-    public ServerResponse list(HttpServletRequest request) {
+    public CartVo list(HttpServletRequest request) {
         return cartService.list(getUserId(request));
     }
 
     @GetMapping("/select")
-    public ServerResponse select(HttpServletRequest request, Integer productId) {
-        return cartService.selectOrUnSelect(getUserId(request), productId, Const.Cart.CHECKED);
+    public CartVo select(HttpServletRequest request, Integer productId) {
+        return cartService.selectOrUnSelect(getUserId(request), productId, ChoiceEnum.CHECKED);
     }
 
     @GetMapping("/un_select")
-    public ServerResponse unSelect(HttpServletRequest request, Integer productId) {
-        return cartService.selectOrUnSelect(getUserId(request), productId, Const.Cart.UN_CHECKED);
+    public CartVo unSelect(HttpServletRequest request, Integer productId) {
+        return cartService.selectOrUnSelect(getUserId(request), productId, ChoiceEnum.UN_CHECKED);
     }
 
     @GetMapping("/select_all")
-    public ServerResponse selectAll(HttpServletRequest request) {
-        return cartService.selectOrUnSelect(getUserId(request), null, Const.Cart.CHECKED);
+    public CartVo selectAll(HttpServletRequest request) {
+        return cartService.selectOrUnSelect(getUserId(request), null, ChoiceEnum.CHECKED);
     }
 
     @GetMapping("/un_select_all")
-    public ServerResponse unSelectAll(HttpServletRequest request) {
-        return cartService.selectOrUnSelect(getUserId(request), null, Const.Cart.UN_CHECKED);
+    public CartVo unSelectAll(HttpServletRequest request) {
+        return cartService.selectOrUnSelect(getUserId(request), null, ChoiceEnum.UN_CHECKED);
     }
 
     @GetMapping("/get_cart_product_count")
-    public ServerResponse<Integer> getCartProductCount(HttpServletRequest request) {
+    public Integer getCartProductCount(HttpServletRequest request) {
         return cartService.getCartProductCount(getUserId(request));
     }
 

@@ -9,30 +9,6 @@ import java.util.Set;
  */
 @Deprecated
 public class Const {
-    public static final String CURRENT_USER = "current_user";
-    public static final String USERNAME = "username";
-    public static final String EMAIL = "email";
-
-    public static final String TOKEN_PREFIX = "token_";
-
-
-    public interface Cart {
-        int CHECKED = 1;   //已经勾选
-        int UN_CHECKED = 0;  //未勾选
-
-        String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
-        String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
-    }
-
-    public interface ROLE {
-        int NORMAL_USER = 0;
-        int MANAGE_USER = 1;
-    }
-
-    public interface RedisCacheExTime {
-        int REDIS_SESSION_EXTIME = 60 * 30;//session 过期时间
-    }
-
 
     public interface ProductListOrderBy {
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
