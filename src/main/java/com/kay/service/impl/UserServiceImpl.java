@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     public String checkAnswerAndGenerateToken(String username, String question, String answer) {
         int resultCount = userMapper.selectQuestionAnswer(username, question, answer);
         if (resultCount > 0) {
-            String checkToken = UUID.randomUUID().toString();  //生成随机的token字符串
+            String checkToken = UUID.randomUUID().toString();
             redisTemplate.boundValueOps(username + FORGET_TOKEN_SUFFIX).set(checkToken, Duration.ofMinutes(5));
             return checkToken;
         }
