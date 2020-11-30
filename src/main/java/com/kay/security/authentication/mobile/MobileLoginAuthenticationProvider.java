@@ -4,12 +4,10 @@ import com.kay.dao.UserMapper;
 import com.kay.domain.User;
 import com.kay.security.validationcode.VerificationCodeProcessor;
 import com.kay.vo.UserIdentityDTO;
-
+import java.util.Collections;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
-
-import java.util.Arrays;
 
 public class MobileLoginAuthenticationProvider implements AuthenticationProvider {
 
@@ -38,7 +36,8 @@ public class MobileLoginAuthenticationProvider implements AuthenticationProvider
 
         verificationCodeProcessor.validate(mobile, smsCode);
         MobileLoginToken authenticationToken = new MobileLoginToken(user.getUsername(),
-                user.getPassword(), Arrays.asList(user.getRole()));
+                                                                    user.getPassword(),
+                                                                    Collections.singletonList(user.getRole()));
         authenticationToken.setDetails(UserIdentityDTO.fromUser(user));
         return authenticationToken;
     }

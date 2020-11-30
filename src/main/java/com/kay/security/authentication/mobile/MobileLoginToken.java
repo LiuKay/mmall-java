@@ -1,11 +1,10 @@
 package com.kay.security.authentication.mobile;
 
+import java.util.Collection;
+import java.util.Objects;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-
-import java.util.Collection;
-import java.util.Objects;
 
 public class MobileLoginToken extends AbstractAuthenticationToken {
 
