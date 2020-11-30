@@ -34,9 +34,9 @@ public class LoginController {
         this.timestampProvider = timestampProvider;
     }
 
-    @GetMapping("/code/smsCode")
+    @GetMapping(SecurityConstants.VERIFICATION_CODE_URL)
     @ApiOperation(value = "获取手机验证码")
-    public void createSmsCode(@RequestParam String mobile) {
+    public void sendSmsCode(@RequestParam String mobile) {
         authService.sendVerificationCode(mobile);
     }
 

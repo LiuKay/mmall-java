@@ -10,7 +10,7 @@ public final class SecurityConstants {
 
     public static final String LOGIN_REQUIRE = "/authentication/require";
 
-    public static final String VERIFICATION_CODE_URL = "/code/*";
+    public static final String VERIFICATION_CODE_URL = "/code/smsCode";
 
     public static final String REQUEST_PARAMETER_MOBILE = "mobile";
 
