@@ -26,13 +26,6 @@ Swagger2 UI 地址：http://localhost:8081/swagger-ui.html
 ##### 6 支付模块
 ##### 7 订单管理模块
 
-### mmall 商城功能接口清单 
-
-![](https://github.com/LiuKay/mmall-kay-Java/blob/master/readme-img/mmall%20项目功能接口清单.png)
-
-
-### 涉及技术栈
-Linux、Nginx、Mysql、Git、Maven、Java、Spring、SpringMVC、Mybatis
 
 ### 项目分支
 

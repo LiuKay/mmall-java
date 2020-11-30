@@ -1,4 +1,4 @@
-package com.kay.security;
+package com.kay.config;
 
 import com.kay.dao.UserMapper;
 import com.kay.security.authentication.AuthFailureHandler;
