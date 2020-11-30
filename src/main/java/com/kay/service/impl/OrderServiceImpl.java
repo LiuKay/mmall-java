@@ -14,13 +14,13 @@ import com.kay.dao.OrderItemMapper;
 import com.kay.dao.OrderMapper;
 import com.kay.dao.PayInfoMapper;
 import com.kay.dao.ProductMapper;
-import com.kay.dao.ShippingMapper;
+import com.kay.dao.AddressMapper;
 import com.kay.domain.Cart;
 import com.kay.domain.Order;
 import com.kay.domain.OrderItem;
 import com.kay.domain.PayInfo;
 import com.kay.domain.Product;
-import com.kay.domain.Shipping;
+import com.kay.domain.Address;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtil;
@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     private ProductMapper productMapper;
 
     @Autowired
-    private ShippingMapper shippingMapper;
+    private AddressMapper addressMapper;
 
 //    private static AlipayTradeService tradeService;
 
@@ -273,10 +273,10 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
 
         orderVo.setShippingId(order.getShippingId());
-        Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
-        if (shipping != null) {
-            orderVo.setReceiverName(shipping.getReceiverName());
-            orderVo.setShippingVo(assembleShippingVo(shipping));
+        Address address = addressMapper.selectByPrimaryKey(order.getShippingId());
+        if (address != null) {
+            orderVo.setReceiverName(address.getReceiverName());
+            orderVo.setShippingVo(assembleShippingVo(address));
         }
 
         orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
@@ -313,15 +313,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //组装地址详情Vo
-    private ShippingVo assembleShippingVo(Shipping shipping) {
+    private ShippingVo assembleShippingVo(Address address) {
         ShippingVo shippingVo = new ShippingVo();
-        shippingVo.setReceiverName(shipping.getReceiverName());
-        shippingVo.setReceiverAddress(shipping.getReceiverAddress());
-        shippingVo.setReceiverProvince(shipping.getReceiverProvince());
-        shippingVo.setReceiverCity(shipping.getReceiverCity());
-        shippingVo.setReceiverDistrict(shipping.getReceiverDistrict());
-        shippingVo.setReceiverMobile(shipping.getReceiverMobile());
-        shippingVo.setReceiverZip(shipping.getReceiverZip());
+        shippingVo.setReceiverName(address.getReceiverName());
+        shippingVo.setReceiverAddress(address.getReceiverAddress());
+        shippingVo.setReceiverProvince(address.getReceiverProvince());
+        shippingVo.setReceiverCity(address.getReceiverCity());
+        shippingVo.setReceiverDistrict(address.getReceiverDistrict());
+        shippingVo.setReceiverMobile(address.getReceiverMobile());
+        shippingVo.setReceiverZip(address.getReceiverZip());
         shippingVo.setReceiverPhone(shippingVo.getReceiverPhone());
         return shippingVo;
     }

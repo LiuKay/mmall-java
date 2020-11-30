@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Shipping {
+public class Address {
     private Integer id;
 
     private Integer userId;

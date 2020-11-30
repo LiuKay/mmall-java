@@ -1,21 +1,22 @@
 package com.kay.service;
 
-import com.kay.common.ServerResponse;
+import com.kay.common.ChoiceEnum;
 import com.kay.vo.CartVo;
+import org.springframework.lang.NonNull;
 
 /**
  * Created by kay on 2018/3/23.
  */
 public interface CartService {
-    ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count);
+    CartVo add(Integer userId, @NonNull Integer productId, @NonNull Integer count);
 
-    ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count);
+    CartVo update(Integer userId, @NonNull Integer productId, @NonNull Integer count);
 
-    ServerResponse<CartVo> deleteByProductIds(Integer userid, String productIds);
+    CartVo deleteByProductIds(Integer userid, @NonNull String productIds);
 
-    ServerResponse<CartVo> list(Integer userId);
+    CartVo list(Integer userId);
 
-    ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer productId, Integer status);
+    CartVo selectOrUnSelect(Integer userId, Integer productId, ChoiceEnum choice);
 
-    ServerResponse<Integer> getCartProductCount(Integer userId);
+    Integer getCartProductCount(Integer userId);
 }

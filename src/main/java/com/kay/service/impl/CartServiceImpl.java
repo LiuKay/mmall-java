@@ -2,9 +2,7 @@ package com.kay.service.impl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import com.kay.common.Const;
-import com.kay.common.ResponseCode;
-import com.kay.common.ServerResponse;
+import com.kay.common.ChoiceEnum;
 import com.kay.dao.CartMapper;
 import com.kay.dao.ProductMapper;
 import com.kay.domain.Cart;
@@ -17,6 +15,7 @@ import com.kay.vo.CartVo;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,8 @@ import org.springframework.stereotype.Service;
 @Service("iCartService")
 public class CartServiceImpl implements CartService {
 
+    private static final String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
+    private static final String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
 
     @Autowired
     private CartMapper cartMapper;
@@ -33,18 +34,7 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private ProductMapper productMapper;
 
-    /**
-     * 添加到购物车
-     *
-     * @param userId
-     * @param productId
-     * @return
-     */
-    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
-        if (productId == null || count == null) {
-            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
-        }
-
+    public CartVo add(Integer userId, @NotNull Integer productId, @NotNull Integer count) {
         //1.判断购物车是否有该商品
         Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
         if (cart == null) {
@@ -53,7 +43,7 @@ public class CartServiceImpl implements CartService {
             insertCart.setProductId(productId);
             insertCart.setQuantity(count);
             //默认勾选
-            insertCart.setChecked(Const.Cart.CHECKED);
+            insertCart.setChecked(ChoiceEnum.CHECKED.ordinal());
             cartMapper.insert(insertCart);
         } else {
             //已有产品，数量相加
@@ -75,19 +65,12 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count) {
-        if (productId == null || userId == null) {
-            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
-        }
+    public CartVo update(Integer userId, @NotNull Integer productId, @NotNull Integer count) {
         Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
         if (cart != null) {
             cart.setQuantity(count);
-            int updateCount = cartMapper.updateByPrimaryKeySelective(cart);
-            if (updateCount == 0) {
-                return ServerResponse.error("更新失败");
-            }
+            cartMapper.updateByPrimaryKeySelective(cart);
         }
-        //TODO
         return this.list(userId);
     }
 
@@ -99,20 +82,15 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public ServerResponse<CartVo> deleteByProductIds(Integer userId, String productIds) {
+    public CartVo deleteByProductIds(Integer userId, @NotNull String productIds) {
         List<String> productIdList = Splitter.on(",").splitToList(productIds);
-        if (CollectionUtils.isEmpty(productIdList)) {
-            return ServerResponse.create(ResponseCode.ILLEGAL_ARGUMENT);
-        }
         cartMapper.deleteByUserIdProductIds(userId, productIdList);
-
-        return this.list(userId);
+        return list(userId);
     }
 
     @Override
-    public ServerResponse<CartVo> list(Integer userId) {
-        CartVo cartVo = this.getCartVoLimit(userId);
-        return ServerResponse.success(cartVo);
+    public CartVo list(Integer userId) {
+        return getCartVoLimit(userId);
     }
 
     /**
@@ -120,19 +98,18 @@ public class CartServiceImpl implements CartService {
      *
      * @param userId
      * @param productId
-     * @param status
+     * @param choice
      * @return
      */
     @Override
-    public ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer productId, Integer status) {
-        cartMapper.selectOrUnSelectByUserId(userId, productId, status);
+    public CartVo selectOrUnSelect(Integer userId, Integer productId, ChoiceEnum choice) {
+        cartMapper.selectOrUnSelectByUserId(userId, productId, choice.ordinal());
         return this.list(userId);
     }
 
     @Override
-    public ServerResponse<Integer> getCartProductCount(Integer userId) {
-        int count = cartMapper.selectCartProductCount(userId);
-        return ServerResponse.success(count);
+    public Integer getCartProductCount(Integer userId) {
+        return cartMapper.selectCartProductCount(userId);
     }
 
     /**
@@ -170,10 +147,10 @@ public class CartServiceImpl implements CartService {
                     //判断库存是否足够
                     if (product.getStock() >= cart.getQuantity()) {
                         buyLimitCount = cart.getQuantity();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);  //库存足够
+                        cartProductVo.setLimitQuantity(LIMIT_NUM_SUCCESS);  //库存足够
                     } else {
                         buyLimitCount = product.getStock();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);  //库存不够购物车中数量，自动调整为库存
+                        cartProductVo.setLimitQuantity(LIMIT_NUM_FAIL);  //库存不够购物车中数量，自动调整为库存
                         //检测到库存不足时，修改购物车中数量
                         Cart updateStockCart = new Cart();
                         updateStockCart.setId(cart.getId());
@@ -186,7 +163,7 @@ public class CartServiceImpl implements CartService {
                             BigDecimalUtil.mul(product.getPrice().doubleValue(), cartProductVo.getQuantity()));
                 }
                 //计算选中商品的购物车总价
-                if (cartProductVo.getProductChecked() == Const.Cart.CHECKED) {
+                if (cartProductVo.getProductChecked() == ChoiceEnum.CHECKED.ordinal()) {
                     totalPrice = BigDecimalUtil
                             .add(totalPrice.doubleValue(), cartProductVo.getProductTotalPrice().doubleValue());
                 }
