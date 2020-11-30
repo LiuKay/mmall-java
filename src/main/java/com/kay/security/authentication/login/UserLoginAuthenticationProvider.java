@@ -3,7 +3,8 @@ package com.kay.security.authentication.login;
 import com.kay.dao.UserMapper;
 import com.kay.domain.User;
 import com.kay.vo.UserIdentityDTO;
-
+import java.util.Collections;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -11,13 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Arrays;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 public class UserLoginAuthenticationProvider implements AuthenticationProvider {
-
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -44,7 +40,9 @@ public class UserLoginAuthenticationProvider implements AuthenticationProvider {
         additionalAuthenticationChecks(user, authenticationToken);
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(),
-                user.getPassword(), Arrays.asList(user.getRole()));
+                                                                                            user.getPassword(),
+                                                                                            Collections.singletonList(
+                                                                                                    user.getRole()));
         token.setDetails(UserIdentityDTO.fromUser(user));
         return token;
     }
