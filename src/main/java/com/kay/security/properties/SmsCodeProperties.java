@@ -8,11 +8,8 @@ package com.kay.security.properties;
  */
 public class SmsCodeProperties {
     private int length = 4;
-
-    // second
+    // seconds
     private int expire = 60;
-
-    private String url;
 
     public int getLength() {
         return length;
@@ -30,11 +27,4 @@ public class SmsCodeProperties {
         this.expire = expire;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

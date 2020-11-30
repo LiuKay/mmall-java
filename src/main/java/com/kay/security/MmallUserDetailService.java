@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Slf4j
-public class MmallUserDetailService implements UserDetailsService, PhoneUserDetailService {
+public class MmallUserDetailService implements UserDetailsService {
 
     private final UserMapper userMapper;
 
@@ -21,15 +21,6 @@ public class MmallUserDetailService implements UserDetailsService, PhoneUserDeta
         User user = userMapper.loadUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("Username: %s not found.", username));
-        }
-        return parseToUserDetails(user);
-    }
-
-    @Override
-    public UserDetails loadUserByPhone(String phone) throws UsernameNotFoundException {
-        User user = userMapper.loadUserByPhone(phone);
-        if (user == null) {
-            throw new PhoneNumberNotFoundException(phone);
         }
         return parseToUserDetails(user);
     }

@@ -4,7 +4,6 @@ import com.kay.dao.UserMapper;
 import com.kay.security.authentication.AuthFailureHandler;
 import com.kay.security.authentication.AuthSuccessHandler;
 import com.kay.security.validationcode.VerificationCodeProcessor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
