@@ -3,13 +3,14 @@ package com.kay.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.kay.common.Const;
+import com.google.common.collect.Sets;
 import com.kay.common.ResponseCode;
 import com.kay.common.ServerResponse;
 import com.kay.dao.CategoryMapper;
 import com.kay.dao.ProductMapper;
 import com.kay.domain.Category;
 import com.kay.domain.Product;
+import com.kay.domain.ProductStatusEnum;
 import com.kay.service.CategoryService;
 import com.kay.service.ProductService;
 import com.kay.util.DateTimeUtil;
@@ -18,6 +19,7 @@ import com.kay.vo.ProductDetailVo;
 import com.kay.vo.ProductListVo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,10 @@ import org.springframework.stereotype.Service;
 /**
  * Created by kay on 2018/3/20.
  */
-@Service("iProductService")
+@Service("productService")
 public class ProductServiceImpl implements ProductService {
+
+    private static final Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
 
     @Autowired
     private ProductMapper productMapper;
@@ -182,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
         if (product == null) {
             return ServerResponse.error("产品已下架或者删除");
         }
-        if (product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()) {
+        if (product.getStatus() != ProductStatusEnum.ON_SALE.getCode()) {
             return ServerResponse.error("产品已下架或者删除");
         }
         //对象转换，pojo->vo
@@ -232,7 +236,7 @@ public class ProductServiceImpl implements ProductService {
         //C.处理排序----排序的参数要根据接口文档或跟前端约定好
         if (StringUtils.isNotBlank(orderBy)) {
             //将排序关键字做成常量，以免非法传参
-            if (Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
+            if (PRICE_ASC_DESC.contains(orderBy)) {
                 String[] orderArr = orderBy.split("_");
                 //使用PageHelper提供的排序功能，格式：price desc
                 PageHelper.orderBy(orderArr[0] + " " + orderArr[1]);

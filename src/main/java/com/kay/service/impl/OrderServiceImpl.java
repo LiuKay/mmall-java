@@ -9,18 +9,22 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
+import com.kay.dao.AddressMapper;
 import com.kay.dao.CartMapper;
 import com.kay.dao.OrderItemMapper;
 import com.kay.dao.OrderMapper;
 import com.kay.dao.PayInfoMapper;
 import com.kay.dao.ProductMapper;
-import com.kay.dao.AddressMapper;
+import com.kay.domain.Address;
 import com.kay.domain.Cart;
 import com.kay.domain.Order;
 import com.kay.domain.OrderItem;
+import com.kay.domain.OrderStatusEnum;
 import com.kay.domain.PayInfo;
+import com.kay.domain.PayPlatformEnum;
+import com.kay.domain.PaymentTypeEnum;
 import com.kay.domain.Product;
-import com.kay.domain.Address;
+import com.kay.domain.ProductStatusEnum;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtil;
@@ -157,13 +161,13 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) {
             return ServerResponse.error("该用户此订单不存在");
         }
-        if (order.getStatus() != Const.OrderStatusEnum.NO_PAY.getCode()) {
+        if (order.getStatus() != OrderStatusEnum.NO_PAY.getCode()) {
             return ServerResponse.error("已付款，无法取消订单");
         }
 
         Order updateOrder = new Order();
         updateOrder.setId(order.getId());
-        updateOrder.setStatus(Const.OrderStatusEnum.CANCEL.getCode());
+        updateOrder.setStatus(OrderStatusEnum.CANCEL.getCode());
 
         int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
         if (rowCount > 0) {
@@ -266,11 +270,11 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setOrderNo(order.getOrderNo());
         orderVo.setPayment(order.getPayment());
         orderVo.setPaymentType(order.getPaymentType());
-        orderVo.setPaymentTypeDesc(Const.PaymentTypeEnum.codeOf(order.getPaymentType()).getValue());
+        orderVo.setPaymentTypeDesc(PaymentTypeEnum.codeOf(order.getPaymentType()).getValue());
 
         orderVo.setPostage(order.getPostage());
         orderVo.setStatus(order.getStatus());
-        orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
+        orderVo.setStatusDesc(OrderStatusEnum.codeOf(order.getStatus()).getValue());
 
         orderVo.setShippingId(order.getShippingId());
         Address address = addressMapper.selectByPrimaryKey(order.getShippingId());
@@ -347,9 +351,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         long orderNo = this.generateOrderNo();
         order.setOrderNo(orderNo);
-        order.setStatus(Const.OrderStatusEnum.NO_PAY.getCode());
+        order.setStatus(OrderStatusEnum.NO_PAY.getCode());
         order.setPostage(0);
-        order.setPaymentType(Const.PaymentTypeEnum.ONLINE_PAY.getCode());
+        order.setPaymentType(PaymentTypeEnum.ONLINE_PAY.getCode());
         order.setPayment(payment);
         order.setUserId(userId);
         order.setShippingId(shippingId);
@@ -395,7 +399,7 @@ public class OrderServiceImpl implements OrderService {
             //一个子订单的明细
             OrderItem orderItem = new OrderItem();
             Product product = productMapper.selectByPrimaryKey(cart.getProductId());
-            if (Const.ProductStatusEnum.ON_SALE.getCode() != product.getStatus()) {
+            if (ProductStatusEnum.ON_SALE.getCode() != product.getStatus()) {
                 return ServerResponse.error("产品" + product.getName() + "不是在售状态");
             }
 
@@ -572,7 +576,7 @@ public class OrderServiceImpl implements OrderService {
             return ServerResponse.error("非本站订单，回调忽略");
         }
         //订单状态
-        if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()) {
+        if (order.getStatus() >= OrderStatusEnum.PAID.getCode()) {
             //需要返回success
             return ServerResponse.successWithMessage("支付宝重复调用");
         }
@@ -581,7 +585,7 @@ public class OrderServiceImpl implements OrderService {
         //已支付
         if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
             order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
-            order.setStatus(Const.OrderStatusEnum.PAID.getCode());
+            order.setStatus(OrderStatusEnum.PAID.getCode());
             orderMapper.updateByPrimaryKeySelective(order);
         }
 
@@ -590,7 +594,7 @@ public class OrderServiceImpl implements OrderService {
         payInfo.setOrderNo(order.getOrderNo());
 
         //第三方支付平台相关
-        payInfo.setPayPlatform(Const.PayPlatformEnum.ALIPAY.getCode());  //支付宝支付
+        payInfo.setPayPlatform(PayPlatformEnum.ALIPAY.getCode());  //支付宝支付
         payInfo.setPlatformNumber(tradeNo);
         payInfo.setPlatformStatus(tradeStatus);
         payInfoMapper.insert(payInfo);
@@ -604,7 +608,7 @@ public class OrderServiceImpl implements OrderService {
             return ServerResponse.error("用户没该订单");
         }
         //成功的订单
-        if (order.getStatus() >= Const.OrderStatusEnum.PAID.getCode()) {
+        if (order.getStatus() >= OrderStatusEnum.PAID.getCode()) {
             return ServerResponse.success();
         }
         return ServerResponse.error();
@@ -676,8 +680,8 @@ public class OrderServiceImpl implements OrderService {
     public ServerResponse getManageSendGoods(Long orderNo) {
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order != null) {
-            if (order.getStatus() == Const.OrderStatusEnum.PAID.getCode()) {
-                order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
+            if (order.getStatus() == OrderStatusEnum.PAID.getCode()) {
+                order.setStatus(OrderStatusEnum.SHIPPED.getCode());
                 order.setSendTime(new Date());
                 orderMapper.updateByPrimaryKeySelective(order);
                 return ServerResponse.success("发货成功");
@@ -697,7 +701,7 @@ public class OrderServiceImpl implements OrderService {
         Date closeTime = DateUtils.addHours(new Date(), -hour);
         String startTime = DateTimeUtil.dateToStr(closeTime);
         List<Order> orderList = orderMapper
-                .selectOrderByStatusAndStartTime(Const.OrderStatusEnum.NO_PAY.getCode(), startTime);
+                .selectOrderByStatusAndStartTime(OrderStatusEnum.NO_PAY.getCode(), startTime);
         for (Order order : orderList) {
             List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
             for (OrderItem orderItem : orderItemList) {
