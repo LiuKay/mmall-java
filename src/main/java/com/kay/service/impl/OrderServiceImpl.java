@@ -1,9 +1,10 @@
 package com.kay.service.impl;
 
+import static com.github.pagehelper.page.PageMethod.startPage;
+
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.domain.ExtendParams;
 import com.alipay.api.domain.GoodsDetail;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -25,6 +26,8 @@ import com.kay.domain.PayPlatformEnum;
 import com.kay.domain.PaymentTypeEnum;
 import com.kay.domain.Product;
 import com.kay.domain.ProductStatusEnum;
+import com.kay.exception.InvalidOperationException;
+import com.kay.exception.NotFoundException;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtil;
@@ -100,34 +103,23 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 生成订单
      *
-     * @param userId     用户id
-     * @param shippingId 地址id
+     * @param userId    用户id
+     * @param addressId 地址id
      * @return
      */
-    public ServerResponse createOrder(Integer userId, Integer shippingId) {
-
+    public OrderVo createOrder(Integer userId, Integer addressId) {
         //获取购物车列表(已勾选)
         List<Cart> cartList = cartMapper.selectCheckedCartListByUserId(userId);
-
-        ServerResponse serverResponse = this.getCartOrderItemList(userId, cartList);
-        if (!serverResponse.isSuccess()) {
-            return serverResponse;
+        if (CollectionUtils.isEmpty(cartList)) {
+            throw new InvalidOperationException("Cart is empty(un-select products).");
         }
 
-        List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
-        if (CollectionUtils.isEmpty(orderItemList)) {
-            return ServerResponse.error("购物车为空");
-        }
-
+        List<OrderItem> orderItemList = this.getCartOrderItemList(userId, cartList);
         //计算总价
         BigDecimal payment = this.getTotalPrice(orderItemList);
-
         //生成订单
         //组装订单对象
-        Order order = this.assembleOrder(userId, shippingId, payment);
-        if (order == null) {
-            return ServerResponse.error("生成订单错误");
-        }
+        Order order = this.assembleOrder(userId, addressId, payment);
 
         //同一个订单的订单条目，设置订单号
         for (OrderItem orderItem : orderItemList) {
@@ -136,16 +128,12 @@ public class OrderServiceImpl implements OrderService {
 
         //批量插入到order_item
         orderItemMapper.batchInsert(orderItemList);
-
         //减库存
         this.reduceProductStock(orderItemList);
         //清空购物车
         this.clearCart(cartList);
-
         //返回前端，格式转换 生成 Vo
-        OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-
-        return ServerResponse.success(orderVo);
+        return assembleOrderVo(order, orderItemList);
     }
 
 
@@ -154,27 +142,21 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param userId
      * @param orderNo
-     * @return
      */
-    public ServerResponse cancleOrder(Integer userId, Long orderNo) {
+    public void cancelOrder(Integer userId, Long orderNo) {
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
-            return ServerResponse.error("该用户此订单不存在");
+            throw new NotFoundException(String.format("Not found order by orderNo %s", orderNo));
         }
         if (order.getStatus() != OrderStatusEnum.NO_PAY.getCode()) {
-            return ServerResponse.error("已付款，无法取消订单");
+            throw new InvalidOperationException("Paid. Can not cancel the order.");
         }
 
         Order updateOrder = new Order();
         updateOrder.setId(order.getId());
         updateOrder.setStatus(OrderStatusEnum.CANCEL.getCode());
 
-        int rowCount = orderMapper.updateByPrimaryKeySelective(updateOrder);
-        if (rowCount > 0) {
-            return ServerResponse.success();
-        }
-
-        return ServerResponse.error();
+        orderMapper.updateByPrimaryKeySelective(updateOrder);
     }
 
     /**
@@ -184,17 +166,15 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ServerResponse getOrderCartProduct(Integer userId) {
+    public OrderProductVo getOrderCartProduct(Integer userId) {
         OrderProductVo orderProductVo = new OrderProductVo();
         //从购物车中获取数据
-
         List<Cart> cartList = cartMapper.selectCheckedCartListByUserId(userId);
-        ServerResponse serverResponse = this.getCartOrderItemList(userId, cartList);
-        if (!serverResponse.isSuccess()) {
-            return serverResponse;
+        if (CollectionUtils.isEmpty(cartList)) {
+            throw new InvalidOperationException("Cart is empty(un-select products).");
         }
 
-        List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
+        List<OrderItem> orderItemList = this.getCartOrderItemList(userId, cartList);
 
         List<OrderItemVo> orderItemVoList = Lists.newArrayList();
         BigDecimal payment = new BigDecimal("0.0");
@@ -206,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
         orderProductVo.setOrderItemVoList(orderItemVoList);
         orderProductVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
 
-        return ServerResponse.success(orderProductVo);
+        return orderProductVo;
     }
 
     /**
@@ -217,33 +197,32 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ServerResponse<OrderVo> getOrderDetail(Integer userId, Long orderNo) {
+    public OrderVo getOrderDetail(Integer userId, Long orderNo) {
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order != null) {
             List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, orderNo);
-            OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-            return ServerResponse.success(orderVo);
+            return assembleOrderVo(order, orderItemList);
         }
-        return ServerResponse.error("找不到该订单");
+        throw new NotFoundException(String.format("Not found the order by orderNo %s", orderNo));
     }
 
     @Override
-    public ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+    public PageInfo<OrderVo> getOrderList(Integer userId, int pageNum, int pageSize) {
+        startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectByUserId(userId);
-        PageInfo pageInfo = new PageInfo(orderList);
+        PageInfo<OrderVo> pageInfo = new PageInfo(orderList);
 
         List<OrderVo> orderVoList = this.assembleOrderVoList(userId, orderList);
         pageInfo.setList(orderVoList);
 
-        return ServerResponse.success(pageInfo);
+        return pageInfo;
     }
 
 
     private List<OrderVo> assembleOrderVoList(Integer userId, List<Order> orderList) {
         List<OrderVo> orderVoList = Lists.newArrayList();
         for (Order order : orderList) {
-            List<OrderItem> orderItemList = Lists.newArrayList();
+            List<OrderItem> orderItemList;
             if (userId == null) {
                 //todo 管理员查询
                 orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
@@ -360,12 +339,8 @@ public class OrderServiceImpl implements OrderService {
 
         //todo 创建订单时还没有发货和付款等信息
 
-        int rowCount = orderMapper.insert(order);
-        if (rowCount > 0) {
-            return order;
-        }
-
-        return null;
+        orderMapper.insert(order);
+        return order;
     }
 
     /**
@@ -387,12 +362,8 @@ public class OrderServiceImpl implements OrderService {
         return payment;
     }
 
-    public ServerResponse getCartOrderItemList(Integer userId, List<Cart> cartList) {
+    public List<OrderItem> getCartOrderItemList(Integer userId, List<Cart> cartList) {
         List<OrderItem> orderItemList = Lists.newArrayList();
-
-        if (CollectionUtils.isEmpty(cartList)) {
-            return ServerResponse.error("购物车为空");
-        }
 
         //校验购物车的数量，包括产品的状态和数量
         for (Cart cart : cartList) {
@@ -400,12 +371,13 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = new OrderItem();
             Product product = productMapper.selectByPrimaryKey(cart.getProductId());
             if (ProductStatusEnum.ON_SALE.getCode() != product.getStatus()) {
-                return ServerResponse.error("产品" + product.getName() + "不是在售状态");
+                throw new InvalidOperationException(String.format("Product '%s' is not on sale.", cart.getProductId()));
             }
 
             //检查库存
             if (cart.getQuantity() > product.getStock()) {
-                return ServerResponse.error("产品" + product.getName() + "库存不足");
+                throw new InvalidOperationException(
+                        String.format("Product '%s' is out of storage.", cart.getProductId()));
             }
 
             orderItem.setUserId(userId);
@@ -418,7 +390,7 @@ public class OrderServiceImpl implements OrderService {
 
             orderItemList.add(orderItem);
         }
-        return ServerResponse.success(orderItemList);
+        return orderItemList;
     }
 
 
@@ -625,37 +597,36 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ServerResponse<PageInfo> getManageList(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+    public PageInfo getManageList(int pageNum, int pageSize) {
+        startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectAllOrder();
         PageInfo pageInfo = new PageInfo(orderList);
 
         List<OrderVo> orderVoList = this.assembleOrderVoList(null, orderList);
         pageInfo.setList(orderVoList);
-        return ServerResponse.success(pageInfo);
+        return pageInfo;
     }
 
     @Override
-    public ServerResponse<OrderVo> getManageDetail(Long orderNo) {
+    public OrderVo getManageDetail(Long orderNo) {
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order != null) {
             List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
-            OrderVo orderVo = this.assembleOrderVo(order, orderItemList);
-            return ServerResponse.success(orderVo);
+            return assembleOrderVo(order, orderItemList);
         }
-        return ServerResponse.error("订单不存在");
+        throw new NotFoundException(String.format("Not found order for orderNo %s", orderNo));
     }
 
     /**
      * fixme 搜索需要扩展，多条件查询
-     *
-     * @param orderNo
+     *  @param orderNo
      * @param pageNum
      * @param pageSize @return
+     * @return
      */
     @Override
-    public ServerResponse<PageInfo> getManageSearch(Long orderNo, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+    public PageInfo getManageSearch(Long orderNo, int pageNum, int pageSize) {
+        startPage(pageNum, pageSize);
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order != null) {
 
@@ -665,9 +636,9 @@ public class OrderServiceImpl implements OrderService {
             PageInfo pageInfo = new PageInfo(Lists.newArrayList(order));
             pageInfo.setList(Lists.newArrayList(orderVo));
 
-            return ServerResponse.success(pageInfo);
+            return pageInfo;
         }
-        return ServerResponse.error("订单不存在");
+        throw new NotFoundException(String.format("Not found order for orderNo %s", orderNo));
     }
 
     /**
@@ -677,17 +648,16 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public ServerResponse getManageSendGoods(Long orderNo) {
+    public void getManageSendGoods(Long orderNo) {
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order != null) {
             if (order.getStatus() == OrderStatusEnum.PAID.getCode()) {
                 order.setStatus(OrderStatusEnum.SHIPPED.getCode());
                 order.setSendTime(new Date());
                 orderMapper.updateByPrimaryKeySelective(order);
-                return ServerResponse.success("发货成功");
             }
         }
-        return ServerResponse.error("订单不存在");
+        throw new NotFoundException(String.format("Not found order for orderNo %s", orderNo));
     }
 
     /**

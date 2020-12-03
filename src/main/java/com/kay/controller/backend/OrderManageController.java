@@ -1,7 +1,6 @@
 package com.kay.controller.backend;
 
 import com.github.pagehelper.PageInfo;
-import com.kay.common.ServerResponse;
 import com.kay.service.OrderService;
 import com.kay.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +17,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/manage/order")
 public class OrderManageController {
 
+    private final OrderService orderService;
+
     @Autowired
-    private OrderService orderService;
+    public OrderManageController(OrderService orderService) {this.orderService = orderService;}
 
     @GetMapping("/list")
-    public ServerResponse<PageInfo> list(
+    public PageInfo list(
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return orderService.getManageList(pageNum, pageSize);
     }
 
     @GetMapping("/detail")
-    public ServerResponse<OrderVo> list(Long orderNo) {
+    public OrderVo list(Long orderNo) {
         return orderService.getManageDetail(orderNo);
     }
 
@@ -38,17 +39,17 @@ public class OrderManageController {
      * 后台搜索，需要扩展
      */
     @GetMapping("/search")
-    public ServerResponse<PageInfo> search(@RequestParam("orderNo") Long orderNo,
-                                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    public PageInfo search(@RequestParam("orderNo") Long orderNo,
+                           @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                           @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return orderService.getManageSearch(orderNo, pageNum, pageSize);
 
     }
 
     //发货
     @GetMapping("/send_goods")
-    public ServerResponse<OrderVo> orderSendGoods(Long orderNo) {
-        return orderService.getManageSendGoods(orderNo);
+    public void orderSendGoods(Long orderNo) {
+        orderService.getManageSendGoods(orderNo);
     }
 
 }

@@ -8,6 +8,7 @@ import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.service.AuthService;
 import com.kay.service.OrderService;
+import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class OrderController {
      * 创建订单
      */
     @GetMapping("/create")
-    public ServerResponse create(HttpServletRequest request, Integer shippingId) {
+    public OrderVo create(HttpServletRequest request, Integer shippingId) {
         return orderService.createOrder(getUserId(request), shippingId);
     }
 
@@ -48,25 +49,25 @@ public class OrderController {
      * 取消订单
      */
     @GetMapping("/cancel")
-    public ServerResponse cancel(Long orderNo, HttpServletRequest request) {
-        return orderService.cancleOrder(getUserId(request), orderNo);
+    public void cancel(Long orderNo, HttpServletRequest request) {
+        orderService.cancelOrder(getUserId(request), orderNo);
     }
 
     //获取购物车中已经选中的商品详情
     @GetMapping("/get_order_cart_product")
-    public ServerResponse getOrderCartProduct(HttpServletRequest request) {
+    public OrderProductVo getOrderCartProduct(HttpServletRequest request) {
         return orderService.getOrderCartProduct(getUserId(request));
     }
 
     @GetMapping("/detail")
-    public ServerResponse<OrderVo> getOrderDetail(HttpServletRequest request, Long orderNo) {
+    public OrderVo getOrderDetail(HttpServletRequest request, Long orderNo) {
         return orderService.getOrderDetail(getUserId(request), orderNo);
     }
 
     @GetMapping("/list")
-    public ServerResponse<PageInfo> getOrderList(HttpServletRequest request,
-                                                 @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                                                 @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    public PageInfo getOrderList(HttpServletRequest request,
+                                 @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                 @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return orderService.getOrderList(getUserId(request), pageNum, pageSize);
     }
 
