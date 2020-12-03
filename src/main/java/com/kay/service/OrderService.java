@@ -2,6 +2,7 @@ package com.kay.service;
 
 import com.github.pagehelper.PageInfo;
 import com.kay.common.ServerResponse;
+import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
 import java.util.Map;
 
@@ -15,23 +16,23 @@ public interface OrderService {
 
     ServerResponse queryOrderPayStatus(Integer userId, Long orderNo);
 
-    ServerResponse createOrder(Integer userId, Integer shippingId);
+    OrderVo createOrder(Integer userId, Integer addressId);
 
-    ServerResponse cancleOrder(Integer userId, Long orderNo);
+    void cancelOrder(Integer userId, Long orderNo);
 
-    ServerResponse getOrderCartProduct(Integer userId);
+    OrderProductVo getOrderCartProduct(Integer userId);
 
-    ServerResponse<OrderVo> getOrderDetail(Integer userId, Long orderNo);
+    OrderVo getOrderDetail(Integer userId, Long orderNo);
 
-    ServerResponse<PageInfo> getOrderList(Integer userId, int pageNum, int pageSize);
+    PageInfo<OrderVo> getOrderList(Integer userId, int pageNum, int pageSize);
 
-    ServerResponse<PageInfo> getManageList(int pageNum, int pageSize);
+    PageInfo getManageList(int pageNum, int pageSize);
 
-    ServerResponse<OrderVo> getManageDetail(Long orderNo);
+    OrderVo getManageDetail(Long orderNo);
 
-    ServerResponse<PageInfo> getManageSearch(Long orderNo, int pageNum, int pageSize);
+    PageInfo getManageSearch(Long orderNo, int pageNum, int pageSize);
 
-    ServerResponse<OrderVo> getManageSendGoods(Long orderNo);
+    void getManageSendGoods(Long orderNo);
 
     //v2.0 增加定时关闭订单
     void closeOrder(int hour);
