@@ -1,26 +1,26 @@
 package com.kay.service;
 
 import com.github.pagehelper.PageInfo;
-import com.kay.common.ServerResponse;
 import com.kay.domain.Product;
+import com.kay.domain.ProductStatusEnum;
 import com.kay.vo.ProductDetailVo;
 
 /**
  * Created by kay on 2018/3/20.
  */
 public interface ProductService {
-    ServerResponse<String> saveOrUpdateProduct(Product product);
+    void saveOrUpdateProduct(Product product);
 
-    ServerResponse<String> setSaleStatus(Integer productId, Integer status);
+    void setSaleStatus(Integer productId, ProductStatusEnum status);
 
-    ServerResponse getManageProductDetail(Integer productId);
+    ProductDetailVo getManageProductDetail(Integer productId);
 
-    ServerResponse getManageProductList(int pageNum, int pageSize);
+    PageInfo getManageProductList(int pageNum, int pageSize);
 
-    ServerResponse getManageSearchList(Integer productId, String productName, int pageNum, int pageSize);
+    PageInfo getManageSearchList(Integer productId, String productName, int pageNum, int pageSize);
 
-    ServerResponse<ProductDetailVo> getProductList(Integer productId);
+    ProductDetailVo getProductList(Integer productId);
 
-    ServerResponse<PageInfo> getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize,
-                                                         String orderBy);
+    PageInfo getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum, int pageSize,
+                                         String orderBy);
 }
