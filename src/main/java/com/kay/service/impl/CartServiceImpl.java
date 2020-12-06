@@ -2,6 +2,7 @@ package com.kay.service.impl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+
 import com.kay.common.ChoiceEnum;
 import com.kay.dao.CartMapper;
 import com.kay.dao.ProductMapper;
@@ -12,17 +13,19 @@ import com.kay.util.BigDecimalUtil;
 import com.kay.util.PropertiesUtil;
 import com.kay.vo.CartProductVo;
 import com.kay.vo.CartVo;
-import java.math.BigDecimal;
-import java.util.List;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 /**
  * Created by kay on 2018/3/23.
  */
-@Service("iCartService")
+@Service
 public class CartServiceImpl implements CartService {
 
     private static final String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
