@@ -1,21 +1,28 @@
 package com.kay.controller.backend;
 
+import com.github.pagehelper.PageInfo;
 import com.kay.common.ServerResponse;
 import com.kay.domain.Product;
+import com.kay.domain.ProductStatusEnum;
 import com.kay.service.FileService;
 import com.kay.service.ProductService;
 import com.kay.util.PropertiesUtil;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.kay.vo.ProductDetailVo;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -23,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 商品管理
  */
 @Controller
-@RequestMapping("/manage/product")
+@RequestMapping("/manage/products")
 public class ProductManageController {
 
     @Autowired
@@ -36,8 +43,8 @@ public class ProductManageController {
      * 分页list
      */
     @GetMapping("/list")
-    public ServerResponse list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    public PageInfo list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return productService.getManageProductList(pageNum, pageSize);
     }
 
@@ -45,9 +52,9 @@ public class ProductManageController {
      * 条件查询-分页查询
      */
     @GetMapping("/search")
-    public ServerResponse searchList(String productName, Integer productId,
-                                     @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    public PageInfo searchList(String productName, Integer productId,
+                               @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                               @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         return productService.getManageSearchList(productId, productName, pageNum, pageSize);
     }
 
@@ -55,16 +62,20 @@ public class ProductManageController {
      * 更新或添加产品
      */
     @GetMapping("/save")
-    public ServerResponse saveProduct(Product product) {
-        return productService.saveOrUpdateProduct(product);
+    public void saveProduct(Product product) {
+        productService.saveOrUpdateProduct(product);
     }
 
     /**
      * 修改产品状态
      */
-    @GetMapping("s/et_sale_status")
-    public ServerResponse setSaleStatus(Integer productId, Integer status) {
-        return productService.setSaleStatus(productId, status);
+    @GetMapping("/set_sale_status")
+    public void setSaleStatus(@RequestParam @NonNull Integer productId, String status) {
+        ProductStatusEnum productStatusEnum = ProductStatusEnum.valueOf(status.toUpperCase());
+        if (productStatusEnum == null) {
+            throw new IllegalArgumentException("status is not expected.");
+        }
+        productService.setSaleStatus(productId, productStatusEnum);
     }
 
 
@@ -75,7 +86,7 @@ public class ProductManageController {
      * @return
      */
     @GetMapping("/detail")
-    public ServerResponse getProductDetail(Integer productId) {
+    public ProductDetailVo getProductDetail(@RequestParam @NonNull Integer productId) {
         return productService.getManageProductDetail(productId);
     }
 

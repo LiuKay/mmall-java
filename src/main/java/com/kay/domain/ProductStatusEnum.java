@@ -1,6 +1,7 @@
 package com.kay.domain;
 
 public enum ProductStatusEnum {
+    OFF_SHELF(0, "下架"),
     ON_SALE(1, "在售");
 
     private int code;
