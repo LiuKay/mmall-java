@@ -12,7 +12,7 @@
 
 
 
-Swagger2 UI 地址：http://localhost:8081/swagger-ui.html
+Swagger2 UI 地址：http://localhost:8081/swagger-ui/#/
 
 前端项目地址：https://github.com/LiuKay/mmall-kay-js
 
