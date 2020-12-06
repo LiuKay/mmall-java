@@ -57,7 +57,6 @@ public class CategoryServiceImpl implements CategoryService {
         category.setId(categoryId);
         category.setName(categoryName);
         categoryMapper.updateByPrimaryKeySelective(category);
-        return null;
     }
 
     /**

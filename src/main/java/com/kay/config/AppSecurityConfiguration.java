@@ -79,7 +79,6 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(
-                        securityProperties.getBrowser().getLoginPage(),
                         LOGIN_REQUIRE,
                         errorPath,
                         LOGIN_MOBILE_PROCESSING_URL,
@@ -97,6 +96,8 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/v2/api-docs")//
                 .antMatchers("/swagger-resources/**")//
                 .antMatchers("/swagger-ui.html")//
+                .antMatchers("/swagger-ui/**")//
+                .antMatchers("/index.html")//
                 .antMatchers("/configuration/**")//
                 .antMatchers("/webjars/**")//
                 .antMatchers("/public")
