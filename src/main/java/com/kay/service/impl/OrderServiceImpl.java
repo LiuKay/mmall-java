@@ -1,13 +1,12 @@
 package com.kay.service.impl;
 
-import static com.github.pagehelper.page.PageMethod.startPage;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.domain.ExtendParams;
 import com.alipay.api.domain.GoodsDetail;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.kay.common.Const;
 import com.kay.common.ServerResponse;
 import com.kay.dao.AddressMapper;
@@ -36,18 +35,23 @@ import com.kay.vo.OrderItemVo;
 import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
 import com.kay.vo.ShippingVo;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import static com.github.pagehelper.page.PageMethod.startPage;
 
 //import com.alipay.demo.trade.config.Configs;
 //import com.alipay.demo.trade.model.ExtendParams;
@@ -61,7 +65,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by kay on 2018/3/27.
  */
-@Service("iOrderService")
+@Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 

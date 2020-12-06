@@ -1,19 +1,23 @@
 package com.kay.service.impl;
 
 import com.google.common.collect.Lists;
+
 import com.kay.service.FileService;
 import com.kay.util.FTPUtil;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by kay on 2018/3/21.
  */
-@Service("iFileService")
+@Service
 @Slf4j
 public class FileServiceImpl implements FileService {
 

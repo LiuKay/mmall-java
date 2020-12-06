@@ -1,7 +1,7 @@
 package com.kay.service;
 
-import com.kay.common.ServerResponse;
 import com.kay.domain.Category;
+
 import java.util.List;
 
 /**
@@ -9,12 +9,11 @@ import java.util.List;
  */
 public interface CategoryService {
 
+    Category addCategory(String categoryName, Integer parentId);
 
-    ServerResponse<String> addCategory(String categoryName, Integer parentId);
+    void update(String categoryName, Integer categoryId);
 
-    ServerResponse<String> setCategory(String categoryName, Integer categoryId);
+    List<Category> getChildrenParallelCategory(Integer categoryId);
 
-    ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId);
-
-    ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId);
+    List<Integer> selectCategoryAndChildrenById(Integer categoryId);
 }

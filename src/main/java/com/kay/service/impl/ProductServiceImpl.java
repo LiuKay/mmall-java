@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Created by kay on 2018/3/20.
  */
-@Service("productService")
+@Service
 public class ProductServiceImpl implements ProductService {
 
     private static final Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
@@ -204,7 +204,7 @@ public class ProductServiceImpl implements ProductService {
                 return pageInfo;
             }
             //3.若存在分类，把categoryId当作一个大类,取出所有的节点 , 在具体查询该节点内的条件，故改list先提取出来
-            categoryIdList = categoryService.selectCategoryAndChildrenById(categoryId).getData();
+            categoryIdList = categoryService.selectCategoryAndChildrenById(categoryId);
         }
 
         //B.处理模糊查询条件

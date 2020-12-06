@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Created by kay on 2018/3/19.
  */
-@Service("userService")
+@Service
 public class UserServiceImpl implements UserService {
 
     private static final String FORGET_TOKEN_SUFFIX = ":forget_token";

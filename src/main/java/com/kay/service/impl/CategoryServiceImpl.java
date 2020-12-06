@@ -2,22 +2,25 @@ package com.kay.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.kay.common.ServerResponse;
+
 import com.kay.dao.CategoryMapper;
 import com.kay.domain.Category;
 import com.kay.service.CategoryService;
-import java.util.List;
-import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by kay on 2018/3/20.
  */
-@Service("iCategoryService")
+@Service
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
@@ -34,9 +37,9 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     @Override
-    public ServerResponse<String> addCategory(String categoryName, Integer parentId) {
+    public Category addCategory(String categoryName, Integer parentId) {
         if (parentId == null && StringUtils.isBlank(categoryName)) {
-            return ServerResponse.error("添加品类参数错误");
+            throw new IllegalArgumentException("parentId or categoryName can not be null.");
         }
         Category category = new Category();
         category.setParentId(parentId);
@@ -44,26 +47,17 @@ public class CategoryServiceImpl implements CategoryService {
         //新添加的品类状态
         category.setStatus(true);
 
-        int insertCount = categoryMapper.insertSelective(category);
-        if (insertCount > 0) {
-            return ServerResponse.successWithMessage("添加品类成功");
-        }
-        return ServerResponse.error("添加品类失败");
+        categoryMapper.insertSelective(category);
+        return category;
     }
 
     @Override
-    public ServerResponse<String> setCategory(String categoryName, Integer categoryId) {
-        if (categoryId == null && StringUtils.isBlank(categoryName)) {
-            return ServerResponse.error("修改品类名称参数错误");
-        }
+    public void update(String categoryName, Integer categoryId) {
         Category category = new Category();
         category.setId(categoryId);
         category.setName(categoryName);
-        int updateCount = categoryMapper.updateByPrimaryKeySelective(category);
-        if (updateCount > 0) {
-            return ServerResponse.successWithMessage("更新品类名字成功");
-        }
-        return ServerResponse.error("更新品类名字失败");
+        categoryMapper.updateByPrimaryKeySelective(category);
+        return null;
     }
 
     /**
@@ -73,12 +67,12 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     @Override
-    public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
+    public List<Category> getChildrenParallelCategory(Integer categoryId) {
         List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
         if (CollectionUtils.isEmpty(categoryList)) {
             log.info("未找到当前分类的子节点");
         }
-        return ServerResponse.success(categoryList);
+        return categoryList;
     }
 
     /**
@@ -88,18 +82,15 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     @Override
-    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId) {
+    public List<Integer> selectCategoryAndChildrenById(Integer categoryId) {
         Set<Category> categorySet = Sets.newHashSet(); //初始化set
         getCategoryById(categorySet, categoryId);
         //只存放子节点的id
         List<Integer> categoryList = Lists.newArrayList();
-//        if (categoryId != null) {
         for (Category category : categorySet) {
             categoryList.add(category.getId());
         }
-//        }
-
-        return ServerResponse.success(categoryList);
+        return categoryList;
     }
 
     /**
