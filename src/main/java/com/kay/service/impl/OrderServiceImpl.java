@@ -28,7 +28,7 @@ import com.kay.exception.InvalidOperationException;
 import com.kay.exception.NotFoundException;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
-import com.kay.util.DateTimeUtil;
+import com.kay.util.DateTimeUtils;
 import com.kay.util.PropertiesUtil;
 import com.kay.vo.OrderItemVo;
 import com.kay.vo.OrderProductVo;
@@ -261,11 +261,11 @@ public class OrderServiceImpl implements OrderService {
             orderVo.setShippingVo(assembleShippingVo(address));
         }
 
-        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
-        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
-        orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
-        orderVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
-        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
+        orderVo.setPaymentTime(DateTimeUtils.dateToStr(order.getPaymentTime()));
+        orderVo.setSendTime(DateTimeUtils.dateToStr(order.getSendTime()));
+        orderVo.setEndTime(DateTimeUtils.dateToStr(order.getEndTime()));
+        orderVo.setCreateTime(DateTimeUtils.dateToStr(order.getCreateTime()));
+        orderVo.setCloseTime(DateTimeUtils.dateToStr(order.getCloseTime()));
 
         orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
 
@@ -290,7 +290,7 @@ public class OrderServiceImpl implements OrderService {
         orderItemVo.setQuantity(orderItem.getQuantity());
         orderItemVo.setTotalPrice(orderItem.getTotalPrice());
 
-        orderItemVo.setCreateTime(DateTimeUtil.dateToStr(orderItem.getCreateTime()));
+        orderItemVo.setCreateTime(DateTimeUtils.dateToStr(orderItem.getCreateTime()));
         return orderItemVo;
     }
 
@@ -565,7 +565,7 @@ public class OrderServiceImpl implements OrderService {
         //回调状态
         //已支付
         if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
-            order.setPaymentTime(DateTimeUtil.strToDate(params.get("gmt_payment")));
+            order.setPaymentTime(DateTimeUtils.strToDate(params.get("gmt_payment")));
             order.setStatus(OrderStatusEnum.PAID.getCode());
             orderMapper.updateByPrimaryKeySelective(order);
         }
@@ -676,7 +676,7 @@ public class OrderServiceImpl implements OrderService {
     public void closeOrder(int hour) {
         //获取当前时间hour之前时间
         Date closeTime = DateUtils.addHours(new Date(), -hour);
-        String startTime = DateTimeUtil.dateToStr(closeTime);
+        String startTime = DateTimeUtils.dateToStr(closeTime);
         List<Order> orderList = orderMapper
                 .selectOrderByStatusAndStartTime(OrderStatusEnum.NO_PAY.getCode(), startTime);
         for (Order order : orderList) {

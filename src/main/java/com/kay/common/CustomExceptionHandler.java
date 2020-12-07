@@ -2,8 +2,8 @@ package com.kay.common;
 
 import com.kay.exception.BaseException;
 import com.kay.exception.NotFoundException;
-import com.kay.util.TimestampProvider;
-
+import com.kay.util.DateTimeUtils;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.UrlPathHelper;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
@@ -28,9 +26,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private HttpServletRequest httpServletRequest;
-
-    @Autowired
-    private TimestampProvider timestampProvider;
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ApiErrorResponse> handleException(Exception exception) {
@@ -61,7 +56,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .errorCode(getCode(throwable))
                 .message(throwable.getLocalizedMessage())
                 .detail(throwable.getMessage())
-                .timestamp(timestampProvider.getTimestampAsString())
+                .timestamp(DateTimeUtils.getTimestampAsString())
                 .path(URL_PATH_HELPER.getOriginatingServletPath(httpServletRequest))
                 .method(httpServletRequest.getMethod())
                 .trace(trace)

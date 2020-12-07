@@ -1,7 +1,9 @@
 package com.kay.common;
 
-import com.kay.util.TimestampProvider;
-
+import com.kay.util.DateTimeUtils;
+import java.util.Map;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -13,11 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-
 @RestController
 public class CustomErrorController implements ErrorController {
 
@@ -26,9 +23,6 @@ public class CustomErrorController implements ErrorController {
 
     @Autowired
     private ErrorAttributes errorAttributes;
-
-    @Autowired
-    private TimestampProvider timestampProvider;
 
     @RequestMapping("${server.error.path:${error.path:/error}}")
     public ApiErrorResponse handleError(HttpServletRequest request) {
@@ -42,7 +36,7 @@ public class CustomErrorController implements ErrorController {
                 .errorCode("No Code Available.")
                 .message(message)
                 .detail(details)
-                .timestamp(timestampProvider.getTimestampAsString())
+                .timestamp(DateTimeUtils.getTimestampAsString())
                 .method(request.getMethod())
                 .path(request.getRequestURI())
                 .trace(trace)

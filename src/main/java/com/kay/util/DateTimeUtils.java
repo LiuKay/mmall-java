@@ -2,15 +2,17 @@ package com.kay.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class DateTimeUtil {
+public class DateTimeUtils {
 
     private static final String STANDARD_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(STANDARD_FORMAT_STR);
 
-    private DateTimeUtil() {}
+    private DateTimeUtils() {}
 
     public static String defaultDateToStr(Date date) {
         if (date == null) {
@@ -31,5 +33,13 @@ public class DateTimeUtil {
 
     public static Date strToDate(String dateStr) {
         return defaultStrToDate(dateStr);
+    }
+
+    public static String getTimestampAsString() {
+        return currentTimestamp().toString();
+    }
+
+    private static ZonedDateTime currentTimestamp() {
+        return ZonedDateTime.now(ZoneOffset.systemDefault());
     }
 }
