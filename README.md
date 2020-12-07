@@ -1,20 +1,17 @@
 
 #### v3.0_springboot 开发计划
 
-   1. 集成 Swagger2, 切换 SpringBoot
-   2. SpringBoot 集成 Mybaits
-   3. 集成 Spring Security
-   4. 配置 Spring Data Redis 或 使用 Spring Cache 管理缓存
-   5. 修改所有接口为 RESTFull 风格, 摒弃正常返回时的包装对象, 定义统一的错误处理机制
-   6. 支持手机验证码登录，移除cookie，使用JWT作为认证
-   7. 支持本地测试，使用 testcontainers
-   8. 替换maven 使用gradle 作为依赖管理
-
+1. 从 SSM 切换到 SpringBoot
+2. SpringBoot 集成 Mybatis
+3. 集成 Spring Security, 支持手机验证码和用户密码登录，使用JWT
+4. 配置 Spring Data Redis 或 使用 Spring Cache 管理缓存
+5. 修改所有接口为 RESTFull 风格, 接口成功时只返回数据,错误时通过HTTP状态码和业务状态码处理,摒弃丑陋的包装对象,定义统一的错误处理机制
+6. 支持本地测试，使用 Testcontainers 来Mock MySQL, Redis 
+7. maven 切换成 gradle
+8. 修改原有的代码风格，遵循 google java code style
 
 
 Swagger2 UI 地址：http://localhost:8081/swagger-ui/#/
-
-前端项目地址：https://github.com/LiuKay/mmall-kay-js
 
 ### mmall 项目整体模块划分
 
