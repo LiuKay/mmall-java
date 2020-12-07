@@ -3,7 +3,7 @@ package com.kay.controller;
 import com.kay.common.ApiErrorResponse;
 import com.kay.security.properties.SecurityConstants;
 import com.kay.service.AuthService;
-import com.kay.util.TimestampProvider;
+import com.kay.util.DateTimeUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,12 +26,9 @@ public class LoginController {
 
     private final AuthService authService;
 
-    private final TimestampProvider timestampProvider;
-
     @Autowired
-    public LoginController(AuthService authService, TimestampProvider timestampProvider) {
+    public LoginController(AuthService authService) {
         this.authService = authService;
-        this.timestampProvider = timestampProvider;
     }
 
     @GetMapping(SecurityConstants.VERIFICATION_CODE_URL)
@@ -48,7 +45,7 @@ public class LoginController {
                 .errorCode(HttpStatus.UNAUTHORIZED.toString())
                 .message("Need Login.")
                 .detail("Require authentication, please login first.")
-                .timestamp(timestampProvider.getTimestampAsString())
+                .timestamp(DateTimeUtils.getTimestampAsString())
                 .path(request.getRequestURI())
                 .build();
     }

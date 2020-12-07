@@ -3,8 +3,9 @@ package com.kay.service.impl;
 import com.google.common.collect.Lists;
 
 import com.kay.service.FileService;
-import com.kay.util.FTPUtil;
+import com.kay.util.FTPService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
-    //private Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
+    @Autowired
+    private FTPService ftpService;
 
     /**
      * 文件上传
@@ -54,7 +56,7 @@ public class FileServiceImpl implements FileService {
             file.transferTo(targetFile);
 
             //上传到FTP文件服务器
-            FTPUtil.uploadFile(Lists.newArrayList(targetFile));
+            ftpService.uploadFile(Lists.newArrayList(targetFile));
 
             //上传完后删除应用上的文件
             targetFile.delete();

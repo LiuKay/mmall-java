@@ -14,7 +14,7 @@ import com.kay.exception.InvalidOperationException;
 import com.kay.exception.NotFoundException;
 import com.kay.service.CategoryService;
 import com.kay.service.ProductService;
-import com.kay.util.DateTimeUtil;
+import com.kay.util.DateTimeUtils;
 import com.kay.util.PropertiesUtil;
 import com.kay.vo.ProductDetailVo;
 import com.kay.vo.ProductListVo;
@@ -279,8 +279,8 @@ public class ProductServiceImpl implements ProductService {
         productDetailVo.setImageHost(imgHost);
 
         //日期转换使用joda-time
-        productDetailVo.setCreateTime(DateTimeUtil.dateToStr(product.getCreateTime()));
-        productDetailVo.setUpdateTime(DateTimeUtil.dateToStr(product.getUpdateTime()));
+        productDetailVo.setCreateTime(DateTimeUtils.dateToStr(product.getCreateTime()));
+        productDetailVo.setUpdateTime(DateTimeUtils.dateToStr(product.getUpdateTime()));
         return productDetailVo;
     }
 

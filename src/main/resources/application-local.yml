@@ -13,6 +13,10 @@ application:
         url: /users,/user/*
   error:
     include-trace: true
+  ftp:
+    username: test
+    password: test
+    ip: 127.0.0.1
 
 
 spring:
