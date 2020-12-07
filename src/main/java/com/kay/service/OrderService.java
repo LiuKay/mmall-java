@@ -1,7 +1,6 @@
 package com.kay.service;
 
 import com.github.pagehelper.PageInfo;
-import com.kay.common.ServerResponse;
 import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
 import java.util.Map;
@@ -10,11 +9,11 @@ import java.util.Map;
  * Created by kay on 2018/3/27.
  */
 public interface OrderService {
-    ServerResponse pay(Integer userId, Long orderNo, String path);
+    Map<String, String> pay(Integer userId, Long orderNo, String path);
 
-    ServerResponse alipayCallback(Map<String, String> params);
+    void alipayCallback(Map<String, String> params);
 
-    ServerResponse queryOrderPayStatus(Integer userId, Long orderNo);
+    boolean isOrderPaid(Integer userId, Long orderNo);
 
     OrderVo createOrder(Integer userId, Integer addressId);
 

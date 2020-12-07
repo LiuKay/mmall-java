@@ -1,14 +1,16 @@
 package com.kay.controller.backend;
 
 import com.github.pagehelper.PageInfo;
-import com.kay.common.ServerResponse;
 import com.kay.domain.Product;
 import com.kay.domain.ProductStatusEnum;
 import com.kay.service.FileService;
 import com.kay.service.ProductService;
 import com.kay.util.PropertiesUtil;
 import com.kay.vo.ProductDetailVo;
-
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -17,12 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -98,15 +94,15 @@ public class ProductManageController {
      * @return
      */
     @GetMapping("/upload")
-    public ServerResponse uploadFile(@RequestParam(value = "upload_file", required = false) MultipartFile file,
-                                     HttpServletRequest request) {
+    public Map<String, String> uploadFile(@RequestParam(value = "upload_file", required = false) MultipartFile file,
+                                          HttpServletRequest request) {
         String path = request.getSession().getServletContext().getRealPath("upload");
         String uploadFilePath = fileService.upload(file, path);
         String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + uploadFilePath;
-        Map fileMap = new HashMap();
+        Map<String, String> fileMap = new HashMap<>();
         fileMap.put("uri", uploadFilePath);
         fileMap.put("url", url);
-        return ServerResponse.success(fileMap);
+        return fileMap;
     }
 
     /**
