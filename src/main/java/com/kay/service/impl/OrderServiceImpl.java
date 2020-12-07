@@ -1,14 +1,13 @@
 package com.kay.service.impl;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import static com.github.pagehelper.page.PageMethod.startPage;
 
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.domain.ExtendParams;
 import com.alipay.api.domain.GoodsDetail;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.kay.common.Const;
-import com.kay.common.ServerResponse;
 import com.kay.dao.AddressMapper;
 import com.kay.dao.CartMapper;
 import com.kay.dao.OrderItemMapper;
@@ -35,23 +34,19 @@ import com.kay.vo.OrderItemVo;
 import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
 import com.kay.vo.ShippingVo;
-
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import lombok.extern.slf4j.Slf4j;
-
-import static com.github.pagehelper.page.PageMethod.startPage;
 
 //import com.alipay.demo.trade.config.Configs;
 //import com.alipay.demo.trade.model.ExtendParams;
@@ -397,12 +392,20 @@ public class OrderServiceImpl implements OrderService {
         return orderItemList;
     }
 
-
-    public ServerResponse pay(Integer userId, Long orderNo, String path) {
-        Map<String, String> resultMap = Maps.newHashMap();
+    /**
+     * TODO 支付
+     *
+     * @param userId
+     * @param orderNo
+     * @param path
+     * @return
+     */
+    @Override
+    public Map<String, String> pay(Integer userId, Long orderNo, String path) {
+        Map<String, String> resultMap = new HashMap<>();
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
-            return ServerResponse.error("找不到该订单");
+            throw new NotFoundException(String.format("Not found order %s", orderNo));
         }
         resultMap.put("orderNo", String.valueOf(order.getOrderNo()));
 
@@ -525,7 +528,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 //        }
-        return null;
+        return resultMap;
     }
 
 
@@ -542,19 +545,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //回调验证
-    public ServerResponse alipayCallback(Map<String, String> params) {
+    public void alipayCallback(Map<String, String> params) {
         long orderNo = Long.parseLong(params.get("out_trade_no"));  //业务订单号
         String tradeNo = params.get("trade_no");
         String tradeStatus = params.get("trade_status");
 
         Order order = orderMapper.selectByOrderNo(orderNo);
         if (order == null) {
-            return ServerResponse.error("非本站订单，回调忽略");
+            throw new NotFoundException("非本站订单，回调忽略");
         }
+
         //订单状态
         if (order.getStatus() >= OrderStatusEnum.PAID.getCode()) {
-            //需要返回success
-            return ServerResponse.successWithMessage("支付宝重复调用");
+            //TODO 需要返回success
+//            return ServerResponse.successWithMessage("支付宝重复调用");
+            return;
         }
 
         //回调状态
@@ -574,20 +579,18 @@ public class OrderServiceImpl implements OrderService {
         payInfo.setPlatformNumber(tradeNo);
         payInfo.setPlatformStatus(tradeStatus);
         payInfoMapper.insert(payInfo);
-
-        return ServerResponse.success();
     }
 
-    public ServerResponse queryOrderPayStatus(Integer userId, Long orderNo) {
+    public boolean isOrderPaid(Integer userId, Long orderNo) {
         Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
         if (order == null) {
-            return ServerResponse.error("用户没该订单");
+            throw new NotFoundException(String.format("Not found order %s", orderNo));
         }
         //成功的订单
         if (order.getStatus() >= OrderStatusEnum.PAID.getCode()) {
-            return ServerResponse.success();
+            return true;
         }
-        return ServerResponse.error();
+        return false;
     }
 
 

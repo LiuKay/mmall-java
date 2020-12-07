@@ -5,11 +5,11 @@ package com.kay.controller.portal;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.kay.common.Const;
-import com.kay.common.ServerResponse;
 import com.kay.service.AuthService;
 import com.kay.service.OrderService;
 import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -75,7 +75,7 @@ public class OrderController {
      * 支付
      */
     @GetMapping("/pay")
-    public ServerResponse pay(Long orderNo, HttpServletRequest request) {
+    public Map<String, String> pay(Long orderNo, HttpServletRequest request) {
         Integer userId = getUserId(request);
         String path = request.getSession().getServletContext().getRealPath("upload");
         return orderService.pay(userId, orderNo, path);
@@ -88,7 +88,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/alipay_callback")
-    public Object alipayCallback(HttpServletRequest request) {
+    public String alipayCallback(HttpServletRequest request) {
         Map<String, String> params = Maps.newHashMap();
 
         Map requestParams = request.getParameterMap();
@@ -121,21 +121,17 @@ public class OrderController {
 //        }
 
         //验证业务数据
-        ServerResponse response = orderService.alipayCallback(params);
-        if (response.isSuccess()) {
-            return Const.AlipayCallback.RESPONSE_SUCCESS;
-        }
+//        ServerResponse response = orderService.alipayCallback(params);
+//        if (response.isSuccess()) {
+//            return Const.AlipayCallback.RESPONSE_SUCCESS;
+//        }
         return Const.AlipayCallback.RESPONSE_FAILED;
     }
 
     @GetMapping("/query_order_pay_status")
-    public ServerResponse<Boolean> queryOrderPayStatus(Long orderNo, HttpServletRequest request) {
-        ServerResponse response = orderService.queryOrderPayStatus(getUserId(request), orderNo);
-        if (response.isSuccess()) {
-            return ServerResponse.success(true);
-        }
-
-        return ServerResponse.success(false);
+    public Map<String, Boolean> queryOrderPayStatus(Long orderNo, HttpServletRequest request) {
+        boolean orderPaid = orderService.isOrderPaid(getUserId(request), orderNo);
+        return Collections.singletonMap("paid", orderPaid);
     }
 
     private Integer getUserId(HttpServletRequest request) {
