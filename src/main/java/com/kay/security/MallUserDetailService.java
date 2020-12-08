@@ -8,11 +8,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Slf4j
-public class MmallUserDetailService implements UserDetailsService {
+public class MallUserDetailService implements UserDetailsService {
 
     private final UserMapper userMapper;
 
-    public MmallUserDetailService(UserMapper userMapper) {
+    public MallUserDetailService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
 

@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan("com.kay.dao")
-public class MmallApplication {
+public class MallApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MmallApplication.class, args);
+        SpringApplication.run(MallApplication.class, args);
     }
 }

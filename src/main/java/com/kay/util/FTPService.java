@@ -1,23 +1,23 @@
 package com.kay.util;
 
+import static org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 
 /**
  * 上传到FTP服务器
  */
-@Data
 @Slf4j
 public class FTPService {
 
-    private String username;
-    private String password;
-    private String ip;
+    private final String username;
+    private final String password;
+    private final String ip;
     private FTPClient ftpClient;
 
     public FTPService(String username, String password, String ip) {
@@ -45,7 +45,7 @@ public class FTPService {
                 ftpClient.changeWorkingDirectory(remotePath);
                 ftpClient.setBufferSize(1024);
                 ftpClient.setControlEncoding("UTF-8");
-                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+                ftpClient.setFileType(BINARY_FILE_TYPE);
                 ftpClient.enterLocalPassiveMode();
                 for (File fileItem : fileList) {
                     fis = new FileInputStream(fileItem);
@@ -56,9 +56,10 @@ public class FTPService {
             } catch (IOException e) {
                 log.error("上传文件异常", e);
                 uploaded = false;
-                e.printStackTrace();
             } finally {
-                fis.close();
+                if (fis != null) {
+                    fis.close();
+                }
                 ftpClient.disconnect();
             }
         }
