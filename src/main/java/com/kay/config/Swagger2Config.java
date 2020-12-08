@@ -40,25 +40,11 @@ public class Swagger2Config {
                 .build();
     }
 
-//    @Bean
-//    public RequestMappingInfoHandlerMapping handlerMappings() {
-//        return new RequestMappingHandlerMapping();
-//    }
-
-    /**
-     * 构建api文档的详细方法
-     *
-     * @return ApiInfo
-     */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                //页面标题
                 .title("Mmall 测试使用 Swagger2 构建Api")
-                //创建人
                 .contact(new Contact("name", "url", "email"))
-                //版本号
                 .version("1.0.0")
-                //描述
                 .description("API 描述")
                 .build();
     }

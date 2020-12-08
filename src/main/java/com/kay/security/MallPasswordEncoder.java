@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @date 2019/9/6 22:11
  */
 @Slf4j
-public class MmallPasswordEncoder implements PasswordEncoder {
+public class MallPasswordEncoder implements PasswordEncoder {
 
     @Override
     public String encode(CharSequence rawPassword) {

@@ -24,12 +24,12 @@ public class SecurityBeanConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new MmallPasswordEncoder();
+        return new MallPasswordEncoder();
     }
 
-    @Bean("mmallUserDetailService")
+    @Bean
     public UserDetailsService userDetailsService(UserMapper userMapper) {
-        return new MmallUserDetailService(userMapper);
+        return new MallUserDetailService(userMapper);
     }
 
     @Bean

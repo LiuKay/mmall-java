@@ -44,7 +44,7 @@ public class LoginController {
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .errorCode(HttpStatus.UNAUTHORIZED.toString())
                 .message("Need Login.")
-                .detail("Require authentication, please login first.")
+                .detail("Require Authentication, Please Login First.")
                 .timestamp(DateTimeUtils.getTimestampAsString())
                 .path(request.getRequestURI())
                 .build();
