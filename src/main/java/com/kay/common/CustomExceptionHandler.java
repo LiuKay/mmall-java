@@ -33,12 +33,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<ApiErrorResponse> handleBadRequest(Exception exception) {
+    public ResponseEntity<ApiErrorResponse> handleBadRequest(IllegalArgumentException exception) {
         return createErrorResponse(exception, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<ApiErrorResponse> handleNotFound(Exception exception) {
+    public ResponseEntity<ApiErrorResponse> handleNotFound(NotFoundException exception) {
         return createErrorResponse(exception, HttpStatus.NOT_FOUND);
     }
 

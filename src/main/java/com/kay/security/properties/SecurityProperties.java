@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author LiuKay
  * @since 2019/11/27
  */
-@ConfigurationProperties(prefix = "application.security")
+@ConfigurationProperties(prefix = "app-config.security")
 public class SecurityProperties {
 
     private VerificationCodeProperties validation = new VerificationCodeProperties();

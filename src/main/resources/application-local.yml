@@ -1,24 +1,3 @@
-application:
-  test:
-    enabled: true
-  security:
-    jwt:
-      token:
-        secret-key: secret-key
-        expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds
-    validation:
-      sms:
-        lenghth: 6
-        expire: 300
-        url: /users,/user/*
-  error:
-    include-trace: true
-  ftp:
-    username: test
-    password: test
-    ip: 127.0.0.1
-
-
 spring:
   #  datasource:
   #    url: jdbc:mysql://localhost:3306/mmall?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
@@ -50,10 +29,21 @@ management:
 
 
 app-config:
+  test-enabled: true
+  include-error-trace: true
   alipay-callback-url: http://wimxtf.natappfree.cc/order/alipay_callback.do
-  redisLockTime: 5000
+  redis-lock-time: 5000
+  security:
+    validation:
+      sms:
+        lenghth: 6
+        expire: 300
+        url: /users,/user/*
   ftp:
     server-prefix: ftp://127.0.0.1/img/
     username: test
     password: test
     server-ip: 127.0.0.1
+  jwt:
+    secret-key: secret-key
+    expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds

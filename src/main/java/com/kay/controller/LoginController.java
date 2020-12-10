@@ -1,20 +1,24 @@
 package com.kay.controller;
 
+import static com.kay.security.properties.SecurityConstants.ORIGINAL_REQUEST_METHOD;
+import static com.kay.security.properties.SecurityConstants.REQUEST_PARAMETER_MOBILE;
+import static com.kay.security.properties.SecurityConstants.REQUEST_PARAMETER_SMS_CODE;
+import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
+import static org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
+
 import com.kay.common.ApiErrorResponse;
 import com.kay.security.properties.SecurityConstants;
 import com.kay.service.AuthService;
 import com.kay.util.DateTimeUtils;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 /**
  * @author LiuKay
@@ -38,6 +42,26 @@ public class LoginController {
     }
 
 
+    /**
+     * this will be handle by security filter
+     */
+    @PostMapping(SecurityConstants.LOGIN_FORM_PROCESSING_URL)
+    @ApiOperation(value = "login form")
+    public void loginForm(@RequestParam(SPRING_SECURITY_FORM_USERNAME_KEY) String username,
+                                    @RequestParam(SPRING_SECURITY_FORM_PASSWORD_KEY) String password) {
+    }
+
+    /**
+     * this will be handle by security filter
+     */
+    @PostMapping(SecurityConstants.LOGIN_MOBILE_PROCESSING_URL)
+    @ApiOperation(value = "login mobile")
+    public void loginMobile(@RequestParam(REQUEST_PARAMETER_MOBILE) String mobile,
+                                      @RequestParam(REQUEST_PARAMETER_SMS_CODE) String smsCode) {
+    }
+
+
+    @ApiOperation(value = "miss token",hidden = true)
     @GetMapping(SecurityConstants.LOGIN_REQUIRE)
     public ApiErrorResponse requireLogin(HttpServletRequest request) {
         return ApiErrorResponse.builder()
@@ -46,7 +70,7 @@ public class LoginController {
                 .message("Need Login.")
                 .detail("Require Authentication, Please Login First.")
                 .timestamp(DateTimeUtils.getTimestampAsString())
-                .path(request.getRequestURI())
+                .path((String) request.getAttribute(ORIGINAL_REQUEST_METHOD))
                 .build();
     }
 }

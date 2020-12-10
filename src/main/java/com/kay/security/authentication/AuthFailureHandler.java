@@ -1,5 +1,7 @@
 package com.kay.security.authentication;
 
+import static com.kay.security.properties.SecurityConstants.ORIGINAL_REQUEST_METHOD;
+
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +19,7 @@ public class AuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         log.warn(">>onAuthenticationFailure.", exception);
+        request.setAttribute(ORIGINAL_REQUEST_METHOD, request.getMethod());
         response.sendError(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
     }
 }
