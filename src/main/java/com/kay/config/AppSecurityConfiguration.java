@@ -1,5 +1,10 @@
 package com.kay.config;
 
+import static com.kay.security.properties.SecurityConstants.LOGIN_FORM_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.LOGIN_MOBILE_PROCESSING_URL;
+import static com.kay.security.properties.SecurityConstants.LOGIN_REQUIRE;
+import static com.kay.security.properties.SecurityConstants.VERIFICATION_CODE_URL;
+
 import com.kay.dao.UserMapper;
 import com.kay.security.authentication.AuthFailureHandler;
 import com.kay.security.authentication.AuthSuccessHandler;
@@ -9,7 +14,6 @@ import com.kay.security.authentication.login.UserLoginAuthenticationProvider;
 import com.kay.security.authentication.mobile.MobileLoginSecurityConfig;
 import com.kay.security.properties.SecurityConstants;
 import com.kay.security.properties.SecurityProperties;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,11 +25,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static com.kay.security.properties.SecurityConstants.LOGIN_FORM_PROCESSING_URL;
-import static com.kay.security.properties.SecurityConstants.LOGIN_MOBILE_PROCESSING_URL;
-import static com.kay.security.properties.SecurityConstants.LOGIN_REQUIRE;
-import static com.kay.security.properties.SecurityConstants.VERIFICATION_CODE_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -82,6 +81,7 @@ public class AppSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         LOGIN_REQUIRE,
                         errorPath,
                         LOGIN_MOBILE_PROCESSING_URL,
+                        LOGIN_FORM_PROCESSING_URL,
                         VERIFICATION_CODE_URL)
                 .permitAll()
                 .anyRequest().authenticated()

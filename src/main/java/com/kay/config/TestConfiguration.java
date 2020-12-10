@@ -2,10 +2,10 @@ package com.kay.config;
 
 import com.kay.testing.LocalMySQL;
 import com.kay.testing.LocalRedis;
-
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +14,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
-import javax.sql.DataSource;
-
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Profile("local")
 @Configuration
-@ConditionalOnProperty(name = "application.test.enabled")
+@ConditionalOnProperty(name = "app-config.test-enabled",havingValue = "true")
 public class TestConfiguration {
 
     @Autowired
@@ -38,16 +33,11 @@ public class TestConfiguration {
     public DataSource getDataSource(LocalMySQL mysql) {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(mysql.getMySQLContainer().getDriverClassName());
-        dataSourceBuilder.url(mysql.getMySQLContainer().getJdbcUrl());
+        dataSourceBuilder.url(mysql.getMySQLContainer()
+                                   .getJdbcUrl() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         dataSourceBuilder.username(mysql.getMySQLContainer().getUsername());
         dataSourceBuilder.password(mysql.getMySQLContainer().getPassword());
         return dataSourceBuilder.build();
-    }
-
-    @Data
-    @ConfigurationProperties("application.test")
-    public static class TestProperties {
-        boolean enabled = false;
     }
 
 }

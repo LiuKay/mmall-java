@@ -1,11 +1,11 @@
 package com.kay.common;
 
+import com.kay.config.AppConfigProperties;
 import com.kay.util.DateTimeUtils;
 import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -18,8 +18,8 @@ import org.springframework.web.context.request.WebRequest;
 @RestController
 public class CustomErrorController implements ErrorController {
 
-    @Value("${application.error.include-trace:false}")
-    private boolean includeTrace;
+    @Autowired
+    private AppConfigProperties properties;
 
     @Autowired
     private ErrorAttributes errorAttributes;
@@ -27,10 +27,10 @@ public class CustomErrorController implements ErrorController {
     @RequestMapping("${server.error.path:${error.path:/error}}")
     public ApiErrorResponse handleError(HttpServletRequest request) {
         Integer status = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        Map<String, Object> errorAttributesFromRequest = getErrorAttributes(request, includeTrace);
+        Map<String, Object> errorAttributesFromRequest = getErrorAttributes(request, properties.isIncludeErrorTrace());
         String message = (String) errorAttributesFromRequest.get("message");
         String details = (String) errorAttributesFromRequest.get("exception");
-        String trace = includeTrace ? (String) errorAttributesFromRequest.get("trace") : null;
+        String trace = properties.isIncludeErrorTrace() ? (String) errorAttributesFromRequest.get("trace") : null;
         return ApiErrorResponse.builder()
                 .status(status)
                 .errorCode("No Code Available.")

@@ -1,6 +1,7 @@
 package com.kay.security.authentication.jwt;
 
 import com.google.common.base.Preconditions;
+import com.kay.config.AppConfigProperties;
 import com.kay.domain.Role;
 import com.kay.security.JwtAuthenticationException;
 import com.kay.vo.UserIdentityDTO;
@@ -17,7 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,20 +28,18 @@ public class JwtTokenProvider {
     private static final String AUTH_NAME = "auth";
     private static final String USER_ID_NAME = "userId";
 
-    /**
-     * @apiNote :
-     * THIS IS NOT A SECURE PRACTICE! For simplicity, we are storing a static key here. Ideally, in a
-     * microservices environment, this key would be kept on a config-server.
-     */
-    @Value("${application.security.jwt.token.secret-key:secret-key}")
-    private String secretKey;
+    @Autowired
+    private AppConfigProperties appConfigProperties;
 
-    @Value("${application.security.jwt.token.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000; // 1h
+    private String secretKey;
 
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        secretKey = Base64.getEncoder()
+                          .encodeToString(appConfigProperties.getJwt()
+                                                             .getSecretKey()
+                                                             .getBytes());
+
     }
 
     public String createToken(String username, Integer userId, Role role) {
@@ -49,13 +48,13 @@ public class JwtTokenProvider {
         claims.put(USER_ID_NAME, userId);
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + appConfigProperties.getJwt().getValidityInMilliseconds());
 
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secretKey)//
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                    .compact();
     }
 
@@ -76,7 +75,8 @@ public class JwtTokenProvider {
             return new UserIdentityDTO(body.getSubject(), userId, Role.valueOf(roleName));
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException |
                 SignatureException | IllegalArgumentException exception) {
-            throw new JwtAuthenticationException("Token is invalid", exception);
+            throw new JwtAuthenticationException(String.format("Token is invalid:%s", exception.getMessage()),
+                                                 exception);
         }
     }
 
