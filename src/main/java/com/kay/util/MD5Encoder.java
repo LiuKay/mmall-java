@@ -2,9 +2,18 @@ package com.kay.util;
 
 import java.security.MessageDigest;
 
-public class MD5Util {
+public class MD5Encoder {
 
-    private MD5Util() {}
+    private String salt;
+
+    public MD5Encoder(String salt) {
+        this.salt = salt;
+    }
+
+    public String md5EncodeUtf8(String origin) {
+        origin = origin + this.salt;
+        return md5Encode(origin, "utf-8");
+    }
 
     private static String byteArrayToHexString(byte[] data) {
         StringBuilder resultSb = new StringBuilder();
@@ -25,13 +34,6 @@ public class MD5Util {
         return hexDigits[d1] + hexDigits[d2];
     }
 
-    /**
-     * 返回大写MD5
-     *
-     * @param origin
-     * @param charsetName
-     * @return
-     */
     private static String md5Encode(String origin, String charsetName) {
         String resultString = null;
         try {
@@ -47,12 +49,6 @@ public class MD5Util {
         }
         return resultString.toUpperCase();
     }
-
-    public static String md5EncodeUtf8(String origin) {
-        origin = origin + PropertiesUtil.getProperty("password.salt", "");
-        return md5Encode(origin, "utf-8");
-    }
-
 
     private static final String[] hexDigits = {"0", "1", "2", "3", "4", "5",
             "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};

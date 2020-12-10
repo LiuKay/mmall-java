@@ -28,5 +28,5 @@ public class ApiErrorResponse {
 
     private String method;
 
-    public String trace;
+    private String trace;
 }

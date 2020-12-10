@@ -47,3 +47,13 @@ management:
   health:
     jms:
       enabled: false
+
+
+app-config:
+  alipay-callback-url: http://wimxtf.natappfree.cc/order/alipay_callback.do
+  redisLockTime: 5000
+  ftp:
+    server-prefix: ftp://127.0.0.1/img/
+    username: test
+    password: test
+    server-ip: 127.0.0.1

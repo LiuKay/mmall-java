@@ -6,16 +6,14 @@ import com.kay.domain.User;
 import com.kay.exception.NotFoundException;
 import com.kay.exception.UserAlreadyExistException;
 import com.kay.service.UserService;
-import com.kay.util.MD5Util;
 import com.kay.vo.UserIdentityDTO;
-
+import java.time.Duration;
+import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.UUID;
 
 /**
  * Created by kay on 2018/3/19.
@@ -25,6 +23,8 @@ public class UserServiceImpl implements UserService {
 
     private static final String FORGET_TOKEN_SUFFIX = ":forget_token";
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserMapper userMapper;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         if (!existedUsername(user.getUsername()) || !existedEmail(user.getEmail())) {
             throw new UserAlreadyExistException("Username or email already existed.");
         }
-        user.setPassword(MD5Util.md5EncodeUtf8(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
         userMapper.insert(user);
         return UserIdentityDTO.fromUser(user);
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
         if (!StringUtils.equals(token, forgetToken)) {
             throw new IllegalArgumentException("Forget token is not matched.");
         }
-        String md5Password = MD5Util.md5EncodeUtf8(passwordNew);
+        String md5Password = passwordEncoder.encode(passwordNew);
         userMapper.updatePasswordByUsername(username, md5Password);
     }
 
@@ -130,12 +130,12 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException(String.format("User not found for userId:%s", userId));
         }
         //1.首先校验用户旧密码
-        int resultCount = userMapper.selectOldPassword(user.getId(), MD5Util.md5EncodeUtf8(passwordOld));
+        int resultCount = userMapper.selectOldPassword(user.getId(), passwordEncoder.encode(passwordOld));
         if (resultCount == 0) {
             throw new IllegalArgumentException("Old password is incorrect.");
         }
         //2.设置新密码
-        user.setPassword(MD5Util.md5EncodeUtf8(passwordNew));
+        user.setPassword(passwordEncoder.encode(passwordNew));
         userMapper.updateByPrimaryKeySelective(user);
     }
 
