@@ -1,19 +1,15 @@
 package com.kay.service.impl;
 
 import com.google.common.collect.Lists;
-
 import com.kay.service.FileService;
 import com.kay.util.FTPService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by kay on 2018/3/21.
@@ -34,9 +30,8 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public String upload(MultipartFile file, String path) {
-        //文件名
-        //扩展名
-        String fileName = file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        String fileName = originalFilename;
         String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
         //上传文件名
         String uploadFileName = UUID.randomUUID().toString() + "." + fileExtensionName;

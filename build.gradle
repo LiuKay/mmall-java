@@ -19,10 +19,10 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('testcontainersVersion', "1.14.3")
-//    set('springCloudVersion', "Hoxton.SR8")
-}
+//ext {
+//    set('testcontainersVersion', "1.14.3")
+////    set('springCloudVersion', "Hoxton.SR8")
+//}
 
 //dependencyManagement {
 //    imports {
@@ -48,6 +48,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'org.modelmapper:modelmapper:2.3.5'
 
+    compile 'commons-io:commons-io:2.8.0'
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'commons-net:commons-net:3.1'
     implementation 'org.hashids:hashids:1.0.1'
@@ -69,13 +70,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.testcontainers:junit-jupiter'
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
-    }
+    testImplementation 'org.testcontainers:junit-jupiter:1.14.3'
 }
 
 test {
