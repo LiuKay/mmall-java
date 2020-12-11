@@ -8,8 +8,8 @@ import com.kay.dao.ProductMapper;
 import com.kay.domain.Cart;
 import com.kay.domain.Product;
 import com.kay.service.CartService;
+import com.kay.service.FileService;
 import com.kay.util.BigDecimalUtil;
-import com.kay.util.PropertiesUtil;
 import com.kay.vo.CartProductVo;
 import com.kay.vo.CartVo;
 import java.math.BigDecimal;
@@ -27,6 +27,9 @@ public class CartServiceImpl implements CartService {
 
     private static final String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
     private static final String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private CartMapper cartMapper;
@@ -174,7 +177,7 @@ public class CartServiceImpl implements CartService {
         cartVo.setCartProductVoList(cartProductVoList);
         //是否全选
         cartVo.setAllChecked(this.getAllCheckedStatus(userId));
-        cartVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        cartVo.setImageHost(fileService.getFileServerUrl());
         return cartVo;
     }
 

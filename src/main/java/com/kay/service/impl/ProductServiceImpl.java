@@ -1,10 +1,9 @@
 package com.kay.service.impl;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.kay.dao.CategoryMapper;
 import com.kay.dao.ProductMapper;
 import com.kay.domain.Category;
@@ -13,19 +12,17 @@ import com.kay.domain.ProductStatusEnum;
 import com.kay.exception.InvalidOperationException;
 import com.kay.exception.NotFoundException;
 import com.kay.service.CategoryService;
+import com.kay.service.FileService;
 import com.kay.service.ProductService;
 import com.kay.util.DateTimeUtils;
-import com.kay.util.PropertiesUtil;
 import com.kay.vo.ProductDetailVo;
 import com.kay.vo.ProductListVo;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by kay on 2018/3/20.
@@ -35,6 +32,8 @@ public class ProductServiceImpl implements ProductService {
 
     private static final Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
 
+    @Autowired
+    private FileService fileService;
     @Autowired
     private ProductMapper productMapper;
 
@@ -246,7 +245,7 @@ public class ProductServiceImpl implements ProductService {
         productListVo.setId(product.getId());
         productListVo.setName(product.getName());
         productListVo.setCategoryId(product.getCategoryId());
-        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/"));
+        productListVo.setImageHost(fileService.getFileServerUrl());
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());
@@ -275,7 +274,7 @@ public class ProductServiceImpl implements ProductService {
 
         //注意图片服务器地址配置在配置文件，以后实现为热部署配置
         //使用工具类加载配置读取
-        String imgHost = PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/");
+        String imgHost = fileService.getFileServerUrl();
         productDetailVo.setImageHost(imgHost);
 
         //日期转换使用joda-time

@@ -1,15 +1,14 @@
 package com.kay.controller.backend;
 
 import com.github.pagehelper.PageInfo;
+import com.kay.config.AppConfigProperties;
 import com.kay.domain.Product;
 import com.kay.domain.ProductStatusEnum;
 import com.kay.service.FileService;
 import com.kay.service.ProductService;
-import com.kay.util.PropertiesUtil;
 import com.kay.vo.ProductDetailVo;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,9 @@ public class ProductManageController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private AppConfigProperties properties;
 
     /**
      * 分页list
@@ -86,22 +88,14 @@ public class ProductManageController {
         return productService.getManageProductDetail(productId);
     }
 
-    /**
-     * 文件上传
-     *
-     * @param file
-     * @param request
-     * @return
-     */
-    @GetMapping("/upload")
-    public Map<String, String> uploadFile(@RequestParam(value = "upload_file", required = false) MultipartFile file,
-                                          HttpServletRequest request) {
-        String path = request.getSession().getServletContext().getRealPath("upload");
-        String uploadFilePath = fileService.upload(file, path);
-        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + uploadFilePath;
+    @GetMapping("/upload/img/")
+    public Map<String, String> uploadFile(MultipartFile file) {
+        String uploadFilePath = fileService.uploadImg(file);
+        AppConfigProperties.FTPConfigProperties ftp = properties.getFtp();
+        String prefix = "ftp://" + ftp.getServer() + ":" + ftp.getPort();
         Map<String, String> fileMap = new HashMap<>();
         fileMap.put("uri", uploadFilePath);
-        fileMap.put("url", url);
+        fileMap.put("url", prefix);
         return fileMap;
     }
 
@@ -113,21 +107,21 @@ public class ProductManageController {
      * "file_path": "[real file path]"
      * }
      */
-    @GetMapping("/richtext_img_upload")
-    public Map richTextUpload(@RequestParam(value = "upload_file", required = false) MultipartFile file,
-                              HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping("/upload/richtext_img")
+    public Map<String, Object> richTextUpload(@RequestParam(value = "upload_file", required = false) MultipartFile file,
+                                              HttpServletResponse response) {
         Map resultMap = new HashMap();
-        String path = request.getSession().getServletContext().getRealPath("upload");
-        String uploadFilePath = fileService.upload(file, path);
+        String uploadFilePath = fileService.uploadImg(file);
         if (StringUtils.isBlank(uploadFilePath)) {
             resultMap.put("success", false);
-            resultMap.put("msg", "上传失败");
+            resultMap.put("msg", "Failed to upload.");
             return resultMap;
         }
-        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + uploadFilePath;
+        AppConfigProperties.FTPConfigProperties ftp = properties.getFtp();
+        String path = "ftp://" + ftp.getServer() + ":" + ftp.getPort() + uploadFilePath;
         resultMap.put("success", true);
         resultMap.put("msg", "上传成功");
-        resultMap.put("file_path", url);
+        resultMap.put("file_path", path);
         //插件约定
         response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
         return resultMap;

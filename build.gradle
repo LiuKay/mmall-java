@@ -71,6 +71,7 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter:1.14.3'
+    testImplementation 'org.mockftpserver:MockFtpServer:2.7.1'
 }
 
 test {
