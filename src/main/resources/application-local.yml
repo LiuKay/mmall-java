@@ -33,6 +33,7 @@ app-config:
   include-error-trace: true
   alipay-callback-url: http://wimxtf.natappfree.cc/order/alipay_callback.do
   redis-lock-time: 5000
+  img-path: /img/
   security:
     validation:
       sms:
@@ -40,10 +41,10 @@ app-config:
         expire: 300
         url: /users,/user/*
   ftp:
-    server-prefix: ftp://127.0.0.1/img/
+    server: 127.0.0.1
+    port: 22
     username: test
     password: test
-    server-ip: 127.0.0.1
   jwt:
     secret-key: secret-key
     expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds

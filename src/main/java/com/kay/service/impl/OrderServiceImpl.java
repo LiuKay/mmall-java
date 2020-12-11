@@ -26,10 +26,10 @@ import com.kay.domain.Product;
 import com.kay.domain.ProductStatusEnum;
 import com.kay.exception.InvalidOperationException;
 import com.kay.exception.NotFoundException;
+import com.kay.service.FileService;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
 import com.kay.util.DateTimeUtils;
-import com.kay.util.PropertiesUtil;
 import com.kay.vo.OrderItemVo;
 import com.kay.vo.OrderProductVo;
 import com.kay.vo.OrderVo;
@@ -65,6 +65,8 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl implements OrderService {
 
     //   private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private OrderMapper orderMapper;
@@ -183,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
         }
         orderProductVo.setProductTotalPrice(payment);
         orderProductVo.setOrderItemVoList(orderItemVoList);
-        orderProductVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        orderProductVo.setImageHost(fileService.getFileServerUrl());
 
         return orderProductVo;
     }
@@ -267,7 +269,7 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setCreateTime(DateTimeUtils.dateToStr(order.getCreateTime()));
         orderVo.setCloseTime(DateTimeUtils.dateToStr(order.getCloseTime()));
 
-        orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        orderVo.setImageHost(fileService.getFileServerUrl());
 
         List<OrderItemVo> orderItemVoList = Lists.newArrayList();
 

@@ -13,6 +13,7 @@ public class AppConfigProperties {
 
     private boolean includeErrorTrace = false;
 
+    private String imgPath = "/img/";
 
     private FTPConfigProperties ftp;
 
@@ -20,14 +21,14 @@ public class AppConfigProperties {
 
     private String alipayCallbackUrl;
 
-    private String redisLockTime;
+    private int redisLockTime = 5000;
 
     @Data
     public static class FTPConfigProperties {
-        private String serverPrefix;
+        private String server;
+        private int port;
         private String username;
         private String password;
-        private String serverIp;
     }
 
     @Data

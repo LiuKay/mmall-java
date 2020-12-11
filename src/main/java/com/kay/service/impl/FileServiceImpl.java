@@ -1,12 +1,14 @@
 package com.kay.service.impl;
 
-import com.google.common.collect.Lists;
+import com.kay.config.AppConfigProperties;
 import com.kay.service.FileService;
 import com.kay.util.FTPService;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,45 +23,30 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private FTPService ftpService;
 
-    /**
-     * 文件上传
-     *
-     * @param file
-     * @param path
-     * @return 上传文件名称
-     */
+    @Autowired
+    private AppConfigProperties properties;
+
     @Override
-    public String upload(MultipartFile file, String path) {
+    public String getFileServerUrl() {
+        return ftpService.getServerUrl();
+    }
+
+    @Override
+    public String uploadImg(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        String fileName = originalFilename;
-        String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
-        //上传文件名
-        String uploadFileName = UUID.randomUUID().toString() + "." + fileExtensionName;
+        String fileName = FilenameUtils.getName(originalFilename);
+        String extension = FilenameUtils.getExtension(originalFilename);
+        String path = properties.getImgPath() + fileName + "_" + UUID.randomUUID().toString() + "." + extension;
 
-        log.info("开始长传文件,上传文件的文件名:{},上传路径:{},新文件名:{}", fileName, path, uploadFileName);
-
-        //创建文件夹路径
-        File fileDir = new File(path);
-        if (!fileDir.exists()) {
-            fileDir.setWritable(true);
-            fileDir.mkdirs();    //mkdirs 递归创建，mkdir 只建一个，多级返回false
-        }
-        File targetFile = new File(path, uploadFileName);
-
+        log.info("Start upload file:{},path:{}", fileName, path);
+        InputStream inputStream;
         try {
-            //上传文件到应用服务器
-            file.transferTo(targetFile);
-
-            //上传到FTP文件服务器
-            ftpService.uploadFile(Lists.newArrayList(targetFile));
-
-            //上传完后删除应用上的文件
-            targetFile.delete();
-
+            inputStream = file.getInputStream();
+            boolean result = ftpService.uploadFile(path, inputStream);
+            log.info("End upload file:{},result={}", path, result);
+            return path;
         } catch (IOException e) {
-            log.error("文件上传异常", e);
+            throw new UncheckedIOException("Failed to upload file", e);
         }
-
-        return targetFile.getName();
     }
 }

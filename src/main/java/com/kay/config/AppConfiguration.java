@@ -1,25 +1,21 @@
 package com.kay.config;
 
 import com.kay.util.FTPService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AppConfiguration {
 
-    @Value("${application.ftp.username}")
-    private String username;
-
-    @Value("${application.ftp.password}")
-    private String password;
-
-    @Value("${application.ftp.ip}")
-    private String ip;
+    @Autowired
+    private AppConfigProperties properties;
 
     @Bean
     public FTPService ftpService() {
-        return new FTPService(username, password, ip);
+        AppConfigProperties.FTPConfigProperties ftp = properties.getFtp();
+        return new FTPService(ftp.getServer(), ftp.getPort(),
+                              ftp.getUsername(), ftp.getPassword());
     }
 
 }
