@@ -2,7 +2,11 @@ plugins {
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'application'
+    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
 }
+
+mainClassName='com.kay.MallApplication'
 
 group = 'com.kay.demo'
 version = '0.0.1-SNAPSHOT'
@@ -45,8 +49,9 @@ dependencies {
     implementation 'com.alipay.sdk:alipay-sdk-java:4.10.170.ALL'
     implementation 'com.google.guava:guava:30.0-jre'
 
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'org.modelmapper:modelmapper:2.3.5'
+    compile 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtime 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtime 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     compile 'commons-io:commons-io:2.8.0'
     implementation 'org.apache.commons:commons-lang3:3.11'
