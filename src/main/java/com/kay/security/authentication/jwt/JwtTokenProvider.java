@@ -10,11 +10,11 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import java.util.Base64;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,17 +31,6 @@ public class JwtTokenProvider {
     @Autowired
     private AppConfigProperties appConfigProperties;
 
-    private String secretKey;
-
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder()
-                          .encodeToString(appConfigProperties.getJwt()
-                                                             .getSecretKey()
-                                                             .getBytes());
-
-    }
-
     public String createToken(String username, Integer userId, Role role) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(AUTH_NAME, role);
@@ -50,11 +39,13 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + appConfigProperties.getJwt().getValidityInMilliseconds());
 
+        SecretKey secretKey = Keys
+                .hmacShaKeyFor(appConfigProperties.getJwt().getSecretKey().getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                   .setClaims(claims)
+                   .setIssuedAt(now)
+                   .setExpiration(validity)
+                   .signWith(secretKey, SignatureAlgorithm.HS256)
                    .compact();
     }
 
@@ -69,12 +60,17 @@ public class JwtTokenProvider {
     public UserIdentityDTO validateAndDecode(String token) {
         Preconditions.checkNotNull(token, "token can not be null.");
         try {
-            Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            byte[] keyBytes = appConfigProperties.getJwt().getSecretKey().getBytes(StandardCharsets.UTF_8);
+            Claims body = Jwts.parserBuilder()
+                              .setSigningKey(keyBytes)
+                              .build()
+                              .parseClaimsJws(token)
+                              .getBody();
             Integer userId = body.get(USER_ID_NAME, Integer.class);
             String roleName = body.get(AUTH_NAME, String.class);
             return new UserIdentityDTO(body.getSubject(), userId, Role.valueOf(roleName));
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException |
-                SignatureException | IllegalArgumentException exception) {
+                SecurityException | IllegalArgumentException exception) {
             throw new JwtAuthenticationException(String.format("Token is invalid:%s", exception.getMessage()),
                                                  exception);
         }
