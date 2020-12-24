@@ -59,14 +59,6 @@ public class CartServiceImpl implements CartService {
         return this.list(userId);
     }
 
-    /**
-     * 更新购物车数量
-     *
-     * @param userId
-     * @param productId
-     * @param count
-     * @return
-     */
     @Override
     public CartVo update(Integer userId, @NotNull Integer productId, @NotNull Integer count) {
         Cart cart = cartMapper.selectByUserIdAndProductId(userId, productId);
@@ -77,13 +69,6 @@ public class CartServiceImpl implements CartService {
         return this.list(userId);
     }
 
-    /**
-     * 删除---多选
-     *
-     * @param userId
-     * @param productIds 以","分割多个id
-     * @return
-     */
     @Override
     public CartVo deleteByProductIds(Integer userId, @NotNull String productIds) {
         List<String> productIdList = Splitter.on(",").splitToList(productIds);
@@ -96,14 +81,6 @@ public class CartServiceImpl implements CartService {
         return getCartVoLimit(userId);
     }
 
-    /**
-     * 选中状态切换
-     *
-     * @param userId
-     * @param productId
-     * @param choice
-     * @return
-     */
     @Override
     public CartVo selectOrUnSelect(Integer userId, Integer productId, ChoiceEnum choice) {
         cartMapper.selectOrUnSelectByUserId(userId, productId, choice.ordinal());
@@ -115,12 +92,6 @@ public class CartServiceImpl implements CartService {
         return cartMapper.selectCartProductCount(userId);
     }
 
-    /**
-     * 购物车返回对象生成
-     *
-     * @param userId
-     * @return
-     */
     private CartVo getCartVoLimit(Integer userId) {
         CartVo cartVo = new CartVo();
         List<CartProductVo> cartProductVoList = Lists.newArrayList();
@@ -181,12 +152,6 @@ public class CartServiceImpl implements CartService {
         return cartVo;
     }
 
-    /**
-     * 是否全选
-     *
-     * @param userId
-     * @return
-     */
     private boolean getAllCheckedStatus(Integer userId) {
         if (userId == null) {
             return false;

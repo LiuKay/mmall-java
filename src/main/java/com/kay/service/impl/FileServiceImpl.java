@@ -20,11 +20,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
-    @Autowired
-    private FTPService ftpService;
+    private final FTPService ftpService;
+
+    private final AppConfigProperties properties;
 
     @Autowired
-    private AppConfigProperties properties;
+    public FileServiceImpl(FTPService ftpService, AppConfigProperties properties) {
+        this.ftpService = ftpService;
+        this.properties = properties;
+    }
 
     @Override
     public String getFileServerUrl() {
