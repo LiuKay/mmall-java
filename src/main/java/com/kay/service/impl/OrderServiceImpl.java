@@ -7,7 +7,6 @@ import com.alipay.api.domain.ExtendParams;
 import com.alipay.api.domain.GoodsDetail;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.kay.common.Const;
 import com.kay.dao.AddressMapper;
 import com.kay.dao.CartMapper;
 import com.kay.dao.OrderItemMapper;
@@ -26,6 +25,7 @@ import com.kay.domain.Product;
 import com.kay.domain.ProductStatusEnum;
 import com.kay.exception.InvalidOperationException;
 import com.kay.exception.NotFoundException;
+import com.kay.service.AlipayConstants;
 import com.kay.service.FileService;
 import com.kay.service.OrderService;
 import com.kay.util.BigDecimalUtil;
@@ -566,7 +566,7 @@ public class OrderServiceImpl implements OrderService {
 
         //回调状态
         //已支付
-        if (Const.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+        if (AlipayConstants.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
             order.setPaymentTime(DateTimeUtils.strToDate(params.get("gmt_payment")));
             order.setStatus(OrderStatusEnum.PAID.getCode());
             orderMapper.updateByPrimaryKeySelective(order);
