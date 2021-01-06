@@ -31,6 +31,7 @@ ext {
 dependencyManagement {
     imports {
         mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+        mavenBom "com.github.xiaoymin:knife4j-dependencies:2.0.5"
     }
 }
 
@@ -40,6 +41,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.github.xiaoymin:knife4j-spring-boot-starter'
 
     implementation 'org.springframework.social:spring-social-core:1.1.6.RELEASE'
     implementation 'org.springframework.social:spring-social-security:1.1.6.RELEASE'
@@ -58,10 +60,6 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'commons-net:commons-net:3.1'
     implementation 'org.hashids:hashids:1.0.1'
-
-    implementation 'io.springfox:springfox-swagger2:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
     implementation 'com.github.pagehelper:pagehelper:5.2.0'
 
