@@ -33,7 +33,7 @@ public class AppConfigProperties {
 
     @Data
     public static class JwtConfig{
-        private String secretKey="secret-key";
+        private String secretKey;
         private long validityInMilliseconds = 3600000; // 1h
     }
 }
