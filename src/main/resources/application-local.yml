@@ -23,6 +23,27 @@ mybatis:
   mapper-locations: classpath:mappers/*.xml
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: [ 'health', 'info', "env", 'httptrace', 'metrics', 'prometheus' ]
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+    httptrace:
+      enabled: true
+  metrics:
+    enable:
+      jvm: true
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+    export:
+      prometheus:
+        enabled: true
   health:
     jms:
       enabled: false

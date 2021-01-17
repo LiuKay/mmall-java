@@ -11,11 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
+
+    private final VerificationCodeProcessor verificationCodeProcessor;
 
     @Autowired
-    private VerificationCodeProcessor verificationCodeProcessor;
+    public AuthServiceImpl(JwtTokenProvider tokenProvider,
+                           VerificationCodeProcessor verificationCodeProcessor) {
+        this.tokenProvider = tokenProvider;
+        this.verificationCodeProcessor = verificationCodeProcessor;
+    }
 
     @Override
     public UserIdentityDTO getUser(HttpServletRequest request) {

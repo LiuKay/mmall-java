@@ -32,16 +32,19 @@ public class ProductServiceImpl implements ProductService {
 
     private static final Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
 
-    @Autowired
-    private FileService fileService;
-    @Autowired
-    private ProductMapper productMapper;
+    private final FileService fileService;
+    private final ProductMapper productMapper;
+    private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private CategoryMapper categoryMapper;
+    public ProductServiceImpl(FileService fileService, ProductMapper productMapper,
+                              CategoryService categoryService, CategoryMapper categoryMapper) {
+        this.fileService = fileService;
+        this.productMapper = productMapper;
+        this.categoryService = categoryService;
+        this.categoryMapper = categoryMapper;
+    }
 
     @Override
     public void saveOrUpdateProduct(Product product) {
@@ -65,12 +68,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    /**
-     * 产品上下架
-     *
-     * @param productId
-     * @param status
-     */
     @Override
     public void setSaleStatus(Integer productId, ProductStatusEnum status) {
         if (productId == null || status == null) {
@@ -83,25 +80,12 @@ public class ProductServiceImpl implements ProductService {
         productMapper.updateByPrimaryKeySelective(product);
     }
 
-    /**
-     * 返回商品信息
-     *
-     * @param productId
-     * @return
-     */
     @Override
     public ProductDetailVo getManageProductDetail(Integer productId) {
         Product product = productMapper.selectByPrimaryKey(productId);
         return assembleProductDetailVo(product);
     }
 
-    /**
-     * 分页列表
-     *
-     * @param pageNum
-     * @param pageSize
-     * @return
-     */
     @Override
     public PageInfo getManageProductList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -118,15 +102,6 @@ public class ProductServiceImpl implements ProductService {
         return pageInfo;
     }
 
-    /**
-     * 查询列表
-     *
-     * @param productId
-     * @param productName
-     * @param pageNum
-     * @param pageSize    @return
-     * @return
-     */
     @Override
     public PageInfo getManageSearchList(Integer productId, String productName, int pageNum,
                                         int pageSize) {
@@ -151,12 +126,6 @@ public class ProductServiceImpl implements ProductService {
         return pageInfo;
     }
 
-    /**
-     * 前台商品查询
-     *
-     * @param productId
-     * @return
-     */
     @Override
     public ProductDetailVo getProductList(Integer productId) {
         Product product = productMapper.selectByPrimaryKey(productId);
@@ -172,16 +141,6 @@ public class ProductServiceImpl implements ProductService {
         return productDetailVo;
     }
 
-    /**
-     * 商品的关键字搜索和动态排序
-     *
-     * @param categoryId
-     * @param keyword
-     * @param pageNum
-     * @param pageSize
-     * @param orderBy
-     * @return
-     */
     @Override
     public PageInfo getProductByKeywordCategory(Integer categoryId, String keyword, int pageNum,
                                                 int pageSize, String orderBy) {
@@ -253,12 +212,6 @@ public class ProductServiceImpl implements ProductService {
         return productListVo;
     }
 
-    /**
-     * 将对象转化
-     *
-     * @param product
-     * @return
-     */
     private ProductDetailVo assembleProductDetailVo(Product product) {
         ProductDetailVo productDetailVo = new ProductDetailVo();
         productDetailVo.setId(product.getId());
@@ -272,12 +225,9 @@ public class ProductServiceImpl implements ProductService {
         productDetailVo.setStatus(product.getStatus());
         productDetailVo.setStock(product.getStock());
 
-        //注意图片服务器地址配置在配置文件，以后实现为热部署配置
-        //使用工具类加载配置读取
         String imgHost = fileService.getFileServerUrl();
         productDetailVo.setImageHost(imgHost);
 
-        //日期转换使用joda-time
         productDetailVo.setCreateTime(DateTimeUtils.dateToStr(product.getCreateTime()));
         productDetailVo.setUpdateTime(DateTimeUtils.dateToStr(product.getUpdateTime()));
         return productDetailVo;

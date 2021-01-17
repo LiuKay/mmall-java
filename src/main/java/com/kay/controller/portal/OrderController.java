@@ -4,7 +4,7 @@ package com.kay.controller.portal;
 
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
-import com.kay.common.Const;
+import com.kay.service.AlipayConstants;
 import com.kay.service.AuthService;
 import com.kay.service.OrderService;
 import com.kay.vo.OrderProductVo;
@@ -125,7 +125,7 @@ public class OrderController {
 //        if (response.isSuccess()) {
 //            return Const.AlipayCallback.RESPONSE_SUCCESS;
 //        }
-        return Const.AlipayCallback.RESPONSE_FAILED;
+        return AlipayConstants.RESPONSE_FAILED;
     }
 
     @GetMapping("/query_order_pay_status")

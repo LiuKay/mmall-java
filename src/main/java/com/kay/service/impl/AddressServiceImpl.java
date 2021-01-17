@@ -1,6 +1,7 @@
 package com.kay.service.impl;
 
-import com.github.pagehelper.PageHelper;
+import static com.github.pagehelper.page.PageMethod.startPage;
+
 import com.github.pagehelper.PageInfo;
 import com.kay.dao.AddressMapper;
 import com.kay.domain.Address;
@@ -54,7 +55,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public PageInfo<Address> list(Integer userId, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+        startPage(pageNum, pageSize);
         List<Address> addressList = addressMapper.selectByUserId(userId);
         return new PageInfo<>(addressList);
     }
