@@ -11,7 +11,7 @@
 8. 修改原有的代码风格，遵循 google java code style
 
 
-Swagger2 UI 地址：http://localhost:8081/swagger-ui/#/
+Swagger2 UI 地址：http://localhost:8081/doc.html
 
 ### mmall 项目整体模块划分
 
