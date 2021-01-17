@@ -67,5 +67,5 @@ app-config:
     username: test
     password: test
   jwt:
-    secret-key: secret-key
+    secret-key: secret-key-155b0e48-f9a4-4a17-978d-286eacb410a4-a9487855-1bd3-4878-82e9-d73e811a6639-083018bc-3655-473e-a33f-d49a960e781a-0c53d4a0-0b4e-4c4e-a42e-253c138a41f7-0c53d4a0-0b4e-4c4e-a42e-253c138a41f7-0c53d4a0-0b4e-4c4e-a42e-253c138a41f7-0c53d4a0-0b4e-4c4e-a42e-253c138a41f7
     expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds
