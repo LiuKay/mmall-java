@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
+    id "com.avast.gradle.docker-compose" version "0.15.2"
+}
+
+group 'com.github.kay'
+version '1.0-SNAPSHOT'
+compileJava.sourceCompatibility = '11'
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenLocal()
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE'
+    implementation 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.6.2'
+
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dockerCompose {
+    local {
+        stopContainers = true
+        forceRecreate = true
+        projectName = 'mmal-docker-containers'
+        useComposeFiles = ['docker-compose.yml']
+        startedServices = ['mysql']
+        isRequiredBy(project.tasks.bootRun)
+    }
+}
+
+bootRun {
+    mainClassName = "com.github.kay.mmall.MallApplication"
+    doFirst {
+        systemProperty 'java.library.path', 'build/libs'
+    }
+}
