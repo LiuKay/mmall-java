@@ -11,21 +11,22 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import javax.validation.Valid;
-
+@Validated
 @RestController
-@RequestMapping("/restfull/products")
+@RequestMapping("/restful/products")
 @CacheConfig(cacheNames = "resource.product")
 public class ProductController {
 
@@ -52,8 +53,8 @@ public class ProductController {
             @CacheEvict(key = "#product.id"),
             @CacheEvict(key = "'ALL_PRODUCT'")
     })
-    @RolesAllowed(Role.ADMIN)
-    public ResponseEntity<CodedMessage> updateProduct(@Valid Product product) {
+    @Secured(Role.ADMIN)
+    public ResponseEntity<CodedMessage> updateProduct(@RequestBody Product product) {
         return CommonResponse.op(() -> service.saveProduct(product));
     }
 
@@ -62,8 +63,8 @@ public class ProductController {
             @CacheEvict(key = "#product.id"),
             @CacheEvict(key = "'ALL_PRODUCT'")
     })
-    @RolesAllowed(Role.ADMIN)
-    public Product createProduct(@Valid Product product) {
+    @Secured(Role.ADMIN)
+    public Product createProduct(@RequestBody Product product) {
         return service.saveProduct(product);
     }
 
@@ -72,7 +73,7 @@ public class ProductController {
             @CacheEvict(key = "#id"),
             @CacheEvict(key = "'ALL_PRODUCT'")
     })
-    @RolesAllowed(Role.ADMIN)
+    @Secured(Role.ADMIN)
     public ResponseEntity<CodedMessage> removeProduct(@PathVariable("id") Integer id) {
         return CommonResponse.op(() -> service.removeProduct(id));
     }
@@ -81,13 +82,13 @@ public class ProductController {
      * 将指定的产品库存调整为指定数额
      */
     @PatchMapping("/stockpile/{productId}")
-    @RolesAllowed(Role.ADMIN)
+    @Secured(Role.ADMIN)
     public ResponseEntity<CodedMessage> updateStockpile(@PathVariable("productId") Integer productId, @RequestParam("amount") Integer amount) {
         return CommonResponse.op(() -> service.setStockpileAmountByProductId(productId, amount));
     }
 
     @GetMapping("/stockpile/{productId}")
-    @RolesAllowed(Role.ADMIN)
+    @Secured(Role.ADMIN)
     public Stockpile queryStockpile(@PathVariable("productId") Integer productId) {
         return service.getStockpile(productId);
     }

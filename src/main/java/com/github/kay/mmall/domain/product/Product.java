@@ -21,20 +21,17 @@ import java.util.Set;
 public class Product extends BaseEntity {
 
     @NotEmpty(message = "商品名称不允许为空")
-    private String name;
-
-    private String subtitle;
-
-    private String mainImage;
-
-    private String subImages;
-
-    private String detail;
+    private String title;
 
     @NotNull(message = "商品应当有明确的价格")
-    @Min(value = 0,message = "price min is 0")
+    @Min(value = 0, message = "商品价格最低为零")
     private BigDecimal price;
 
+    private String description;
+
+    private String cover;
+
+    private String detail;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
