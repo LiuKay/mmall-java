@@ -1,3 +1,5 @@
+
+
 spring:
   datasource:
     schema: "classpath:db/schema.sql"
@@ -10,10 +12,11 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     open-in-view: true
     generate-ddl: true
     database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   resources:
     chain:
       compressed: true
