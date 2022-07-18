@@ -7,6 +7,7 @@ import com.github.kay.mmall.infrasucture.common.CodedMessage;
 import com.github.kay.mmall.infrasucture.common.CommonResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
+@Validated
 @RestController
-@RequestMapping("/addresses")
+@RequestMapping("/restful/addresses")
 public class AddressController {
 
     private final AddressApplicationService service;
@@ -39,7 +41,7 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<CodedMessage> listAddresses(@RequestBody Address address){
+    public ResponseEntity<CodedMessage> createAddress(@RequestBody Address address){
         address.setUserId(getCurrentUser().getId());
         return CommonResponse.op(() -> service.createAddress(address));
     }
