@@ -59,7 +59,7 @@ create table payment
 create table specification
 (
     id         int unsigned not null auto_increment primary key,
-    title      varchar(255) null,
+    item      varchar(255) not null ,
     product_id int unsigned not null,
     value      varchar(255) null
 ) engine = InnoDB;
@@ -77,8 +77,8 @@ create table product
 create table stockpile
 (
     id         int unsigned not null auto_increment primary key,
-    amount     int          null,
-    frozen     int          null,
+    amount     int          default 0,
+    frozen     int          default 0,
     product_id int unsigned not null
 ) engine = InnoDB;
 

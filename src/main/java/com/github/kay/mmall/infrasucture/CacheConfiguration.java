@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class CacheConfiguration {
 
-    public static final long SYSTEM_DEFAULT_EXPIRES = 5 * 1000L;
+    public static final long SYSTEM_DEFAULT_EXPIRES = 5 * 60 * 1000L;
 
     @Bean
     public CacheManager configCacheManager(){

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class Specification extends BaseEntity {
 
     @NotEmpty(message = "商品规格名称不允许为空")
-    private String title;
+    private String item;
 
     @NotEmpty(message = "商品规格内容不允许为空")
     private String value;

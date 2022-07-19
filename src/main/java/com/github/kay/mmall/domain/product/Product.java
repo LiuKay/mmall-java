@@ -35,5 +35,5 @@ public class Product extends BaseEntity {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
-    private Set<Specification> specifications;
+    private transient Set<Specification> specifications;
 }
