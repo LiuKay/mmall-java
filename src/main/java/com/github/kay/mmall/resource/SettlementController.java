@@ -8,6 +8,7 @@ import com.github.kay.mmall.domain.payment.validation.ValidStock;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,7 @@ public class SettlementController {
 
     @PostMapping
     @Secured(value = Role.USER)
-    public Payment createPayment(@ValidStock Settlement settlement) {
+    public Payment createPayment(@RequestBody @ValidStock Settlement settlement) {
         return service.executeBySettlement(settlement);
     }
 }
