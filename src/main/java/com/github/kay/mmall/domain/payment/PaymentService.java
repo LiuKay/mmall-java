@@ -3,30 +3,49 @@ package com.github.kay.mmall.domain.payment;
 import com.github.kay.mmall.application.payment.dto.Settlement;
 import com.github.kay.mmall.domain.account.Account;
 import com.github.kay.mmall.infrasucture.CacheConfiguration;
+import com.github.kay.mmall.infrasucture.redis.RedisKeyExpirationHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.ExpiredObjectListener;
+import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class PaymentService {
 
     private static final long DEFAULT_PRODUCT_FROZEN_EXPIRES = CacheConfiguration.SYSTEM_DEFAULT_EXPIRES / 2;
-
-    private final Timer timer = new Timer();
-
+    private static final String PAYMENT_TEMP_KEY_PREFIX = "TEMP:";
+    private static final String LOCK_PREFIX = "LOCK:";
 
     private final PaymentRepository paymentRepository;
     private final StockpileService stockpileService;
     private final Cache settlementCache;
+
+
+    @Autowired
+    private RedissonClient redissonClient;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public PaymentService(PaymentRepository paymentRepository,
                           StockpileService stockpileService,
@@ -57,32 +76,32 @@ public class PaymentService {
 
         settlementCache.put(payment.getPayId(), settlement);
 
-        log.info("创建支付订单，总额：{}", payment.getTotalPrice().toString());
+        log.info("创建支付订单:{}，总额：{}", payment.getPayId(), payment.getTotalPrice().toString());
         return payment;
     }
 
     public BigDecimal finish(String payId) {
-        synchronized (payId.intern()) {
+        return executeWithLock(redissonClient.getLock(LOCK_PREFIX + payId), () -> {
             final Payment payment = paymentRepository.findByPayId(payId);
             if (Payment.State.WAITING == payment.getPayState()) {
                 payment.setPayState(Payment.State.PAYED);
                 paymentRepository.save(payment);
 
+                clearPaymentCache(payment);
+
                 log.info("订单[{}]已处理完成，等待支付", payId);
                 return payment.getTotalPrice();
-            }else {
+            } else {
                 throw new UnsupportedOperationException(
                         String.format("Not allowed pay current order: payId:%s, state:%s", payId,
                                       payment.getPayState()));
             }
-
-        }
+        });
     }
 
     public void accomplishSettlement(Payment.State state, String payId) {
         final Settlement settlement = (Settlement) Objects.requireNonNull(Objects.requireNonNull(settlementCache.get(payId))
                                                                                  .get());
-
         settlement.getItems().forEach(i->{
             if (state == Payment.State.PAYED) {
                 //减库存
@@ -95,22 +114,44 @@ public class PaymentService {
     }
 
     public void cancel(String payId) {
-//        FIXME
-        synchronized (payId.intern()) {
+        executeWithLock(redissonClient.getLock(LOCK_PREFIX + payId), () -> {
             Payment payment = paymentRepository.findByPayId(payId);
             if (payment.getPayState() == Payment.State.WAITING) {
                 payment.setPayState(Payment.State.CANCEL);
                 paymentRepository.save(payment);
+
+                clearPaymentCache(payment);
+
                 accomplishSettlement(Payment.State.CANCEL, payment.getPayId());
                 log.info("编号为[{}]的支付单已被取消", payId);
             } else {
                 throw new UnsupportedOperationException("当前订单不允许取消，当前状态为：" + payment.getPayState());
             }
+            return null;
+        });
+    }
+
+    private <T> T executeWithLock(RLock lock, Callable<T> callable) {
+        try {
+            if (!lock.tryLock(0, 10, TimeUnit.SECONDS)) {
+                log.info("Lock is held by others.");
+                return null;
+            }
+
+            return callable.call();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (Exception exception) {
+            throw new CompletionException(exception);
+        } finally {
+            lock.unlock();
         }
+
+        return null;
     }
 
     /**
-     * FIXME:  使用 Redis 做分布式锁，Quartz 定时关单
+     * 在 Redis 中设置好过期时间等待过期事件触发，自动冲消未支持订单
      * 设置支付单自动冲销解冻的触发器
      * <p>
      * 如果在触发器超时之后，如果支付单未仍未被支付（状态是WAITING）
@@ -124,18 +165,53 @@ public class PaymentService {
      * 3. 即时只考虑正常支付的情况，真正生产环境中这种代码需要一个支持集群的同步锁（如用Redis实现互斥量），避免解冻支付和该支付单被完成两个事件同时在不同的节点中发生
      */
     public void setupAutoThawedTrigger(Payment payment) {
-        timer.schedule(new TimerTask() {
-            public void run() {
-                synchronized (payment.getPayId().intern()) {
-                    // 使用2分钟之前的Payment到数据库中查出当前的Payment
-                    Payment currentPayment = paymentRepository.findById(payment.getId()).orElseThrow(() -> new EntityNotFoundException(payment.getId().toString()));
+        storePaymentToCache(payment);
+    }
+
+    private void storePaymentToCache(Payment payment) {
+        //create expiration key
+        redisTemplate.opsForValue()
+                     .set(payment.getPayId(), payment.getId(), payment.getExpires(),
+                          TimeUnit.SECONDS);
+
+        //create payment key, the key is used to close order
+        final String tempPaymentKey = PAYMENT_TEMP_KEY_PREFIX + payment.getPayId();
+        final RBucket<Integer> bucket = redissonClient.getBucket(tempPaymentKey);
+        bucket.set(payment.getId());
+    }
+
+    private void clearPaymentCache(Payment payment) {
+        redisTemplate.delete(payment.getPayId());
+
+        final String tempPaymentKey = PAYMENT_TEMP_KEY_PREFIX + payment.getPayId();
+        final RBucket<Integer> bucket = redissonClient.getBucket(tempPaymentKey);
+        bucket.delete();
+    }
+
+    @Component
+    public class AutoCloseOrderService implements RedisKeyExpirationHandler{
+
+        @Override
+        public boolean match(String key) {
+            return key.startsWith(Payment.PAY_ID_PREFIX);
+        }
+
+        @Override
+        public void handle(String key) {
+            executeWithLock(redissonClient.getLock(LOCK_PREFIX + key), () -> {
+                final String tempPaymentKey = PAYMENT_TEMP_KEY_PREFIX + key;
+                final RBucket<Integer> bucket = redissonClient.getBucket(tempPaymentKey);
+                final Integer paymentId = bucket.get();
+                if (paymentId != null) {
+                    Payment currentPayment = paymentRepository.findById(paymentId).orElseThrow(() -> new EntityNotFoundException(key));
                     if (currentPayment.getPayState() == Payment.State.WAITING) {
-                        log.info("支付单{}当前状态为：WAITING，转变为：TIMEOUT", payment.getId());
-                        accomplishSettlement(Payment.State.TIMEOUT, payment.getPayId());
+                        log.info("支付单{}当前状态为：WAITING，转变为：TIMEOUT", paymentId);
+                        accomplishSettlement(Payment.State.TIMEOUT, key);
                     }
                 }
-            }
-        }, payment.getExpires());
+                return null;
+            });
+        }
     }
 
 }
