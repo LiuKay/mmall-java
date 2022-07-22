@@ -30,3 +30,15 @@ logging:
   level:
     root: INFO
     com.github.kay: DEBUG
+
+mmall:
+  redis:
+    url: redis://${redis.host:localhost}:${redis.tcp.6379:6379}
+    host: ${redis.host:localhost}
+    port: ${redis.tcp.6379:6379}
+    connection-pool-size: 100
+    connection-timeout: 15000
+    lock-watchdog-timeout: 10000
+    timeout: 5000
+    retry-attempts: 50
+    retry-interval: 5000

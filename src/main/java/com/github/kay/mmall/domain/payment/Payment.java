@@ -1,5 +1,6 @@
 package com.github.kay.mmall.domain.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.kay.mmall.domain.BaseEntity;
 import com.github.kay.mmall.domain.account.Account;
 import lombok.Getter;
@@ -20,13 +21,16 @@ import java.util.UUID;
 @Entity
 public class Payment extends BaseEntity {
 
+    @JsonIgnore
+    public static final transient String PAY_ID_PREFIX = "pay:";
+
     private Date createTime;
 
     private String payId;
 
     private BigDecimal totalPrice;
 
-    private Long expires;
+    private Long expires; // ms
 
     private String paymentLink;
 
@@ -42,7 +46,7 @@ public class Payment extends BaseEntity {
         setPayState(State.WAITING);
 
         // 下面这两个是随便写的，实际应该根据情况调用支付服务，返回待支付的ID
-        setPayId(UUID.randomUUID().toString());
+        setPayId(PAY_ID_PREFIX + UUID.randomUUID().toString());
         // 产生支付单的时候一定是有用户的
         setPaymentLink("/pay/modify/" + getPayId() + "?state=PAYED&accountId=" + accountId);
     }
