@@ -5,8 +5,8 @@ import com.github.kay.mmall.domain.payment.Payment;
 import com.github.kay.mmall.domain.payment.PaymentService;
 import com.github.kay.mmall.domain.payment.WalletService;
 import com.github.kay.mmall.domain.product.ProductService;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.Cache;
+
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,17 +19,16 @@ public class PaymentApplicationService {
     private final PaymentService paymentService;
     private final ProductService productService;
     private final WalletService walletService;
-
-    private final Cache settlementCache;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public PaymentApplicationService(PaymentService paymentService,
                                      ProductService productService,
                                      WalletService walletService,
-                                     @Qualifier("settlement") Cache settlementCache) {
+                                     RedisTemplate<String, Object> redisTemplate) {
         this.paymentService = paymentService;
         this.productService = productService;
         this.walletService = walletService;
-        this.settlementCache = settlementCache;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -55,7 +54,8 @@ public class PaymentApplicationService {
         // 扣减货款
         walletService.decrease(accountId, price);
         // 支付成功的清除缓存
-        settlementCache.evict(payId);
+        redisTemplate.delete(payId);
+
     }
 
 
@@ -67,6 +67,6 @@ public class PaymentApplicationService {
         // 释放冻结的库存
         paymentService.cancel(payId);
         // 支付成功的清除缓存
-        settlementCache.evict(payId);
+        redisTemplate.delete(payId);
     }
 }

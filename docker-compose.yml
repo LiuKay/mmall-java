@@ -3,7 +3,6 @@ version: '3.8'
 services:
   mysql:
     image: mysql:5.7.38
-    restart: always
     ports:
       - 3306:3306
     environment:
@@ -13,7 +12,6 @@ services:
       - MYSQL_PASSWORD=mmall
   redis:
     image: redis:latest
-    restart: always
     ports:
       - 6379:6379
     command: redis-server --notify-keyspace-events Ex

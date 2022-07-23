@@ -2,57 +2,42 @@ package com.github.kay.mmall.domain.payment;
 
 import com.github.kay.mmall.application.payment.dto.Settlement;
 import com.github.kay.mmall.domain.account.Account;
-import com.github.kay.mmall.infrasucture.CacheConfiguration;
+import com.github.kay.mmall.infrasucture.redis.LockService;
 import com.github.kay.mmall.infrasucture.redis.RedisKeyExpirationHandler;
-import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.ExpiredObjectListener;
-import org.redisson.api.RBucket;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.Cache;
+
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
+
+import javax.persistence.EntityNotFoundException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class PaymentService {
 
-    private static final long DEFAULT_PRODUCT_FROZEN_EXPIRES = CacheConfiguration.SYSTEM_DEFAULT_EXPIRES / 2;
+    private static final long DEFAULT_PRODUCT_FROZEN_EXPIRES = 5 * 60 * 1000L;
     private static final String PAYMENT_TEMP_KEY_PREFIX = "TEMP:";
-    private static final String LOCK_PREFIX = "LOCK:";
 
     private final PaymentRepository paymentRepository;
     private final StockpileService stockpileService;
-    private final Cache settlementCache;
-
-
-    @Autowired
-    private RedissonClient redissonClient;
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final LockService lockService;
 
     public PaymentService(PaymentRepository paymentRepository,
                           StockpileService stockpileService,
-                          @Qualifier("settlement") Cache settlementCache) {
+                          RedisTemplate<String, Object> redisTemplate,
+                          LockService lockService) {
         this.paymentRepository = paymentRepository;
         this.stockpileService = stockpileService;
-        this.settlementCache = settlementCache;
+        this.redisTemplate = redisTemplate;
+        this.lockService = lockService;
     }
 
     public Payment producePayment(Settlement settlement) {
@@ -68,20 +53,20 @@ public class PaymentService {
                                                 })
                                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        //TODO:忽略运费
+        //忽略运费
 
         Account account= (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Payment payment = new Payment(totalPrice, DEFAULT_PRODUCT_FROZEN_EXPIRES, account.getId());
         paymentRepository.save(payment);
 
-        settlementCache.put(payment.getPayId(), settlement);
+        redisTemplate.opsForValue().set(payment.getPayId(), settlement);
 
         log.info("创建支付订单:{}，总额：{}", payment.getPayId(), payment.getTotalPrice().toString());
         return payment;
     }
 
     public BigDecimal finish(String payId) {
-        return executeWithLock(redissonClient.getLock(LOCK_PREFIX + payId), () -> {
+        return lockService.execute(payId, () -> {
             final Payment payment = paymentRepository.findByPayId(payId);
             if (Payment.State.WAITING == payment.getPayState()) {
                 payment.setPayState(Payment.State.PAYED);
@@ -100,8 +85,9 @@ public class PaymentService {
     }
 
     public void accomplishSettlement(Payment.State state, String payId) {
-        final Settlement settlement = (Settlement) Objects.requireNonNull(Objects.requireNonNull(settlementCache.get(payId))
-                                                                                 .get());
+        final Settlement settlement = (Settlement) Objects.requireNonNull(
+                Objects.requireNonNull(redisTemplate.opsForValue().get(payId)));
+
         settlement.getItems().forEach(i->{
             if (state == Payment.State.PAYED) {
                 //减库存
@@ -114,7 +100,7 @@ public class PaymentService {
     }
 
     public void cancel(String payId) {
-        executeWithLock(redissonClient.getLock(LOCK_PREFIX + payId), () -> {
+        lockService.execute(payId, () -> {
             Payment payment = paymentRepository.findByPayId(payId);
             if (payment.getPayState() == Payment.State.WAITING) {
                 payment.setPayState(Payment.State.CANCEL);
@@ -127,27 +113,7 @@ public class PaymentService {
             } else {
                 throw new UnsupportedOperationException("当前订单不允许取消，当前状态为：" + payment.getPayState());
             }
-            return null;
         });
-    }
-
-    private <T> T executeWithLock(RLock lock, Callable<T> callable) {
-        try {
-            if (!lock.tryLock(0, 10, TimeUnit.SECONDS)) {
-                log.info("Lock is held by others.");
-                return null;
-            }
-
-            return callable.call();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception exception) {
-            throw new CompletionException(exception);
-        } finally {
-            lock.unlock();
-        }
-
-        return null;
     }
 
     /**
@@ -175,17 +141,17 @@ public class PaymentService {
                           TimeUnit.SECONDS);
 
         //create payment key, the key is used to close order
-        final String tempPaymentKey = PAYMENT_TEMP_KEY_PREFIX + payment.getPayId();
-        final RBucket<Integer> bucket = redissonClient.getBucket(tempPaymentKey);
-        bucket.set(payment.getId());
+        redisTemplate.opsForValue().set(getPaymentIdCacheKey(payment.getPayId()), payment.getId());
     }
 
     private void clearPaymentCache(Payment payment) {
         redisTemplate.delete(payment.getPayId());
 
-        final String tempPaymentKey = PAYMENT_TEMP_KEY_PREFIX + payment.getPayId();
-        final RBucket<Integer> bucket = redissonClient.getBucket(tempPaymentKey);
-        bucket.delete();
+        redisTemplate.delete(getPaymentIdCacheKey(payment.getPayId()));
+    }
+
+    private String getPaymentIdCacheKey(String payId) {
+        return PAYMENT_TEMP_KEY_PREFIX + payId;
     }
 
     @Component
@@ -198,14 +164,15 @@ public class PaymentService {
 
         @Override
         public void handle(String key) {
-            executeWithLock(redissonClient.getLock(LOCK_PREFIX + key), () -> {
-                final String tempPaymentKey = PAYMENT_TEMP_KEY_PREFIX + key;
-                final RBucket<Integer> bucket = redissonClient.getBucket(tempPaymentKey);
-                final Integer paymentId = bucket.get();
-                if (paymentId != null) {
-                    Payment currentPayment = paymentRepository.findById(paymentId).orElseThrow(() -> new EntityNotFoundException(key));
+            lockService.execute(key, () -> {
+                final String tempPaymentKey = getPaymentIdCacheKey(key);
+                final Object paymentEntityId = redisTemplate.opsForValue().get(tempPaymentKey);
+
+                if (paymentEntityId != null) {
+                    Payment currentPayment = paymentRepository.findById((Integer) paymentEntityId)
+                                                              .orElseThrow(() -> new EntityNotFoundException(key));
                     if (currentPayment.getPayState() == Payment.State.WAITING) {
-                        log.info("支付单{}当前状态为：WAITING，转变为：TIMEOUT", paymentId);
+                        log.info("支付单{}当前状态为：WAITING，转变为：TIMEOUT", paymentEntityId);
                         accomplishSettlement(Payment.State.TIMEOUT, key);
                     }
                 }
