@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "mmall.redis", ignoreUnknownFields = false)
 public class RedisConfigurationProperties {
 
-    private String url;
     private String host;
     private int port;
     private int connectionPoolSize;

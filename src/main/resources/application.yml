@@ -1,6 +1,11 @@
 
 
 spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: PT5M
   datasource:
     schema: "classpath:db/schema.sql"
     data: "classpath:db/data.sql"
@@ -33,7 +38,6 @@ logging:
 
 mmall:
   redis:
-    url: redis://${redis.host:localhost}:${redis.tcp.6379:6379}
     host: ${redis.host:localhost}
     port: ${redis.tcp.6379:6379}
     connection-pool-size: 100
