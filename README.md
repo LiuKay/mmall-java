@@ -1,22 +1,28 @@
 ### Monolithic MMall (Using SpringBoot)
 
 
-Learn from [https://github.com/fenixsoft/monolithic_arch_springboot](https://github.com/fenixsoft/monolithic_arch_springboot)
+Based on [https://github.com/fenixsoft/monolithic_arch_springboot](https://github.
+com/fenixsoft/monolithic_arch_springboot)
 
 But not use the specification.
 
-### Local Run
+### Local Run - 本地调式
 
-startup docker first.
+依赖的基础设施环境使用 Docker Compose 打包（见 docker-compose.yml），MySQL, Redis 等。
 
 ```cmd
 gradlew bootRun
 ```
 
-### Technology
+或者
 
-- Spring MVC
-- Spring Cache + Caffeine
+使用`docker-compose up -d` 先启动依赖的其他基础设施服务，再运行项目 Main 方法
+
+### Technology - 技术选型
+
+- SpringBoot
+- Spring Cache + Redis
+- Redisson as distributed lock
 - Spring Data JPA
 - Spring Security
 - Spring Security OAuth 2.3
@@ -25,4 +31,30 @@ gradlew bootRun
 - Bean Validation 2.0 (Hibernate Validator 6)
 
 
+### Frontend - 前端项目
 
+[https://github.com/LiuKay/mmall-frontend](https://github.com/LiuKay/mmall-frontend)
+
+### Develop Plan - 开发计划
+
+- 单体版本使用 SpringBoot
+- 微服务版本使用 Spring Cloud 体系
+- K8s 版本
+
+### Other Versions - 其他版本（分支）
+
+- v1.0 
+
+    单服务器 + FTP文件服务器,
+
+    主要技术：SSM/Guava/Jackson/Joda/注解
+
+- v2.0 
+
+    Tomcat集群+Nginx负载均衡+Redis分布式,
+
+    在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
+
+- v3.0_springboot_Deprecated （已废弃）
+    
+    重构了登录鉴权的部分
