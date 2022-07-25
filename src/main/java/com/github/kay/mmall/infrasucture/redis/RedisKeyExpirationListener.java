@@ -25,7 +25,7 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            log.info("==> Redis Message:{}", message);
+            log.debug("==> Redis Message:{}", message);
 
             final String key = new String(message.getBody());
             final List<RedisKeyExpirationHandler> handlers = redisKeyExpirationHandlerManager.getHandlers();

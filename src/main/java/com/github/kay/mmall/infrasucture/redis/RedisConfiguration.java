@@ -1,12 +1,14 @@
 package com.github.kay.mmall.infrasucture.redis;
 
+import lombok.SneakyThrows;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -15,36 +17,23 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 @Configuration
-@EnableConfigurationProperties(RedisConfigurationProperties.class)
 public class RedisConfiguration {
 
-    private static final String URL = "redis://%s:%s";
+    @Value("${mmall.redisson-config}")
+    private String redissonConfigFile;
 
+    @SneakyThrows
     @Bean
-    @ConditionalOnMissingBean
-    public RedissonClient getRedissonClient(RedisConfigurationProperties redisConfigurationProperties) {
-        Config config = new Config();
-        config.setLockWatchdogTimeout(redisConfigurationProperties.getLockWatchdogTimeout())
-              .useSingleServer()
-              .setAddress(String.format(URL, redisConfigurationProperties.getHost(),
-                                        redisConfigurationProperties.getPort()))
-              .setConnectionPoolSize(redisConfigurationProperties.getConnectionPoolSize())
-              .setConnectTimeout(redisConfigurationProperties.getConnectionTimeout())
-              .setTimeout(redisConfigurationProperties.getTimeout())
-              .setRetryAttempts(redisConfigurationProperties.getRetryAttempts())
-              .setRetryInterval(redisConfigurationProperties.getRetryInterval())
-              .setSslEnableEndpointIdentification(redisConfigurationProperties.isSslEnableEndpointIdentification())
-              .setKeepAlive(true);
-
+    public RedissonClient getRedissonClient() {
+        final Config config = Config.fromYAML(new ClassPathResource(redissonConfigFile).getInputStream());
         return Redisson.create(config);
     }
 
 
     @Bean
-    public JedisConnectionFactory redisConnectionFactory(RedisConfigurationProperties redisConfigurationProperties) {
+    public JedisConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(
-                redisConfigurationProperties.getHost(),
-                redisConfigurationProperties.getPort());
+                redisProperties.getHost(), redisProperties.getPort());
         return new JedisConnectionFactory(configuration);
     }
 
