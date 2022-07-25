@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class LockServiceImpl implements LockService {
 
-    private static final String LOCK_PREFIX ="LOCK:";
+    private static final String LOCK_PREFIX = "LOCK:";
     private static final int RELEASE_TIME_IN_MINUTE = 10;
 
     private final RedissonClient redissonClient;
@@ -34,9 +34,10 @@ public class LockServiceImpl implements LockService {
             log.warn("Failed to acquire lock for:[{}]", id);
         } catch (InterruptedException e) {
             log.warn("Lock Thread InterruptedException", e);
-            Thread.currentThread().interrupt();
+            Thread.currentThread()
+                  .interrupt();
         } catch (Exception e) {
-            throw new LockOperationException("Failed to execute lock operation.",e);
+            throw new LockOperationException(e);
         } finally {
             lock.unlock();
         }
@@ -51,14 +52,15 @@ public class LockServiceImpl implements LockService {
         try {
             if (lock.tryLock(0, RELEASE_TIME_IN_MINUTE, TimeUnit.MINUTES)) {
                 runnable.run();
-            }else {
+            } else {
                 log.warn("Failed to acquire lock for:[{}]", id);
             }
         } catch (InterruptedException e) {
             log.warn("Lock Thread InterruptedException", e);
-            Thread.currentThread().interrupt();
+            Thread.currentThread()
+                  .interrupt();
         } catch (Exception e) {
-            throw new LockOperationException("Failed to execute lock operation.", e);
+            throw new LockOperationException(e);
         } finally {
             lock.unlock();
         }
