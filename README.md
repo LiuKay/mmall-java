@@ -16,7 +16,11 @@ gradlew bootRun
 
 或者
 
-使用`docker-compose up -d` 先启动依赖的其他基础设施服务，再运行项目 Main 方法
+使用`docker-compose up -d` 先启动依赖的其他基础设施服务，再运行项目 Main 方法.
+
+进入主页 [http://localhost:8080/](http://localhost:8080/).
+
+![home](./img/home.png)
 
 ### Technology - 技术选型
 
