@@ -1,10 +1,9 @@
 ### Monolithic MMall (Using SpringBoot)
 
 
-Based on [https://github.com/fenixsoft/monolithic_arch_springboot](https://github.
-com/fenixsoft/monolithic_arch_springboot)
+Based on [https://github.com/fenixsoft/monolithic_arch_springboot](https://github.com/fenixsoft/monolithic_arch_springboot) and made some improvements.
 
-But not use the specification.
+本项目基于周志明老师的[凤凰架构](https://icyfenix.cn/introduction/about-the-fenix-project.html)中的示例项目:[单体架构](https://github.com/fenixsoft/monolithic_arch_springboot). 在此基础上做一些改进和修改。
 
 ### Local Run - 本地调式
 
