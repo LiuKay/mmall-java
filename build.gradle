@@ -4,7 +4,6 @@ plugins {
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
-    id "com.avast.gradle.docker-compose" version "0.15.2"
 }
 
 group 'com.github.kay'
@@ -43,17 +42,6 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-dockerCompose {
-    local {
-        stopContainers = true
-        forceRecreate = true
-        projectName = 'mmal-docker-containers'
-        useComposeFiles = ['docker-compose.yml']
-        startedServices = ['mysql']
-        isRequiredBy(project.tasks.bootRun)
-    }
 }
 
 bootRun {

@@ -48,7 +48,8 @@ create table advertisement
 create table payment
 (
     id           int unsigned   not null auto_increment primary key,
-    create_time  datetime       not null,
+    create_time  datetime       default current_timestamp,
+    update_time  datetime       default current_timestamp,
     expires      bigint         null,
     pay_id       varchar(255)   not null,
     pay_state    int            null,

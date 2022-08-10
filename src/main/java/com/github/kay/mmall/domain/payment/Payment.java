@@ -2,12 +2,12 @@ package com.github.kay.mmall.domain.payment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.kay.mmall.domain.BaseEntity;
-import com.github.kay.mmall.domain.account.Account;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,6 +25,8 @@ public class Payment extends BaseEntity {
     public static final transient String PAY_ID_PREFIX = "pay:";
 
     private Date createTime;
+
+    private Date updateTime;
 
     private String payId;
 
@@ -49,6 +51,12 @@ public class Payment extends BaseEntity {
         setPayId(PAY_ID_PREFIX + UUID.randomUUID().toString());
         // 产生支付单的时候一定是有用户的
         setPaymentLink("/pay/modify/" + getPayId() + "?state=PAYED&accountId=" + accountId);
+    }
+
+    @PreUpdate
+    @PrePersist
+    public void updateTime(){
+        this.updateTime = new Date();
     }
 
     public enum State {

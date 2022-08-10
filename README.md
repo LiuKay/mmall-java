@@ -7,13 +7,17 @@ Based on [https://github.com/fenixsoft/monolithic_arch_springboot](https://githu
 
 ### Local Run - 本地调式
 
-依赖的基础设施环境使用 Docker Compose 打包（见 docker-compose.yml），MySQL, Redis 等。
+依赖的测试基础设施环境使用 Docker Compose 打包（见 docker-compose.yml），MySQL, Redis 等。
 
-```cmd
-gradlew bootRun
+```shell
+# prepare dev environment
+docker-compose up -d
+
+# startup application
+./gradlew bootRun
 ```
 
-或者
+进入主页 [http://localhost:8080/](http://localhost:8080/)  默认账号 kaybee, 密码 123456
 
 使用`docker-compose up -d` 先启动依赖的其他基础设施服务，再运行项目 Main 方法.
 

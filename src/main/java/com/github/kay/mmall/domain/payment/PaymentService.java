@@ -169,14 +169,17 @@ public class PaymentService {
                 final Object paymentEntityId = redisTemplate.opsForValue().get(tempPaymentKey);
 
                 if (paymentEntityId != null) {
-                    Payment currentPayment = paymentRepository.findById((Integer) paymentEntityId)
-                                                              .orElseThrow(() -> new EntityNotFoundException(key));
+                    final Integer entityId = (Integer) paymentEntityId;
+                    Payment currentPayment = paymentRepository.findById(entityId)
+                                                              .orElseThrow(() -> new EntityNotFoundException(
+                                                                      entityId.toString()));
                     if (currentPayment.getPayState() == Payment.State.WAITING) {
                         log.info("支付单{}当前状态为：WAITING，转变为：TIMEOUT", paymentEntityId);
                         accomplishSettlement(Payment.State.TIMEOUT, key);
+                        currentPayment.setPayState(Payment.State.TIMEOUT);
+                        paymentRepository.save(currentPayment);
                     }
                 }
-                return null;
             });
         }
     }
