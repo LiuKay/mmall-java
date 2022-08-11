@@ -1,2 +1,14 @@
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenCentral()
+    }
+}
+
 rootProject.name = 'mmall-springboot'
+include 'mmall-platform-gateway'
+include 'mmall-platform-registry'
+include 'mmall-platform-configuration'
+
 
