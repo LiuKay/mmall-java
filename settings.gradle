@@ -6,9 +6,15 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'mmall-springboot'
+rootProject.name = 'mmall-springcloud'
 include 'mmall-platform-gateway'
 include 'mmall-platform-registry'
 include 'mmall-platform-configuration'
+include 'mmall-lib-infrastructure'
+include 'mmall-lib-testing'
+include 'mmall-domain-account'
+include 'mmall-domain-payment'
+include 'mmall-domain-warehouse'
+include 'mmall-domain-security'
 
 
