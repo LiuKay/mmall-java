@@ -1,6 +1,7 @@
 package com.github.kay.mmall.domain.product;
 
 import com.github.kay.mmall.domain.BaseEntity;
+import com.github.kay.mmall.domain.product.Specification;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,5 @@
 package com.github.kay.mmall.domain.auth;
 
-import com.github.kay.mmall.domain.auth.AuthenticAccountRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
