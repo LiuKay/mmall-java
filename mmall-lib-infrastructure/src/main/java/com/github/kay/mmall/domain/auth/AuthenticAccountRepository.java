@@ -1,5 +1,6 @@
 package com.github.kay.mmall.domain.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -8,12 +9,8 @@ import java.util.Optional;
 @Component
 public class AuthenticAccountRepository {
 
-    private final AccountServiceClient accountServiceClient;
-
-    public AuthenticAccountRepository(AccountServiceClient accountServiceClient) {
-        this.accountServiceClient = accountServiceClient;
-    }
-
+    @Autowired
+    private AccountServiceClient accountServiceClient;
 
     public AuthenticAccount findByUsername(String username) {
         return new AuthenticAccount(

@@ -10,6 +10,7 @@ services:
       - MYSQL_DATABASE=mmall
       - MYSQL_USER=mmall
       - MYSQL_PASSWORD=mmall
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
   redis:
     image: redis:latest
     ports:

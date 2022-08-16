@@ -2,17 +2,19 @@ package com.github.kay.mmall.account.domain.validation;
 
 import com.github.kay.mmall.account.domain.AccountRepository;
 import com.github.kay.mmall.domain.account.Account;
-import com.github.kay.mmall.domain.account.AccountRepository;
 import com.github.kay.mmall.domain.auth.AuthenticAccount;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.function.Predicate;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class AccountValidator<T extends Annotation> implements ConstraintValidator<T, Account> {
