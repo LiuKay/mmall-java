@@ -17,7 +17,7 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: true
-    generate-ddl: true
+    generate-ddl: false
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   resources:
@@ -39,3 +39,7 @@ logging:
 
 mmall:
   redisson-config: "redisson-config.yml"
+
+eureka:
+  client:
+    enabled: false

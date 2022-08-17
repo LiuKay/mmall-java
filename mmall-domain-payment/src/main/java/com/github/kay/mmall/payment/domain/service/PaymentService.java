@@ -8,6 +8,7 @@ import com.github.kay.mmall.dto.Settlement;
 import com.github.kay.mmall.infrasucture.redis.LockService;
 import com.github.kay.mmall.infrasucture.redis.RedisKeyExpirationHandler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -29,16 +30,17 @@ public class PaymentService {
     private static final String PAYMENT_TEMP_KEY_PREFIX = "TEMP:";
 
     private final PaymentRepository paymentRepository;
-    private final ProductServiceClient stockpileService;
+
+    @Autowired
+    private ProductServiceClient stockpileService;
+
     private final RedisTemplate<String, Object> redisTemplate;
     private final LockService lockService;
 
     public PaymentService(PaymentRepository paymentRepository,
-                          ProductServiceClient stockpileService,
                           RedisTemplate<String, Object> redisTemplate,
                           LockService lockService) {
         this.paymentRepository = paymentRepository;
-        this.stockpileService = stockpileService;
         this.redisTemplate = redisTemplate;
         this.lockService = lockService;
     }

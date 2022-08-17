@@ -7,7 +7,6 @@ plugins {
 
 dependencies {
     implementation project(':mmall-lib-infrastructure')
-    implementation project(':mmall-lib-testing')
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -17,5 +16,6 @@ dependencies {
         exclude group: 'javax.ws.rs', module: 'jsr311-api'
     }
 
+    testImplementation project(':mmall-lib-testing')
 }
 

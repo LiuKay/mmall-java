@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
 public class LockServiceImpl implements LockService {
 
     private static final String LOCK_PREFIX = "LOCK:";

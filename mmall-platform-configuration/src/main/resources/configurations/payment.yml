@@ -13,6 +13,7 @@ spring:
     schema: "classpath:db/schema.sql"
     data: "classpath:db/data.sql"
     sql-script-encoding: UTF-8
+    driverClassName: "com.mysql.cj.jdbc.Driver"
     url: "jdbc:mysql://localhost:3306/mmall?useUnicode=true&characterEncoding=utf-8"
     username: "root"
     password: "root1234"
@@ -22,7 +23,7 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: true
-    generate-ddl: true
+    generate-ddl: false
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   resources:

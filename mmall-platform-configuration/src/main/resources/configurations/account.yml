@@ -22,7 +22,7 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: true
-    generate-ddl: true
+    generate-ddl: false
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   resources:

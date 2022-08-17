@@ -1,19 +1,20 @@
 package com.github.kay.mmall.payment.domain.client;
 
 import com.github.kay.mmall.domain.product.DeliveredStatus;
-import com.github.kay.mmall.domain.product.Stockpile;
 import com.github.kay.mmall.domain.product.Product;
+import com.github.kay.mmall.domain.product.Stockpile;
 import com.github.kay.mmall.dto.Settlement;
+
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.websocket.server.PathParam;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 @FeignClient(name = "warehouse")
 public interface ProductServiceClient {
@@ -23,7 +24,7 @@ public interface ProductServiceClient {
     }
 
     @GetMapping("/restful/products/{id}")
-    Product getProduct(@PathParam("id") Integer id);
+    Product getProduct(@PathVariable("id") Integer id);
 
     @GetMapping("/restful/products")
     Product[] getProducts();
@@ -45,8 +46,9 @@ public interface ProductServiceClient {
     }
 
     @PatchMapping("/restful/products/stockpile/delivered/{productId}")
-    void setDeliveredStatus(@PathParam("productId") Integer productId, @RequestParam("status") DeliveredStatus status, @RequestParam("amount") Integer amount);
+    void setDeliveredStatus(@PathVariable("productId") Integer productId, @RequestParam("status") DeliveredStatus status,
+                            @RequestParam("amount") Integer amount);
 
     @GetMapping("/restful/products/stockpile/{productId}")
-    Stockpile queryStockpile(@PathParam("productId") Integer productId);
+    Stockpile queryStockpile(@PathVariable("productId") Integer productId);
 }

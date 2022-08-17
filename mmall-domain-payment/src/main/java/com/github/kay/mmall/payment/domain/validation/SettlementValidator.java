@@ -1,7 +1,8 @@
 package com.github.kay.mmall.payment.domain.validation;
 
-import com.github.kay.mmall.warehouse.application.payment.dto.Settlement;
-import com.github.kay.mmall.domain.payment.StockpileService;
+import com.github.kay.mmall.dto.Settlement;
+import com.github.kay.mmall.payment.domain.client.ProductServiceClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
@@ -13,13 +14,13 @@ import javax.validation.ConstraintValidatorContext;
 public class SettlementValidator implements ConstraintValidator<ValidStock, Settlement> {
 
     @Autowired
-    private StockpileService stockpileService;
+    private ProductServiceClient stockpileService;
 
     @Override
     public boolean isValid(Settlement settlement, ConstraintValidatorContext constraintValidatorContext) {
         return settlement.getItems()
                          .stream()
-                         .noneMatch(i -> stockpileService.getByProductId(i.getProductId())
+                         .noneMatch(i -> stockpileService.queryStockpile(i.getProductId())
                                                          .getAmount() < i.getAmount());
     }
 }

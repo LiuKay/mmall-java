@@ -1,6 +1,6 @@
 spring:
   application:
-    name: payament
+    name: payment
   cloud:
     config:
       uri: http://${CONFIG_HOST:localhost}:${CONFIG_PORT:8888}
