@@ -1,4 +1,4 @@
-package com.github.kay.mmall.domain.auth;
+package com.github.kay.mmall.domain.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

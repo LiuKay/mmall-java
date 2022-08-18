@@ -1,6 +1,6 @@
 package com.github.kay.mmall.security.provider;
 
-import com.github.kay.mmall.domain.auth.AuthenticAccountDetailsService;
+import com.github.kay.mmall.domain.security.AuthenticAccountDetailsService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

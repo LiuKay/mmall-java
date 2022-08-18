@@ -1,4 +1,7 @@
-package com.github.kay.mmall.domain.auth.service;
+package com.github.kay.mmall.infrasucture.security;
+
+import com.github.kay.mmall.domain.security.GrantType;
+import com.github.kay.mmall.domain.security.Scope;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
@@ -6,6 +9,9 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -26,15 +32,53 @@ import javax.annotation.PostConstruct;
 public class OAuthClientDetailsService implements ClientDetailsService {
 
     /**
-     * 客户端ID
-     * 这里的客户端就是指本项目的前端代码
+     * 客户端模型
      */
-    private static final String CLIENT_ID = "mmall_frontend";
+    private static class Client {
+        /**
+         * 客户端ID
+         */
+        String clientId;
+
+        /**
+         * 客户端密钥
+         * 在OAuth2协议中，ID是可以公开的，密钥应当保密，密钥用以证明当前申请授权的客户端是未被冒充的
+         */
+        String clientSecret;
+
+        /**
+         * 授权类型
+         * 前端API使用密码授权模式，微服务使用客户端授权模式
+         */
+        String[] grantTypes;
+
+        /**
+         * 授权范围
+         */
+        String[] scopes;
+
+        Client(String clientId, String clientSecret, String[] grantTypes, String[] scopes) {
+            this.clientId = clientId;
+            this.clientSecret = clientSecret;
+            this.grantTypes = grantTypes;
+            this.scopes = scopes;
+        }
+    }
+
     /**
-     * 客户端密钥
-     * 在OAuth2协议中，ID是可以公开的，密钥应当保密，密钥用以证明当前申请授权的客户端是未被冒充的
+     * 客户端列表
+     * <p>
+     * 此场景中微服务一种有JavaScript前端、Account微服务、Warehouse微服务、Payment微服务四种客户端
+     * 如果正式使用，这部分信息应该做成可以配置的，以便快速增加微服务的类型。clientSecret也不应该出现在源码中，应由外部配置传入
      */
-    private static final String CLIENT_SECRET = "mmall_secret";
+    private static final List<Client> clients = Arrays.asList(
+            new Client("mmall_frontend", "mmall_secret", new String[]{GrantType.PASSWORD, GrantType.REFRESH_TOKEN},
+                       new String[]{Scope.BROWSER}),
+            new Client("account", "account_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE}),
+            new Client("warehouse", "warehouse_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE}),
+            new Client("payment", "payment_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE}),
+            new Client("security", "security_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE})
+                                                             );
 
     private final PasswordEncoder passwordEncoder;
 
@@ -46,9 +90,7 @@ public class OAuthClientDetailsService implements ClientDetailsService {
 
     /**
      * 构造密码授权模式
-     * <p>
-     * 由于实质上只有一个客户端，所以就不考虑存储和客户端的增删改查了，直接在内存中配置出客户端的信息
-     * <p>
+     *
      * 授权Endpoint示例：
      * /oauth/token?grant_type=password & username=#USER# & password=#PWD# & client_id=#CLIENT_ID# & client_secret=#CLIENT_SECRET#
      * 刷新令牌Endpoint示例：
@@ -58,10 +100,12 @@ public class OAuthClientDetailsService implements ClientDetailsService {
     public void init() throws Exception {
         InMemoryClientDetailsServiceBuilder builder = new InMemoryClientDetailsServiceBuilder();
         // 提供客户端ID和密钥，并指定该客户端支持密码授权、刷新令牌两种访问类型
-        builder.withClient(CLIENT_ID)
-                .secret(passwordEncoder.encode(CLIENT_SECRET))
-                .scopes("BROWSER")
-                .authorizedGrantTypes("password", "refresh_token");
+        clients.forEach(client -> {
+            builder.withClient(client.clientId)
+                   .secret(passwordEncoder.encode(client.clientSecret))
+                   .scopes(client.scopes)
+                   .authorizedGrantTypes(client.grantTypes);
+        });
         clientDetailsService = builder.build();
     }
 

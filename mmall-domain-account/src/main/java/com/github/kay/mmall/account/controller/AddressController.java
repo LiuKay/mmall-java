@@ -2,7 +2,7 @@ package com.github.kay.mmall.account.controller;
 
 import com.github.kay.mmall.account.application.AddressApplicationService;
 import com.github.kay.mmall.domain.account.Address;
-import com.github.kay.mmall.domain.auth.AuthenticAccount;
+import com.github.kay.mmall.domain.security.AuthenticAccount;
 import com.github.kay.mmall.infrasucture.common.CodedMessage;
 import com.github.kay.mmall.infrasucture.common.CommonResponse;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.github.kay.mmall.warehouse.controller;
 
-import com.github.kay.mmall.domain.auth.Role;
+import com.github.kay.mmall.domain.security.Role;
 import com.github.kay.mmall.domain.product.Stockpile;
 import com.github.kay.mmall.domain.product.Product;
 import com.github.kay.mmall.infrasucture.common.CodedMessage;

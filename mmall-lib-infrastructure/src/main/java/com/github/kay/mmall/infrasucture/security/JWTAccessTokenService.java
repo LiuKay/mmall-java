@@ -1,4 +1,4 @@
-package com.github.kay.mmall.domain.auth.service;
+package com.github.kay.mmall.infrasucture.security;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;

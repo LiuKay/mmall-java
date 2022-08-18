@@ -2,7 +2,7 @@ package com.github.kay.mmall.security.configuration;
 
 import com.github.kay.mmall.security.provider.PreAuthenticatedAuthenticationProvider;
 import com.github.kay.mmall.security.provider.UsernamePasswordAuthenticationProvider;
-import com.github.kay.mmall.domain.auth.AuthenticAccountDetailsService;
+import com.github.kay.mmall.domain.security.AuthenticAccountDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

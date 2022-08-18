@@ -1,4 +1,4 @@
-package com.github.kay.mmall.domain.auth.service;
+package com.github.kay.mmall.infrasucture.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultUserAuthenticationConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +28,9 @@ import java.util.Map;
  * @author icyfenix@gmail.com
  * @date 2020/3/9 9:46
  */
-@Component
 public class JWTAccessToken extends JwtAccessTokenConverter {
 
-    // 签名私钥
-    // 此处内容是我随便写的UUID，按照JWT约定默认是256Bit的，其实任何格式都可以，只是要注意保密，不要公开出去
-    private static final String JWT_TOKEN_SIGNING_PRIVATE_KEY = "601304E0-8AD4-40B0-BD51-0B432DC47461";
-
     public JWTAccessToken(UserDetailsService userDetailsService) {
-        setSigningKey(JWT_TOKEN_SIGNING_PRIVATE_KEY);
-
         // 设置从资源请求中带上来的JWT令牌转换回安全上下文中的用户信息的查询服务
         // 如果不设置该服务，则从JWT令牌获得的Principal就只有一个用户名（令牌中确实就只存了用户名）
         // 将用户用户信息查询服务提供给默认的令牌转换器，使得转换令牌时自动根据用户名还原出完整的用户对象
@@ -48,17 +40,25 @@ public class JWTAccessToken extends JwtAccessTokenConverter {
         ((DefaultAccessTokenConverter)getAccessTokenConverter()).setUserTokenConverter(converter);
     }
 
-
+    /**
+     * 增强令牌
+     * 增强主要就是在令牌的负载中加入额外的信息
+     */
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         Authentication user = authentication.getUserAuthentication();
-        String[] authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
-        Map<String, Object> payLoad = new HashMap<>();
-        // Spring Security OAuth的JWT令牌默认实现中就加入了一个“user_name”的项存储了当前用户名
-        // 这里主要是出于演示Payload的用途，以及方便客户端获取（否则客户端要从令牌中解码Base64来获取），设置了一个“username”，两者的内容是一致的
-        payLoad.put("username", user.getName());
-        payLoad.put("authorities", authorities);
-        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(payLoad);
+        if (user != null) {
+            String[] authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
+            Map<String, Object> payLoad = new HashMap<>();
+            // Spring Security OAuth的JWT令牌默认实现中就加入了一个“user_name”的项存储了当前用户名
+            // 这里主要是出于演示Payload的用途，以及方便客户端获取（否则客户端要从令牌中解码Base64来获取），设置了一个“username”，两者的内容是一致的
+            payLoad.put("username", user.getName());
+            payLoad.put("authorities", authorities);
+            payLoad.put("iss", "kaybee@gmail.com"); //FIXME
+            payLoad.put("sub", "mmall");
+
+            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(payLoad);
+        }
         return super.enhance(accessToken, authentication);
     }
 }

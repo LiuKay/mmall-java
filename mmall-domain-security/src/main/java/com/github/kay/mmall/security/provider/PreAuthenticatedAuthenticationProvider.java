@@ -1,6 +1,6 @@
 package com.github.kay.mmall.security.provider;
 
-import com.github.kay.mmall.domain.auth.AuthenticAccount;
+import com.github.kay.mmall.domain.security.AuthenticAccount;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

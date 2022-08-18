@@ -100,14 +100,6 @@ subprojects {
         if (project.plugins.hasPlugin('org.springframework.boot')
                 && project.plugins.hasPlugin('io.spring.dependency-management')) {
 
-//            ext {
-//                set("log4j2.version", "2.17.2")
-//            }
-//
-//            configurations {
-//                all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-//            }
-
             jar {
                 enabled = true
             }
@@ -117,11 +109,6 @@ subprojects {
             }
 
             dependencies {
-//                implementation "org.springframework.boot:spring-boot-starter-log4j2"
-//
-//                testImplementation('org.springframework.boot:spring-boot-starter-test') {
-//                    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-//                }
                 annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
             }
 

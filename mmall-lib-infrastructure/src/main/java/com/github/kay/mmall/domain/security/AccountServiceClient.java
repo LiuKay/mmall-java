@@ -1,4 +1,4 @@
-package com.github.kay.mmall.domain.auth;
+package com.github.kay.mmall.domain.security;
 
 import com.github.kay.mmall.domain.account.Account;
 import org.springframework.cloud.openfeign.FeignClient;

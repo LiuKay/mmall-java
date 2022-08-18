@@ -1,7 +1,7 @@
 package com.github.kay.mmall.mock;
 
 import com.github.kay.mmall.domain.account.Account;
-import com.github.kay.mmall.domain.auth.AccountServiceClient;
+import com.github.kay.mmall.domain.security.AccountServiceClient;
 import org.springframework.stereotype.Service;
 
 @Service

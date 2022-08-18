@@ -1,4 +1,4 @@
-package com.github.kay.mmall.domain.auth;
+package com.github.kay.mmall.domain.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

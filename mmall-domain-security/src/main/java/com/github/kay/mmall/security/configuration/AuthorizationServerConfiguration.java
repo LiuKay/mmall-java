@@ -1,8 +1,8 @@
 package com.github.kay.mmall.security.configuration;
 
-import com.github.kay.mmall.domain.auth.AuthenticAccountDetailsService;
-import com.github.kay.mmall.domain.auth.service.JWTAccessTokenService;
-import com.github.kay.mmall.domain.auth.service.OAuthClientDetailsService;
+import com.github.kay.mmall.domain.security.AuthenticAccountDetailsService;
+import com.github.kay.mmall.infrasucture.security.JWTAccessTokenService;
+import com.github.kay.mmall.infrasucture.security.OAuthClientDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

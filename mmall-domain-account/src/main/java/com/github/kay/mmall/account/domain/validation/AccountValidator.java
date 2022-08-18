@@ -2,7 +2,7 @@ package com.github.kay.mmall.account.domain.validation;
 
 import com.github.kay.mmall.account.domain.AccountRepository;
 import com.github.kay.mmall.domain.account.Account;
-import com.github.kay.mmall.domain.auth.AuthenticAccount;
+import com.github.kay.mmall.domain.security.AuthenticAccount;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
