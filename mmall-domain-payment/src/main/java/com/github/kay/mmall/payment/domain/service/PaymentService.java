@@ -5,7 +5,7 @@ import com.github.kay.mmall.domain.account.Account;
 import com.github.kay.mmall.payment.domain.client.ProductServiceClient;
 import com.github.kay.mmall.payment.domain.repo.PaymentRepository;
 import com.github.kay.mmall.dto.Settlement;
-import com.github.kay.mmall.infrasucture.redis.LockService;
+import com.github.kay.mmall.infrasucture.lock.LockService;
 import com.github.kay.mmall.infrasucture.redis.RedisKeyExpirationHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;

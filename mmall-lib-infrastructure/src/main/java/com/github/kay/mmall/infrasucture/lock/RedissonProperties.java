@@ -1,4 +1,4 @@
-package com.github.kay.mmall.infrasucture.redis;
+package com.github.kay.mmall.infrasucture.lock;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

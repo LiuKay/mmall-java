@@ -1,8 +1,7 @@
-package com.github.kay.mmall.infrasucture.redis;
+package com.github.kay.mmall.infrasucture.lock;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -10,14 +9,14 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class LockServiceImpl implements LockService {
+public class LockServiceWithRedisson implements LockService {
 
     private static final String LOCK_PREFIX = "LOCK:";
     private static final int RELEASE_TIME_IN_MINUTE = 10;
 
     private final RedissonClient redissonClient;
 
-    public LockServiceImpl(RedissonClient redissonClient) {
+    public LockServiceWithRedisson(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
     }
 
