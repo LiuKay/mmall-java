@@ -44,9 +44,9 @@ docker-compose up -d
 
 ### Develop Plan - 开发计划
 
-- 单体版本使用 SpringBoot
-- 微服务版本使用 Spring Cloud 体系
-- K8s 版本
+- 单体版本使用 SpringBoot (已完成)，分支： monolithic_springboot
+- 微服务版本使用 Spring Cloud 体系 （已完成），分支：microservices_springcloud
+- K8s 版本 （开发中）
 
 ### Other Versions - 其他版本（分支）
 
