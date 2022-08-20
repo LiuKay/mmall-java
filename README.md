@@ -1,5 +1,10 @@
-### Monolithic MMall (Using SpringBoot)
+### MMall 
 
+### Develop Plan - 开发计划
+
+- 单体版本使用 SpringBoot (已完成)，分支： monolithic_springboot
+- 微服务版本使用 Spring Cloud 体系 （已完成），分支：microservices_springcloud
+- K8s 版本 （开发中）
 
 Based on [https://github.com/fenixsoft/monolithic_arch_springboot](https://github.com/fenixsoft/monolithic_arch_springboot) and made some improvements.
 
@@ -41,12 +46,6 @@ docker-compose up -d
 ### Frontend - 前端项目
 
 [https://github.com/LiuKay/mmall-frontend](https://github.com/LiuKay/mmall-frontend)
-
-### Develop Plan - 开发计划
-
-- 单体版本使用 SpringBoot (已完成)，分支： monolithic_springboot
-- 微服务版本使用 Spring Cloud 体系 （已完成），分支：microservices_springcloud
-- K8s 版本 （开发中）
 
 ### Other Versions - 其他版本（分支）
 
