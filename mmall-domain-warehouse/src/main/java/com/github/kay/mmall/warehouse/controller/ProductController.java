@@ -1,16 +1,20 @@
 package com.github.kay.mmall.warehouse.controller;
 
-import com.github.kay.mmall.domain.security.Role;
-import com.github.kay.mmall.domain.product.Stockpile;
+import com.github.kay.mmall.domain.product.DeliveredStatus;
 import com.github.kay.mmall.domain.product.Product;
+import com.github.kay.mmall.domain.product.Stockpile;
+import com.github.kay.mmall.domain.security.Role;
 import com.github.kay.mmall.infrasucture.common.CodedMessage;
 import com.github.kay.mmall.infrasucture.common.CommonResponse;
+import com.github.kay.mmall.warehouse.application.ProductApplicationService;
+
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,14 +86,29 @@ public class ProductController {
      */
     @PatchMapping("/stockpile/{productId}")
     @Secured(Role.ADMIN)
+    @PreAuthorize("#oauth2.hasAnyScope('BROWSER')")
     public ResponseEntity<CodedMessage> updateStockpile(@PathVariable("productId") Integer productId, @RequestParam("amount") Integer amount) {
         return CommonResponse.op(() -> service.setStockpileAmountByProductId(productId, amount));
     }
 
     @GetMapping("/stockpile/{productId}")
     @Secured(Role.ADMIN)
+    @PreAuthorize("#oauth2.hasAnyScope('BROWSER','SERVICE')")
     public Stockpile queryStockpile(@PathVariable("productId") Integer productId) {
         return service.getStockpile(productId);
+    }
+
+    // 以下是开放给内部微服务调用的方法
+
+    /**
+     * 将指定的产品库存调整为指定数额
+     */
+    @PatchMapping("/stockpile/delivered/{productId}")
+    @PreAuthorize("#oauth2.hasAnyScope('SERVICE')")
+    public ResponseEntity<CodedMessage> setDeliveredStatus(@PathVariable("productId") Integer productId,
+                                                           @RequestParam("status") DeliveredStatus status,
+                                                           @RequestParam("amount") Integer amount) {
+        return CommonResponse.op(() -> service.setDeliveredStatus(productId, status, amount));
     }
     
 }

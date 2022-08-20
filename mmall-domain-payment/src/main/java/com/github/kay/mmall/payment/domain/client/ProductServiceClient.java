@@ -46,7 +46,8 @@ public interface ProductServiceClient {
     }
 
     @PatchMapping("/restful/products/stockpile/delivered/{productId}")
-    void setDeliveredStatus(@PathVariable("productId") Integer productId, @RequestParam("status") DeliveredStatus status,
+    void setDeliveredStatus(@PathVariable("productId") Integer productId,
+                            @RequestParam("status") DeliveredStatus status,
                             @RequestParam("amount") Integer amount);
 
     @GetMapping("/restful/products/stockpile/{productId}")

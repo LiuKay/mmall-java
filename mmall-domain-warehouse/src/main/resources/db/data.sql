@@ -16,6 +16,10 @@ insert into stockpile values (4, 2000, 0, 4);
 insert into stockpile values (5, 2000, 0, 5);
 insert into stockpile values (6, 2000, 0, 6);
 
+insert into specification values (1, '标签1', 1, '图书');
+insert into specification values (2, '标签1', 2, '图书');
+insert into specification values (3, '标签1', 3, '图书');
+
 # 广告牌
 INSERT INTO mmall.advertisement (id, image, product_id) VALUES (1, '/static/carousel/banner1.jpg', 1);
 INSERT INTO mmall.advertisement (id, image, product_id) VALUES (2, '/static/carousel/banner2.jpg', 2);

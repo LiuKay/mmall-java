@@ -1,9 +1,17 @@
 plugins {
     id 'java'
+    id 'idea'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
 }
 
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 
 dependencies {
     implementation project(':mmall-lib-infrastructure')

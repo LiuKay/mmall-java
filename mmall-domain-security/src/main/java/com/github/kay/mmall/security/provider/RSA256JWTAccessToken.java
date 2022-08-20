@@ -24,8 +24,10 @@ import java.util.Map;
  * <p>
  * 为了便于对比，
  *
- * @author icyfenix@gmail.com
- * @date 2020/7/17 15:02
+ * 生成jks私钥公钥等
+ * keytool -genkeypair -alias mmall-rsa -keyalg RSA -keypass 123456 -keystore rsa.jks -storepass 123456 -validity 36500
+ * keytool -list -rfc --keystore rsa.jks | openssl x509 -inform pem -pubkey > pubkey.txt
+ *
  **/
 @Service
 @Primary
@@ -36,7 +38,7 @@ public class RSA256JWTAccessToken extends JWTAccessToken {
     RSA256JWTAccessToken(UserDetailsService userDetailsService) {
         super(userDetailsService);
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("rsa.jks"), "123456".toCharArray());
-        setKeyPair(keyStoreKeyFactory.getKeyPair("fenix-bookstore-rsa"));
+        setKeyPair(keyStoreKeyFactory.getKeyPair("mmall-rsa"));
     }
 
     /**
@@ -56,7 +58,7 @@ public class RSA256JWTAccessToken extends JWTAccessToken {
             throw new IllegalStateException("Cannot convert access token to JSON", ex);
         }
 
-        Map<String, String> headers = Collections.singletonMap("kid", "bookstore-jwt-kid");
+        Map<String, String> headers = Collections.singletonMap("kid", "mmall-jwt-kid");
         return JwtHelper.encode(content, signer, headers).getEncoded();
     }
 }

@@ -14,6 +14,13 @@ subprojects {
         buildTime = new Date().format('yyyy-MM-dd HH:mm:ss')
     }
 
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
+        }
+    }
+
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8"

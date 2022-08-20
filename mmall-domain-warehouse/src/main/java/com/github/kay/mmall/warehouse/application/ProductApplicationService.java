@@ -1,9 +1,11 @@
-package com.github.kay.mmall.warehouse.controller;
+package com.github.kay.mmall.warehouse.application;
 
-import com.github.kay.mmall.domain.product.Stockpile;
-import com.github.kay.mmall.warehouse.domain.StockpileService;
+import com.github.kay.mmall.domain.product.DeliveredStatus;
 import com.github.kay.mmall.domain.product.Product;
+import com.github.kay.mmall.domain.product.Stockpile;
 import com.github.kay.mmall.warehouse.domain.ProductService;
+import com.github.kay.mmall.warehouse.domain.StockpileService;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,5 +43,25 @@ public class ProductApplicationService {
 
     public void setStockpileAmountByProductId(Integer productId, Integer amount) {
         stockpileService.set(productId, amount);
+    }
+
+    /**
+     * 调整商品出库状态
+     */
+    public void setDeliveredStatus(Integer productId, DeliveredStatus status, Integer amount) {
+        switch (status) {
+            case DECREASE:
+                stockpileService.decrease(productId, amount);
+                break;
+            case INCREASE:
+                stockpileService.increase(productId, amount);
+                break;
+            case FROZEN:
+                stockpileService.frozen(productId, amount);
+                break;
+            case THAWED:
+                stockpileService.thawed(productId, amount);
+                break;
+        }
     }
 }
