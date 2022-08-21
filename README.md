@@ -1,5 +1,29 @@
 ### MMall 
 
+A simple mall project to learn different architectures.
+
+一个简单的、用来学习不同架构的 Mall 商城项目。
+
+### 当前分支版本: 
+
+Microservices SpringCloud - 微服务 SpringCloud 版 
+
+### Technology - 技术选型
+
+- SpringBoot
+- Spring Cache + Redis
+- Redisson as distributed lock
+- Spring Data JPA
+- Spring Security
+- Spring Security OAuth 2.3
+- Spring Security JWT
+- Jackson
+- Bean Validation 2.0 (Hibernate Validator 6)
+- Netflix Zuul 
+- Netflix Eureka 
+- Netflix Feign
+- Spring Config
+
 ### Develop Plan - 开发计划
 
 - 单体版本使用 SpringBoot (已完成)，分支： monolithic_springboot
@@ -19,28 +43,14 @@ Based on [https://github.com/fenixsoft/monolithic_arch_springboot](https://githu
 docker-compose up -d
 
 # startup application
-./gradlew bootRun
+startup configuration first and then resgitry project.
+
+and then startup other services.
 ```
 
 进入主页 [http://localhost:8080/](http://localhost:8080/)  默认账号 kaybee, 密码 123456
 
-使用`docker-compose up -d` 先启动依赖的其他基础设施服务，再运行项目 Main 方法.
-
-进入主页 [http://localhost:8080/](http://localhost:8080/).
-
 ![home](./img/home.png)
-
-### Technology - 技术选型
-
-- SpringBoot
-- Spring Cache + Redis
-- Redisson as distributed lock
-- Spring Data JPA
-- Spring Security
-- Spring Security OAuth 2.3
-- Spring Security JWT
-- Jackson
-- Bean Validation 2.0 (Hibernate Validator 6)
 
 
 ### Frontend - 前端项目
