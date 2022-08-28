@@ -16,9 +16,7 @@ idea {
 dependencies {
     implementation project(':mmall-lib-infrastructure')
 
-    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client') {
-        exclude group: 'javax.ws.rs', module: 'jsr311-api'
-    }
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE'
     implementation 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'

@@ -9,9 +9,7 @@ dependencies {
     implementation project(':mmall-lib-infrastructure')
     implementation project(':mmall-lib-testing')
 
-    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client') {
-        exclude group: 'javax.ws.rs', module: 'jsr311-api'
-    }
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
