@@ -7,7 +7,6 @@ plugins {
 
 dependencies {
     implementation project(':mmall-lib-infrastructure')
-    implementation project(':mmall-lib-testing')
 
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     implementation 'org.springframework.boot:spring-boot-starter'

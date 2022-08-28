@@ -21,8 +21,5 @@ dependencies {
     implementation 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
-
-    testImplementation project(':mmall-lib-testing')
 }
 
