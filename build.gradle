@@ -26,6 +26,14 @@ subprojects {
         targetCompatibility = '11'
     }
 
+    configurations {
+        implementation {
+            exclude group: 'com.sun.jersey', module: 'jersey-client'
+            exclude group: 'com.sun.jersey', module: 'jersey-core'
+            exclude group: 'com.sun.jersey.contribs', module: 'jersey-apache-client4'
+        }
+    }
+
     dependencies {
         annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 

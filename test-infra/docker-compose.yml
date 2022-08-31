@@ -11,8 +11,17 @@ services:
       - MYSQL_USER=mmall
       - MYSQL_PASSWORD=mmall
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    networks:
+      - network
   redis:
     image: redis:latest
     ports:
       - 6379:6379
     command: redis-server --notify-keyspace-events Ex
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+    name: dev_network

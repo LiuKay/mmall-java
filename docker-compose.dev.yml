@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7.38
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root1234
+      - MYSQL_DATABASE=mmall
+      - MYSQL_USER=mmall
+      - MYSQL_PASSWORD=mmall
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    networks:
+      - dev_network
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: redis-server --notify-keyspace-events Ex
+    networks:
+      - dev_network
+
+  mmall-configuration:
+    build: mmall-platform-configuration
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    restart: always
+    depends_on:
+      - redis
+      - mysql
+    ports:
+      - 8888:8888
+    networks:
+      - dev_network
+
+  mmall-registry:
+    build: mmall-platform-registry
+    environment:
+      CONFIG_HOST: mmall-configuration
+    restart: always
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    ports:
+      - 8761:8761
+    networks:
+      - dev_network
+
+#  mmall-gateway:
+#    build: mmall-platform-gateway
+#    depends_on:
+#      mmall-configuration:
+#        condition: service_healthy
+#    environment:
+#      CONFIG_HOST: mmall-configuration
+#      REGISTRY_HOST: mmall-registry
+#    restart: always
+#    ports:
+#      - 8080:8080
+#    networks:
+#      - dev_network
+#
+#  mmall-security:
+#    build: mmall-domain-security
+#    depends_on:
+#      mmall-configuration:
+#        condition: service_healthy
+#    environment:
+#      CONFIG_HOST: mmall-configuration
+#      REGISTRY_HOST: mmall-registry
+#    restart: always
+#    ports:
+#      - 8301:8301
+#    networks:
+#      - dev_network
+
+  mmall-account:
+    build: mmall-domain-account
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    environment:
+      CONFIG_HOST: mmall-configuration
+      REGISTRY_HOST: mmall-registry
+      AUTH_HOST: mmall-security
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    restart: always
+    ports:
+      - 8401:8401
+    networks:
+      - dev_network
+
+#  mmall-warehouse:
+#    build: mmall-domain-warehouse
+#    depends_on:
+#      mmall-configuration:
+#        condition: service_healthy
+#    environment:
+#      CONFIG_HOST: mmall-configuration
+#      REGISTRY_HOST: mmall-registry
+#      AUTH_HOST: mmall-security
+#    restart: always
+#    ports:
+#      - 8501:8501
+#    networks:
+#      - dev_network
+#
+#  mmall-payment:
+#    build: mmall-domain-payment
+#    depends_on:
+#      mmall-configuration:
+#        condition: service_healthy
+#    environment:
+#      CONFIG_HOST: mmall-configuration
+#      REGISTRY_HOST: mmall-registry
+#      AUTH_HOST: mmall-security
+#    restart: always
+#    ports:
+#      - 8601:8601
+#    networks:
+#      - dev_network
+
+networks:
+  dev_network:
+    name: ingress

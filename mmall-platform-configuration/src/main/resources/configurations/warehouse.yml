@@ -13,7 +13,7 @@ spring:
     schema: "classpath:db/schema.sql"
     data: "classpath:db/data.sql"
     sql-script-encoding: UTF-8
-    url: "jdbc:mysql://localhost:3306/mmall?useUnicode=true&characterEncoding=utf-8"
+    url: "jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/mmall?useUnicode=true&characterEncoding=utf-8"
     username: "root"
     password: "root1234"
     initialization-mode: always
@@ -32,8 +32,8 @@ spring:
     cache:
       period: 86400
   redis:
-    host: ${redis.host:localhost}
-    port: ${redis.tcp.6379:6379}
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
 
 logging:
   pattern:
