@@ -2,9 +2,6 @@
 
 A simple project to learn different architectures.
 
-<details>
-  <summary>简体中文</summary>
-
 ## 这是什么
 
 Mmall 是一个十分简化的商城项目，仅包含了用户、支付、库存管理等能支撑一个购物流程的业务功能，同时也包括了一些非业务功能，
@@ -82,4 +79,3 @@ and then startup other services.
 
   重构了登录鉴权的部分
 
-</details>
