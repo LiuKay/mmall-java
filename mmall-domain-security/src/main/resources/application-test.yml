@@ -5,6 +5,8 @@ eureka:
 spring:
   datasource:
     initialization-mode: never
+  cache:
+    type: none
 
 logging:
   pattern:

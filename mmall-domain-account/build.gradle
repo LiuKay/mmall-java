@@ -4,6 +4,13 @@ plugins {
     id 'io.spring.dependency-management'
 }
 
+configurations {
+    implementation {
+        exclude group: 'com.sun.jersey', module: 'jersey-client'
+        exclude group: 'com.sun.jersey', module: 'jersey-core'
+        exclude group: 'com.sun.jersey.contribs', module: 'jersey-apache-client4'
+    }
+}
 
 dependencies {
     implementation project(':mmall-lib-infrastructure')

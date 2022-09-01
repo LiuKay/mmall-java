@@ -1,9 +1,11 @@
 plugins {
-//    id 'base'
     id 'java'
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-//    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
+}
+
+bootJar{
+    mainClassName = "mmall-springcloud"
 }
 
 subprojects {
@@ -24,14 +26,6 @@ subprojects {
     compileJava {
         sourceCompatibility = '11'
         targetCompatibility = '11'
-    }
-
-    configurations {
-        implementation {
-            exclude group: 'com.sun.jersey', module: 'jersey-client'
-            exclude group: 'com.sun.jersey', module: 'jersey-core'
-            exclude group: 'com.sun.jersey.contribs', module: 'jersey-apache-client4'
-        }
     }
 
     dependencies {

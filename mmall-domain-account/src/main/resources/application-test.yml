@@ -1,4 +1,7 @@
 spring:
+  cloud:
+    config:
+      enabled: false
   cache:
     type: redis
     redis:
@@ -8,18 +11,14 @@ spring:
     schema: "classpath:db/schema.sql"
     data: "classpath:db/data.sql"
     sql-script-encoding: UTF-8
-    url: "jdbc:mysql://localhost:3306/mmall?useUnicode=true&characterEncoding=utf-8"
+    url: ${MYSQL_URL:jdbc:mysql://localhost/mmall?useUnicode=true&characterEncoding=utf-8}
     username: "root"
     password: "root1234"
     initialization-mode: always
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: none
     open-in-view: true
-    generate-ddl: false
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   resources:
     chain:
       compressed: true

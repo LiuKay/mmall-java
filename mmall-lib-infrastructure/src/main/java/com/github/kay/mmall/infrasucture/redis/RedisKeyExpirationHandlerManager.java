@@ -5,11 +5,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class RedisKeyExpirationHandlerManager implements ApplicationContextAware {
@@ -26,9 +27,11 @@ public class RedisKeyExpirationHandlerManager implements ApplicationContextAware
     private void init(){
         final Map<String, RedisKeyExpirationHandler> beans = applicationContext.getBeansOfType(
                 RedisKeyExpirationHandler.class);
-        for (RedisKeyExpirationHandler handler : beans.values()) {
-            Objects.requireNonNull(handler);
-            handlers.add(handler);
+        if (beans != null) {
+            for (RedisKeyExpirationHandler handler : beans.values()) {
+                Objects.requireNonNull(handler);
+                handlers.add(handler);
+            }
         }
     }
 
