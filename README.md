@@ -28,7 +28,9 @@ Microservices SpringCloud - 微服务 SpringCloud 版
 - Netflix Feign
 - Spring Config
 
-## Develop Plan - 开发计划
+
+
+### Develop Plan - 开发计划
 
 - 单体版本使用 SpringBoot (已完成)，分支： monolithic_springboot
 - 微服务版本使用 Spring Cloud 体系 （已完成），分支：microservices_springcloud
@@ -55,6 +57,7 @@ and then startup other services.
 进入主页 [http://localhost:8080/](http://localhost:8080/)  默认账号 kaybee, 密码 123456
 
 ![home](./img/home.png)
+
 
 
 ## Frontend - 前端项目
