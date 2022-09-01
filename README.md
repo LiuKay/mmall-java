@@ -1,14 +1,18 @@
-### MMall 
+# MMall 
 
-A simple mall project to learn different architectures.
+A simple project to learn different architectures.
 
-一个简单的、用来学习不同架构的 Mall 商城项目。
+## 这是什么
 
-### 当前分支版本: 
+Mmall 是一个十分简化的商城项目，仅包含了用户、支付、库存管理等能支撑一个购物流程的业务功能，同时也包括了一些非业务功能，
+包括登录、身份认证、鉴权等。通过一些简化，从而来更好的学习不同的架构风格是什么样的。从单体服务风格，到微服务架构，再到
+云原生，不同的架构为了架构本身的问题而引入了一些新的组件。
 
-Microservices SpringCloud - 微服务 SpringCloud 版 
+## 当前分支版本:
 
-### Technology - 技术选型
+Microservices SpringCloud - 微服务 SpringCloud 版
+
+## Technology - 技术选型
 
 - SpringBoot
 - Spring Cache + Redis
@@ -19,10 +23,12 @@ Microservices SpringCloud - 微服务 SpringCloud 版
 - Spring Security JWT
 - Jackson
 - Bean Validation 2.0 (Hibernate Validator 6)
-- Netflix Zuul 
-- Netflix Eureka 
+- Netflix Zuul
+- Netflix Eureka
 - Netflix Feign
 - Spring Config
+
+
 
 ### Develop Plan - 开发计划
 
@@ -53,24 +59,26 @@ and then startup other services.
 ![home](./img/home.png)
 
 
-### Frontend - 前端项目
+
+## Frontend - 前端项目
 
 [https://github.com/LiuKay/mmall-frontend](https://github.com/LiuKay/mmall-frontend)
 
-### Other Versions - 其他版本（分支）
+## Other Versions - 其他版本（分支）
 
-- v1.0 
+- v1.0
 
-    单服务器 + FTP文件服务器,
+  单服务器 + FTP文件服务器,
 
-    主要技术：SSM/Guava/Jackson/Joda/注解
+  主要技术：SSM/Guava/Jackson/Joda/注解
 
-- v2.0 
+- v2.0
 
-    Tomcat集群+Nginx负载均衡+Redis分布式,
+  Tomcat集群+Nginx负载均衡+Redis分布式,
 
-    在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
+  在V1.0基础上进行迭代重构，主要技术Redis 、Spring Schedule、Tomcat集群、Nginx负载均衡
 
 - v3.0_springboot_Deprecated （已废弃）
-    
-    重构了登录鉴权的部分
+
+  重构了登录鉴权的部分
+

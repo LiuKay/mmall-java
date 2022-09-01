@@ -1,25 +1,20 @@
 plugins {
-    id 'base'
     id 'java'
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
+}
+
+bootJar{
+    mainClassName = "mmall-springcloud"
 }
 
 subprojects {
-    project.apply plugin: 'idea'
-    project.apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'io.spring.dependency-management'
 
-    ext {
-        buildTime = new Date().format('yyyy-MM-dd HH:mm:ss')
-    }
-
-    idea {
-        module {
-            downloadJavadoc = true
-            downloadSources = true
-        }
-    }
+    group = 'com.github.kay'
+    version = '0.0.1-SNAPSHOT'
 
     dependencyManagement {
         imports {
@@ -28,103 +23,19 @@ subprojects {
         }
     }
 
-    afterEvaluate { project ->
-        if (project.plugins.hasPlugin('java') || project.plugins.hasPlugin('java-library')) {
-            group = 'com.github.kay'
-            sourceCompatibility = '11'
-            targetCompatibility = '11'
+    compileJava {
+        sourceCompatibility = '11'
+        targetCompatibility = '11'
+    }
 
-            configurations {
-                compileOnly {
-                    extendsFrom annotationProcessor
-                }
-            }
+    dependencies {
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-            dependencies {
-                constraints {
-                    implementation("org.apache.logging.log4j:log4j-core") {
-                        version {
-                            strictly("[2.17.2, 3[")
-                            prefer("2.17.2")
-                        }
-                        because("Log4j vulnerable to remote code execution and other critical security vulnerabilities")
-                    }
-                }
-                compileOnly 'org.projectlombok:lombok:1.18.24'
-                annotationProcessor 'org.projectlombok:lombok:1.18.24'
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-                testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-                testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-            }
-
-            compileJava {
-                //options.compilerArgs << '-Xlint:all'
-                options.deprecation = true
-            }
-
-            test {
-                useJUnitPlatform()
-                testLogging {
-                    events "failed"
-                    exceptionFormat "full"
-                }
-            }
-
-            project.apply plugin: 'jacoco'
-
-            jacocoTestReport {
-                reports {
-                    xml.required = true
-                }
-
-                afterEvaluate {
-                    classDirectories.setFrom(files(classDirectories.files.collect {
-                        fileTree(dir: it,
-                                exclude:['**/*Configurations/**','**/*Properties/**'])
-                    }))
-                }
-            }
-            test.finalizedBy jacocoTestReport
-
-            jacocoTestCoverageVerification {
-                violationRules {
-                    rule {
-                        limit {
-                            minimum = 0.35
-                        }
-                    }
-                }
-
-                afterEvaluate {
-                    classDirectories.setFrom(files(classDirectories.files.collect {
-                        fileTree(dir: it,
-                                exclude:['**/*Configurations/**','**/*Properties/**'])
-                    }))
-                }
-            }
-        }
-
-        if (project.plugins.hasPlugin('org.springframework.boot')
-                && project.plugins.hasPlugin('io.spring.dependency-management')) {
-
-            jar {
-                enabled = true
-            }
-
-            bootJar {
-                enabled = false
-            }
-
-            dependencies {
-                annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-            }
-
-            bootRun {
-                group = "application"
-                classpath = sourceSets.main.runtimeClasspath
-            }
-        }
-
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     }
 }
 

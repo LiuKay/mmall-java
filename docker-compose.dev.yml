@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7.38
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root1234
+      - MYSQL_DATABASE=mmall
+      - MYSQL_USER=mmall
+      - MYSQL_PASSWORD=mmall
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: redis-server --notify-keyspace-events Ex
+
+  mmall-configuration:
+    build: mmall-platform-configuration
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - 8888:8888
+
+  mmall-registry:
+    build: mmall-platform-registry
+    environment:
+      CONFIG_HOST: mmall-configuration
+    restart: always
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    ports:
+      - 8761:8761
+
+  mmall-gateway:
+    build: mmall-platform-gateway
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    environment:
+      CONFIG_HOST: mmall-configuration
+      REGISTRY_HOST: mmall-registry
+    restart: always
+    ports:
+      - 8080:8080
+
+  mmall-security:
+    build: mmall-domain-security
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    environment:
+      CONFIG_HOST: mmall-configuration
+      REGISTRY_HOST: mmall-registry
+    restart: always
+    ports:
+      - 8301:8301
+
+  mmall-account:
+    build: mmall-domain-account
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    environment:
+      CONFIG_HOST: mmall-configuration
+      REGISTRY_HOST: mmall-registry
+      AUTH_HOST: mmall-security
+      MYSQL_URL: jdbc:mysql://mysql/mmall?useUnicode=true&characterEncoding=utf-8
+      REDIS_HOST: redis
+    restart: always
+
+  mmall-warehouse:
+    build: mmall-domain-warehouse
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    environment:
+      CONFIG_HOST: mmall-configuration
+      REGISTRY_HOST: mmall-registry
+      AUTH_HOST: mmall-security
+      REDIS_HOST: redis
+      MYSQL_URL: jdbc:mysql://mysql/mmall?useUnicode=true&characterEncoding=utf-8
+    restart: always
+    ports:
+      - 8501:8501
+
+  mmall-payment:
+    build: mmall-domain-payment
+    depends_on:
+      mmall-configuration:
+        condition: service_healthy
+    environment:
+      CONFIG_HOST: mmall-configuration
+      REGISTRY_HOST: mmall-registry
+      AUTH_HOST: mmall-security
+      REDIS_HOST: redis
+      MYSQL_URL: jdbc:mysql://mysql/mmall?useUnicode=true&characterEncoding=utf-8
+    restart: always
+    ports:
+      - 8601:8601
