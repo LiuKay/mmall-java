@@ -1,12 +1,14 @@
 package com.github.kay.mmall.payment.domain.service;
 
-import com.github.kay.mmall.payment.domain.Wallet;
 import com.github.kay.mmall.domain.account.Account;
+import com.github.kay.mmall.payment.domain.Wallet;
 import com.github.kay.mmall.payment.domain.repo.WalletRepository;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -43,6 +45,7 @@ public class WalletService {
      * 账户资金增加（演示程序，没有做充值入口，实际这个方法无用）
      */
     public void increase(Integer accountId, Double amount) {
+        //todo
     }
 
     // 以下两个方法是为TCC事务准备的，在单体架构中不需要实现
@@ -52,6 +55,7 @@ public class WalletService {
      * 从正常资金中移动指定数量至冻结状态
      */
     public void frozen(Integer accountId, Double amount) {
+        //todo
     }
 
     /**
@@ -59,6 +63,7 @@ public class WalletService {
      * 从冻结资金中移动指定数量至正常状态
      */
     public void thawed(Integer accountId, Double amount) {
+        //todo
     }
 
 }

@@ -10,7 +10,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication(scanBasePackages = {"com.github.kay.mmall"})
 public class AccountApplication {
     public static void main(String[] args) {
-        //System.getProperties().put("spring.profiles.active","test");
         SpringApplication.run(AccountApplication.class, args);
     }
 }

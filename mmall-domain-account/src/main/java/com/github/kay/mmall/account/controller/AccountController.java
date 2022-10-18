@@ -37,7 +37,7 @@ public class AccountController {
         this.service = service;
     }
 
-    //FIXME 此方法的返回包含了 password，需要将 password 和 用户的其他信息分开存储，需要的时候各取所需
+    //Note 此方法的返回包含了 password，需要将 password 和 用户的其他信息分开存储，需要的时候各取所需
     @GetMapping("/{username}")
     @Cacheable(key = "#username")
     @PreAuthorize("#oauth2.hasAnyScope('SERVICE','BROWSER')")

@@ -1,7 +1,10 @@
 package com.github.kay.mmall.domain.security;
 
-public interface Scope {
-    String BROWSER = "BROWSER";
+public final class Scope {
+    private Scope() {
+        //no-op
+    }
 
-    String SERVICE = "SERVICE";
+    public static final String BROWSER = "BROWSER";
+    public static final String SERVICE = "SERVICE";
 }

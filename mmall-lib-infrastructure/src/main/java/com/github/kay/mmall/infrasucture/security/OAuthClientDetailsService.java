@@ -72,12 +72,17 @@ public class OAuthClientDetailsService implements ClientDetailsService {
      * 如果正式使用，这部分信息应该做成可以配置的，以便快速增加微服务的类型。clientSecret也不应该出现在源码中，应由外部配置传入
      */
     private static final List<Client> clients = Arrays.asList(
-            new Client("mmall_frontend", "mmall_secret", new String[]{GrantType.PASSWORD, GrantType.REFRESH_TOKEN},
+            new Client("mmall_frontend", "mmall_secret", new String[]{GrantType.PASSWORD.getValue(),
+                    GrantType.REFRESH_TOKEN.name()},
                        new String[]{Scope.BROWSER}),
-            new Client("account", "account_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE}),
-            new Client("warehouse", "warehouse_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE}),
-            new Client("payment", "payment_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE}),
-            new Client("security", "security_secret", new String[]{GrantType.CLIENT_CREDENTIALS}, new String[]{Scope.SERVICE})
+            new Client("account", "account_secret", new String[]{GrantType.CLIENT_CREDENTIALS.getValue()},
+                       new String[]{Scope.SERVICE}),
+            new Client("warehouse", "warehouse_secret", new String[]{GrantType.CLIENT_CREDENTIALS.getValue()},
+                       new String[]{Scope.SERVICE}),
+            new Client("payment", "payment_secret", new String[]{GrantType.CLIENT_CREDENTIALS.getValue()},
+                       new String[]{Scope.SERVICE}),
+            new Client("security", "security_secret", new String[]{GrantType.CLIENT_CREDENTIALS.getValue()},
+                       new String[]{Scope.SERVICE})
                                                              );
 
     private final PasswordEncoder passwordEncoder;
@@ -100,12 +105,10 @@ public class OAuthClientDetailsService implements ClientDetailsService {
     public void init() throws Exception {
         InMemoryClientDetailsServiceBuilder builder = new InMemoryClientDetailsServiceBuilder();
         // 提供客户端ID和密钥，并指定该客户端支持密码授权、刷新令牌两种访问类型
-        clients.forEach(client -> {
-            builder.withClient(client.clientId)
-                   .secret(passwordEncoder.encode(client.clientSecret))
-                   .scopes(client.scopes)
-                   .authorizedGrantTypes(client.grantTypes);
-        });
+        clients.forEach(client -> builder.withClient(client.clientId)
+                                     .secret(passwordEncoder.encode(client.clientSecret))
+                                     .scopes(client.scopes)
+                                     .authorizedGrantTypes(client.grantTypes));
         clientDetailsService = builder.build();
     }
 
