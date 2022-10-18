@@ -77,7 +77,7 @@ Microservices SpringCloud - 微服务 SpringCloud 版: [microservices_springclou
 
 ### 简要效果图
 
-![home](C:/kaybee/code/mmall-kay-Java/img/home.png)
+![home](img/home.png)
 
 
 
