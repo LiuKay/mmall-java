@@ -1,5 +1,9 @@
 # MMall 
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LiuKay_mmall-java&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LiuKay_mmall-java)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=LiuKay_mmall-java&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=LiuKay_mmall-java)
+
+
 A simple project to learn different architectures.
 
 ## What - 这是什么
