@@ -94,8 +94,8 @@ docker-compose -f ./docker-compose.debug.yml up -d
 
 ### Develop Plan - 开发计划
 
-- 单体版本使用 SpringBoot (已完成)，分支： [monolithic_springboot]([LiuKay/mmall-java at monolithic_springboot (github.com)](https://github.com/LiuKay/mmall-java/tree/monolithic_springboot))
-- 微服务版本使用 Spring Cloud 体系 （已完成），分支：[microservices_springcloud]([LiuKay/mmall-java at microservices_springcloud (github.com)](https://github.com/LiuKay/mmall-java/tree/microservices_springcloud)) 
+- 单体版本使用 SpringBoot (已完成)，分支： [feature/monolithic_springboot](https://github.com/LiuKay/mmall-java/tree/feature/monolithic_springboot)
+- 微服务版本使用 Spring Cloud 体系 （已完成），分支：[feature/microservices_springcloud](https://github.com/LiuKay/mmall-java/tree/feature/microservices_springcloud) 
 - K8s 版本 （开发中）
 
 ## Frontend Project - 前端项目
