@@ -5,7 +5,7 @@ plugins {
     id "org.sonarqube" version "3.4.0.2513"
 }
 
-bootJar{
+bootJar {
     mainClassName = "mmall-springcloud"
 }
 
@@ -38,13 +38,13 @@ subprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     }
+}
 
-    sonarqube {
-        properties {
-            property "sonar.projectKey", "LiuKay_mmall-java"
-            property "sonar.organization", "liukay"
-            property "sonar.host.url", "https://sonarcloud.io"
-        }
+sonarqube {
+    properties {
+        property "sonar.projectKey", "LiuKay_mmall-java"
+        property "sonar.organization", "liukay"
+        property "sonar.host.url", "https://sonarcloud.io"
     }
 }
 
