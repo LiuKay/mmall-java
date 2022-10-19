@@ -1,52 +1,50 @@
 plugins {
     id 'java'
-    id 'application'
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id "com.github.ManifestClasspath" version "0.1.0-RELEASE"
+    id "org.sonarqube" version "3.4.0.2513"
 }
 
-group 'com.github.kay'
-version '1.0-SNAPSHOT'
-compileJava.sourceCompatibility = '11'
-compileJava.options.encoding = 'UTF-8'
-
-repositories {
-    mavenLocal()
-    maven { url 'https://maven.aliyun.com/repository/public/' }
-    mavenCentral()
+bootJar{
+    mainClassName = "mmall-springcloud"
 }
 
-dependencies {
-    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE'
-    implementation 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'io.spring.dependency-management'
 
-    implementation 'com.github.ben-manes.caffeine:caffeine:2.6.2'
-    implementation 'org.redisson:redisson:3.17.4'
-    implementation 'redis.clients:jedis:3.8.0'
+    group = 'com.github.kay'
+    version = '0.0.1-SNAPSHOT'
 
-    runtimeOnly 'mysql:mysql-connector-java'
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE"
+        }
+    }
 
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileJava {
+        sourceCompatibility = '11'
+        targetCompatibility = '11'
+    }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
+    dependencies {
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-test {
-    useJUnitPlatform()
-}
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-bootRun {
-    mainClassName = "com.github.kay.mmall.MallApplication"
-    doFirst {
-        systemProperty 'java.library.path', 'build/libs'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "LiuKay_mmall-java"
+            property "sonar.organization", "liukay"
+            property "sonar.host.url", "https://sonarcloud.io"
+        }
     }
 }
+

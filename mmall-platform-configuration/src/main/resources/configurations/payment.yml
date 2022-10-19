@@ -1,0 +1,63 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${REGISTRY_HOST:localhost}:${REGISTRY_PORT:8761}/eureka/
+
+spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: PT5M
+  datasource:
+    schema: "classpath:db/schema.sql"
+    data: "classpath:db/data.sql"
+    sql-script-encoding: UTF-8
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    url: ${MYSQL_URL:jdbc:mysql://localhost/mmall?useUnicode=true&characterEncoding=utf-8}
+    username: "root"
+    password: "root1234"
+    initialization-mode: always
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    generate-ddl: false
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  resources:
+    chain:
+      compressed: true
+      cache: true
+    cache:
+      period: 86400
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+
+logging:
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(-){faint} %clr([%t]){faint} %clr(%-40logger{39}){cyan}[%line]%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  level:
+    root: INFO
+    com.github.kay: DEBUG
+
+security:
+  oauth2:
+    client:
+      # OAuth的ClientID和ClientSecret是写在OAuthClientDetailsService中的
+      # 实际生产中要考虑好如何获取验证服务器的Endpoint、动态增加微服务客户端、如何分发客户端密钥等问题，而在演示工程中并不关注这些
+      clientId: account
+      clientSecret: account_secret
+      accessTokenUri: http://${AUTH_HOST:localhost}:${AUTH_PORT:8301}/oauth/token
+      grant-type: client_credentials
+      scope: SERVICE
+    resource:
+      userInfoUri: BUGFIX
+
+server:
+  port: ${PORT:8601}
+
+mmall:
+  redisson-config: "redisson-config.yml"

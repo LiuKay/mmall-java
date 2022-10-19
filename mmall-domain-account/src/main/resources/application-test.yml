@@ -1,0 +1,44 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      time-to-live: PT5M
+  datasource:
+    schema: "classpath:db/schema.sql"
+    data: "classpath:db/data.sql"
+    sql-script-encoding: UTF-8
+    url: ${MYSQL_URL:jdbc:mysql://localhost/mmall?useUnicode=true&characterEncoding=utf-8}
+    username: "root"
+    password: "root1234"
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+  resources:
+    chain:
+      compressed: true
+      cache: true
+    cache:
+      period: 86400
+  redis:
+    host: ${redis.host:localhost}
+    port: ${redis.tcp.6379:6379}
+
+logging:
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(-){faint} %clr([%t]){faint} %clr(%-40logger{39}){cyan}[%line]%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  level:
+    root: INFO
+    com.github.kay: DEBUG
+
+mmall:
+  redisson-config: "redisson-config.yml"
+
+eureka:
+  client:
+    enabled: false

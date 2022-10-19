@@ -1,0 +1,6 @@
+singleServerConfig:
+  address: "redis://${redis.host:-localhost}:${redis.tcp.6379:-6379}"
+  connectionPoolSize: 24
+  connectionMinimumIdleSize: 12
+  keepAlive: true
+
