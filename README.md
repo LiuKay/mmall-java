@@ -16,6 +16,7 @@ Mmall 是一个十分简化的商城项目，仅包含了用户、支付、库�
 >
 > 本项目基于周志明老师的[凤凰架构](https://icyfenix.cn/introduction/about-the-fenix-project.html)中的示例项目:[单体架构](https://github.com/fenixsoft/monolithic_arch_springboot). 在此基础上做一些改进和修改。
 
+
 ## Current Version - 当前分支版本:
 
 Microservices SpringCloud - 微服务 SpringCloud 版: [microservices_springcloud]([LiuKay/mmall-java at microservices_springcloud (github.com)](https://github.com/LiuKay/mmall-java/tree/microservices_springcloud)) 
@@ -31,6 +32,7 @@ Microservices SpringCloud - 微服务 SpringCloud 版: [microservices_springclou
 | mmall-platform-configuration | 8888 | configurations                                           |
 | mmall-lib-infrastructure     | NA   | infrastructure library, domain, dto, utils, lock service |
 |                              |      |                                                          |
+
 
 ## Technology - 技术选型
 
